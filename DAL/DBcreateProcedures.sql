@@ -45,12 +45,64 @@ AS
   END
 GO
 
+Drop procedure if exists UserAddressTableIUD
+GO
+create PROCEDURE UserAddressTableIUD 
+				@Id int, 
+				@HouseNumber int, 
+				@StreetName nvarchar(12), 
+				 @CityName NVARCHAR(12), 
+				 @Region nvarchar(30),
+				@StatementType varchar(10)
+AS
+  BEGIN
+	declare @CityId int= (select id from city where CityName = @CityName and Region=@Region)
+      IF @StatementType = 'Insert'
+        BEGIN
+				INSERT INTO UserAddress
+				  (HouseNumber, 
+				  StreetName, 
+				  Cityid) 
+				VALUES 
+				   ( @HouseNumber, 
+					  @StreetName, 
+					  @Cityid) ;
+				SELECT SCOPE_IDENTITY() 
+			
+        END
 
+      IF @StatementType = 'Select'
+        BEGIN
+            SELECT ua.Id, ua.HouseNumber, ua.StreetName, c.CityName ,c.Region
+			FROM UserAddress ua inner join City c on ua.Cityid = c.Id
+		
+        END
+
+      IF @StatementType = 'Update'
+        BEGIN
+
+           UPDATE UserAddress SET 
+					HouseNumber = @HouseNumber, 
+					StreetName = @StreetName, 
+					Cityid = @CityId 
+				WHERE
+					Id = @Id;
+
+        END
+      ELSE
+	  IF @StatementType = 'Delete'
+        BEGIN
+          DELETE FROM UserAddress 
+		 WHERE Id = @Id;
+
+        END
+  END
 
 
 
 Drop procedure if exists BreedTableIUD
 GO
+
 create PROCEDURE BreedTableIUD 
 				@Breed nvarchar(12), 
 				@StatementType varchar(10)
@@ -189,14 +241,14 @@ create PROCEDURE AdoptersTableIUD
 					  @Email varchar(40), 
 					  @FirstName nvarchar(12), 
 					  @LastName nvarchar(12), 
-					  @DateOfBirth date, 
 					  @HouseMembers nvarchar(20), 
+					  @DateOfBirth date = GETDATE, 
 					  @DogsPlace nvarchar(20), 
 					  @AdditionalPets nvarchar(20), 
 					  @Experience nvarchar(20), 
 					  @Note nvarchar(2048), 
 					  @Addressid int,
-					@Deleted bit,
+					@Deleted bit = false,
 					@StatementType varchar(10)
 
 AS
@@ -231,14 +283,22 @@ AS
 					  );
 
 
-				SELECT SCOPE_IDENTITY() 
+				SELECT @PhoneNumber
 			
         END
 
       IF @StatementType = 'Select'
         BEGIN
           SELECT PhoneNumber, Email, FirstName, LastName, DateOfBirth, HouseMembers, DogsPlace, AdditionalPets, Experience, Note,ua.Id, ua.HouseNumber, ua.StreetName,c.CityName, c.Region
-		FROM Optional_adopter oa inner join  UserAddress ua on oa.Addressid = ua.id inner join City c on ua.Cityid = c.Id;
+		FROM Optional_adopter oa inner join  UserAddress ua on oa.Addressid = ua.id inner join City c on ua.Cityid = c.Id
+		where oa.Deleted='false';
+
+        END
+      IF @StatementType = 'SelectOne'
+        BEGIN
+          SELECT PhoneNumber, Email, FirstName, LastName, DateOfBirth, HouseMembers, DogsPlace, AdditionalPets, Experience, Note,ua.Id, ua.HouseNumber, ua.StreetName,c.CityName, c.Region
+		FROM Optional_adopter oa inner join  UserAddress ua on oa.Addressid = ua.id inner join City c on ua.Cityid = c.Id
+		where phoneNumber=@PhoneNumber and oa.Deleted='false';
 
         END
 

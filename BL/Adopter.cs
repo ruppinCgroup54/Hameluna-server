@@ -1,4 +1,5 @@
-﻿using hameluna_server.DAL;
+﻿using System.Net;
+using hameluna_server.DAL;
 
 namespace hameluna_server.BL
 {
@@ -7,7 +8,7 @@ namespace hameluna_server.BL
 
 
 
-        public Adopter(string phoneNumber, string firstName, string lastName, string email,DateOnly dateOfBirth, string houseMembers, string dogsPlace, string additionalPets, string experience, string note, Address address) : base(phoneNumber, firstName, lastName, email)
+        public Adopter(string phoneNumber, string firstName, string lastName, string email, DateTime dateOfBirth, string houseMembers, string dogsPlace, string additionalPets, string experience, string note, Address address) : base(phoneNumber, firstName, lastName, email)
         {
             DateOfBirth = dateOfBirth;
             HouseMembers = houseMembers;
@@ -16,21 +17,29 @@ namespace hameluna_server.BL
             Experience = experience;
             Note = note;
             Address = address;
-    }
+        }
 
         public Adopter()
         {
+            DateOfBirth = DateTime.Now;
+            HouseMembers = "";
+            DogsPlace = "";
+            AdditionalPets = "";
+            Experience = "";
+            Note = "";
+            Address = new();
         }
 
 
-        public DateOnly DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public string HouseMembers { get; set; }
         public string DogsPlace { get; set; }
         public string AdditionalPets { get; set; }
         public string Experience { get; set; }
         public string Note { get; set; }
         public Address Address { get; set; }
-        public float Age { get { return (DateOnly.FromDateTime(DateTime.Now).Year - DateOfBirth.Year); }}
+        public float Age { get => (DateOnly.FromDateTime(DateTime.Now).Year - DateOfBirth.Year); }
+
 
 
 

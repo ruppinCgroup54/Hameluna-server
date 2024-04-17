@@ -8,7 +8,7 @@ namespace hameluna_server.DAL
     {
         public AdopterDBService():base()
         {
-             spIUD = "AdopterTableIUD";
+             spIUD = "AdoptersTableIUD";
         }
 
         //create command for general SP CRUD
@@ -101,7 +101,7 @@ namespace hameluna_server.DAL
         {
 
             SqlConnection con;
-            SqlCommand cmd;
+            SqlCommand cmd,addressCmd;
 
             try
             {
@@ -113,6 +113,19 @@ namespace hameluna_server.DAL
                 throw (ex);
             }
 
+            //insert new address
+            addressCmd = AddressSPCmd("UserAddressTableIUD", con, adopter.Address, "Update");
+
+            try
+            {
+                 addressCmd.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new InvalidExpressionException("Invalide Address");
+            }
             cmd = AdopterSPCmd(spIUD, con, adopter, "Update");             // create the command
 
             try
@@ -202,7 +215,7 @@ namespace hameluna_server.DAL
                         PhoneNumber = dataReader["PhoneNumber"].ToString(),
                         FirstName = dataReader["FirstName"].ToString(),
                         LastName = dataReader["LastName"].ToString(),
-                        DateOfBirth = DateOnly.Parse(dataReader["DateOfBirth"].ToString()),
+                        DateOfBirth = DateTime.Parse(dataReader["DateOfBirth"].ToString()),
                         HouseMembers = dataReader["HouseMembers"].ToString(),
                         DogsPlace = dataReader["DogsPlace"].ToString(),
                         AdditionalPets = dataReader["AdditionalPets"].ToString(),
@@ -212,7 +225,7 @@ namespace hameluna_server.DAL
                         {
                             Id = Convert.ToInt32(dataReader["Id"]),
                             HouseNumber = Convert.ToInt32(dataReader["HouseNumber"]),
-                            City = dataReader["City"].ToString(),
+                            City = dataReader["CityName"].ToString(),
                             StreetName = dataReader["StreetName"].ToString(),
                             Region = dataReader["Region"].ToString()
                         }
@@ -267,7 +280,7 @@ namespace hameluna_server.DAL
                         PhoneNumber = dataReader["PhoneNumber"].ToString(),
                         FirstName = dataReader["FirstName"].ToString(),
                         LastName = dataReader["LastName"].ToString(),
-                        DateOfBirth = DateOnly.Parse(dataReader["DateOfBirth"].ToString()),
+                        DateOfBirth = DateTime.Parse(dataReader["DateOfBirth"].ToString()),
                         HouseMembers = dataReader["HouseMembers"].ToString(),
                         DogsPlace = dataReader["DogsPlace"].ToString(),
                         AdditionalPets = dataReader["AdditionalPets"].ToString(),
@@ -277,7 +290,7 @@ namespace hameluna_server.DAL
                         {
                             Id = Convert.ToInt32(dataReader["Id"]),
                             HouseNumber = Convert.ToInt32(dataReader["HouseNumber"]),
-                            City = dataReader["City"].ToString(),
+                            City = dataReader["CityName"].ToString(),
                             StreetName = dataReader["StreetName"].ToString(),
                             Region = dataReader["Region"].ToString()
                         }

@@ -50,7 +50,7 @@ public class DBservices
         if (address != null)
         {
             cmd.Parameters.AddWithValue("@Id", address.Id);
-            cmd.Parameters.AddWithValue("@City", address.City);
+            cmd.Parameters.AddWithValue("@CityName", address.City);
             cmd.Parameters.AddWithValue("@StreetName", address.StreetName);
             cmd.Parameters.AddWithValue("@HouseNumber", address.HouseNumber);
             cmd.Parameters.AddWithValue("@Region", address.Region);
@@ -93,6 +93,42 @@ public class DBservices
       
     }
 
+    public int UpdateAdopter(Address address)
+    {
+
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect(conString); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cmd = AddressSPCmd("UserAddressTableIUD", con, address, "Update");             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            // close the db connection
+            con?.Close();
+        }
+
+    }
 
 
 }
