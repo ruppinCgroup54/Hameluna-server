@@ -17,8 +17,10 @@ namespace hameluna_server.BL
             Adopted = false;
             IsReturned = false;
             CellId = -1;
+            Color = new();
+            Breed = new();
         }
-        public Dog(string chipNumber, int numberId, string name, DateTime dateOfBirth, string gender, DateTime entranceDate, bool isAdoptable, string size, bool adopted, bool isReturned, int cellId)
+        public Dog(string chipNumber, int numberId, string name, DateTime dateOfBirth, string gender, DateTime entranceDate, bool isAdoptable, string size, bool adopted, bool isReturned, int cellId, List<string> color, List<string> breed)
         {
             ChipNumber = chipNumber;
             NumberId = numberId;
@@ -31,6 +33,8 @@ namespace hameluna_server.BL
             Adopted = adopted;
             IsReturned = isReturned;
             CellId = cellId;
+            Color = color;
+            Breed = breed;
         }
 
 
@@ -45,7 +49,8 @@ namespace hameluna_server.BL
         public bool Adopted { get; set; }
         public bool IsReturned { get; set; }
         public int CellId { get; set; }
-
+        public List<string> Color { get; set; }
+        public List<string> Breed { get; set; }
         public int Insert()
         {
             DogDBService db = new();
