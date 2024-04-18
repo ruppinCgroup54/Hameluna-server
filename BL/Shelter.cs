@@ -32,10 +32,10 @@ namespace hameluna_server.BL
         public string PhotoUrl { get; set; }
         public Address Address { get; set; }
         public List<string> DailyRoutine { get; set; }
-        public List<string> Cells { get; set; }
+        public List<Cell> Cells { get; set; }
 
 
-        public Shelter(int shelterId, Admin adminDetails, string facebookUserName, string facebookPassword, string instagramUserName, string instagramPassword, DateTime timeToReport, string name, string photoUrl, Address address, List<string> dailyRoutine, List<string> cells)
+        public Shelter(int shelterId, Admin adminDetails, string facebookUserName, string facebookPassword, string instagramUserName, string instagramPassword, DateTime timeToReport, string name, string photoUrl, Address address, List<string> dailyRoutine, List<Cell> cells)
         {
             ShelterId = shelterId;
             AdminDetails = adminDetails;
@@ -56,8 +56,6 @@ namespace hameluna_server.BL
             ShelterDBService db = new();
 
             this.ShelterId= db.InsertShelter(this);
-
-
         }
 
         public int Update()

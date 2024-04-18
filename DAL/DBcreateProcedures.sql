@@ -5,7 +5,7 @@ GO
 
 Drop procedure if exists CityTableIUD
 GO
-create PROCEDURE CityTableIUD @Id int,  @CityName NVARCHAR(12), @Region nvarchar(30),@StatementType varchar(10)
+create PROCEDURE CityTableIUD  @CityName NVARCHAR(12), @Region nvarchar(30),@StatementType varchar(10)
 AS
   BEGIN
       IF @StatementType = 'Insert'
@@ -24,23 +24,23 @@ AS
 
       IF @StatementType = 'Select'
         BEGIN
-            SELECT CityName, Region, Id 
+            SELECT CityName, Region
 			FROM City;
         END
 
       IF @StatementType = 'Update'
         BEGIN
             UPDATE City SET 
-			  CityName = @CityName, 
 			  Region = @Region 
 			WHERE
-			  Id = @Id;
+			   CityName = @CityName;
         END
       ELSE
 	  IF @StatementType = 'Delete'
         BEGIN
            DELETE FROM City 
-			WHERE Id = @Id;
+		 where CityName = @CityName;
+
         END
   END
 GO
@@ -56,17 +56,16 @@ create PROCEDURE UserAddressTableIUD
 				@StatementType varchar(10)
 AS
   BEGIN
-	declare @CityId int= (select id from city where CityName = @CityName and Region=@Region)
       IF @StatementType = 'Insert'
         BEGIN
 				INSERT INTO UserAddress
 				  (HouseNumber, 
 				  StreetName, 
-				  Cityid) 
+				  City) 
 				VALUES 
 				   ( @HouseNumber, 
 					  @StreetName, 
-					  @Cityid) ;
+					  @CityName) ;
 				SELECT SCOPE_IDENTITY() 
 			
         END
@@ -74,7 +73,7 @@ AS
       IF @StatementType = 'Select'
         BEGIN
             SELECT ua.Id, ua.HouseNumber, ua.StreetName, c.CityName ,c.Region
-			FROM UserAddress ua inner join City c on ua.Cityid = c.Id
+			FROM UserAddress ua inner join City c on ua.City = c.CityName
 		
         END
 
@@ -84,7 +83,7 @@ AS
            UPDATE UserAddress SET 
 					HouseNumber = @HouseNumber, 
 					StreetName = @StreetName, 
-					Cityid = @CityId 
+					City = @CityName 
 				WHERE
 					Id = @Id;
 
@@ -103,6 +102,8 @@ AS
 Drop procedure if exists BreedTableIUD
 GO
 
+Drop procedure if exists BreedTableIUD
+GO
 create PROCEDURE BreedTableIUD 
 				@Breed nvarchar(12), 
 				@StatementType varchar(10)
@@ -119,8 +120,8 @@ AS
 
       IF @StatementType = 'Select'
         BEGIN
-            SELECT ua.Id, ua.HouseNumber, ua.StreetName, c.CityName ,c.Region
-			FROM UserAddress ua inner join City c on ua.Cityid = c.Id;
+            SELECT Breed
+			From Breed
 
         END
 
@@ -148,18 +149,16 @@ Drop procedure if exists DogTableIUD
 GO
 create PROCEDURE DogTableIUD 
 				@ChipNumber varchar(15), 
-				  @Cellnumber int, 
 				  @NumberId int, 
 				  @Name nvarchar(20), 
 				  @DateOfBirth date, 
 				  @Gender char(1), 
-				  @EntrandeDate date, 
+				  @EntranceDate date, 
 				  @IsAdoptable bit, 
 				  @Size varchar(20), 
 				  @Adopted bit, 
 				  @IsReturned bit, 
 				  @Cellid int, 
-				  @Deleted bit,
 				  @StatementType varchar(10)
 
 AS
@@ -168,11 +167,10 @@ AS
         BEGIN
 			INSERT INTO Dog
 				  (ChipNumber, 
-				  NumberId, 
 				  [Name], 
 				  DateOfBirth, 
 				  Gender, 
-				  EntrandeDate, 
+				  EntranceDate, 
 				  IsAdoptable, 
 				  [Size], 
 				  Adopted, 
@@ -181,11 +179,10 @@ AS
 				  ) 
 				VALUES 
 				  (@ChipNumber, 
-				  @NumberId, 
 				  @Name, 
 				  @DateOfBirth, 
 				  @Gender, 
-				  @EntrandeDate, 
+				  @EntranceDate, 
 				  @IsAdoptable, 
 				  @Size, 
 				  @Adopted, 
@@ -199,8 +196,15 @@ AS
 
       IF @StatementType = 'Select'
         BEGIN
-            SELECT ChipNumber, NumberId, [Name], DateOfBirth, Gender, EntrandeDate, IsAdoptable, [Size], Adopted, IsReturned, Cellid
+            SELECT ChipNumber, NumberId, [Name], DateOfBirth, Gender, EntranceDate, IsAdoptable, [Size], Adopted, IsReturned, Cellid
 			FROM Dog;
+        END
+
+		IF @StatementType = 'SelectOne'
+        BEGIN
+            SELECT ChipNumber, NumberId, [Name], DateOfBirth, Gender, EntranceDate, IsAdoptable, [Size], Adopted, IsReturned, Cellid
+			FROM Dog
+			where NumberId=3;
         END
 
       IF @StatementType = 'Update'
@@ -210,13 +214,12 @@ AS
 				  [Name] = @Name, 
 				  DateOfBirth = @DateOfBirth, 
 				  Gender = @Gender, 
-				  EntrandeDate = @EntrandeDate, 
+				  EntranceDate = @EntranceDate, 
 				  IsAdoptable = @IsAdoptable, 
 				  [Size] = @Size, 
 				  Adopted = @Adopted, 
 				  IsReturned = @IsReturned, 
-				  Cellid = @Cellid, 
-				  Deleted = @Deleted 
+				  Cellid = @Cellid
 				WHERE
 				  NumberId = @NumberId;
 
@@ -225,14 +228,13 @@ AS
 	  IF @StatementType = 'Delete'
         BEGIN
            UPDATE Dog SET 
-				  Deleted = 'true'
+				  Adopted = 'true'
 				WHERE
 				  NumberId = @NumberId;
 
         END
   END
 GO
-
 
 Drop procedure if exists AdoptersTableIUD
 GO
@@ -290,14 +292,14 @@ AS
       IF @StatementType = 'Select'
         BEGIN
           SELECT PhoneNumber, Email, FirstName, LastName, DateOfBirth, HouseMembers, DogsPlace, AdditionalPets, Experience, Note,ua.Id, ua.HouseNumber, ua.StreetName,c.CityName, c.Region
-		FROM Optional_adopter oa inner join  UserAddress ua on oa.Addressid = ua.id inner join City c on ua.Cityid = c.Id
+		FROM Optional_adopter oa inner join  UserAddress ua on oa.Addressid = ua.id inner join City c on ua.City = c.CityName
 		where oa.Deleted='false';
 
         END
       IF @StatementType = 'SelectOne'
         BEGIN
           SELECT PhoneNumber, Email, FirstName, LastName, DateOfBirth, HouseMembers, DogsPlace, AdditionalPets, Experience, Note,ua.Id, ua.HouseNumber, ua.StreetName,c.CityName, c.Region
-		FROM Optional_adopter oa inner join  UserAddress ua on oa.Addressid = ua.id inner join City c on ua.Cityid = c.Id
+		FROM Optional_adopter oa inner join  UserAddress ua on oa.Addressid = ua.id inner join City c on ua.City = c.CityName
 		where phoneNumber=@PhoneNumber and oa.Deleted='false';
 
         END
@@ -364,8 +366,8 @@ AS
 
       IF @StatementType = 'Select'
         BEGIN
-          SELECT PhoneNumber, Email, FirstName, LastName, DateOfBirth, HouseMembers, DogsPlace, AdditionalPets, Experience, Note, ua.HouseNumber, ua.StreetName  
-		FROM Optional_adopter oa inner join  UserAddress ua on oa.Addressid = ua.id inner join City c on ua.Cityid = c.Id;
+          SELECT Id, ShelterNumber, Number,  capacity
+		FROM Cell;
 
         END
 
@@ -546,13 +548,13 @@ create PROCEDURE ShelterTableIUD
 					  @AdminPhoneNumber char(10), 
 					  @FacebookUserName nvarchar(30), 
 					  @FacebookPassword nvarchar(20), 
-					  @InstegramUserName nvarchar(30), 
-					  @InstegramPassword nvarchar(20), 
+					  @InstagramUserName nvarchar(30), 
+					  @InstagramPassword nvarchar(20), 
 					  @TimeToReport time, 
 					  @Name nvarchar(12), 
 					  @PhotoUrl nvarchar(1000), 
 					  @AddressId int, 
-					  @Deleted bit,
+					  @Deleted bit='false',
 					@StatementType varchar(10)
 
 AS
@@ -560,7 +562,7 @@ AS
       IF @StatementType = 'Insert'
         BEGIN
 		INSERT INTO Shelter
-					  (ShelterNumber, 
+					  (
 					  AdminPhoneNumber, 
 					  FacebookUserName, 
 					  FacebookPassword, 
@@ -572,12 +574,12 @@ AS
 					  AddressId, 
 					  Deleted) 
 					VALUES 
-					  (@ShelterNumber, 
+					  ( 
 					  @AdminPhoneNumber, 
 					  @FacebookUserName, 
 					  @FacebookPassword, 
-					  @InstegramUserName, 
-					  @InstegramPassword, 
+					  @InstagramUserName, 
+					  @InstagramPassword, 
 					  @TimeToReport, 
 					  @Name, 
 					  @PhotoUrl, 
@@ -591,16 +593,16 @@ AS
 
       IF @StatementType = 'Select'
         BEGIN
-			SELECT s.ShelterNumber, s.AdminPhoneNumber, s.FacebookUserName, s.FacebookPassword, s.InstegramUserName, s.InstegramPassword, s.TimeToReport, s.[Name], s.PhotoUrl, (ua.StreetName + ' '+cast(ua.HouseNumber as varchar(5)) +', ' +c.CityName) as [Address] 
-			  FROM Shelter s inner join UserAddress ua on s.AddressId=ua.Id inner join City c on ua.Cityid = c.Id
+              		SELECT s.ShelterNumber, s.AdminPhoneNumber, s.FacebookUserName, s.FacebookPassword, s.InstegramUserName, s.InstegramPassword, s.TimeToReport, s.[Name], s.PhotoUrl, ua.Id as AddressId,ua.StreetName,ua.HouseNumber ,ua.City,c.Region
+			  FROM Shelter s inner join UserAddress ua on s.AddressId=ua.Id inner join City c on ua.City = c.CityName
 			  where Deleted = 'false';
 
         END
 
 		 IF @StatementType = 'SelectOne'
         BEGIN
-              		SELECT s.ShelterNumber, s.AdminPhoneNumber, s.FacebookUserName, s.FacebookPassword, s.InstegramUserName, s.InstegramPassword, s.TimeToReport, s.[Name], s.PhotoUrl, (ua.StreetName + ' '+cast(ua.HouseNumber as varchar(5)) +', ' +c.CityName) as [Address] 
-			  FROM Shelter s inner join UserAddress ua on s.AddressId=ua.Id inner join City c on ua.Cityid = c.Id
+              		SELECT s.ShelterNumber, s.AdminPhoneNumber, s.FacebookUserName, s.FacebookPassword, s.InstegramUserName, s.InstegramPassword, s.TimeToReport, s.[Name], s.PhotoUrl, ua.Id as AddressId,ua.StreetName,ua.HouseNumber ,ua.City,c.Region
+			  FROM Shelter s inner join UserAddress ua on s.AddressId=ua.Id inner join City c on ua.City = c.CityName
 			  where Deleted = 'false' and s.ShelterNumber = @ShelterNumber;
 
         END
@@ -610,8 +612,8 @@ AS
 			  AdminPhoneNumber = @AdminPhoneNumber, 
 			  FacebookUserName = @FacebookUserName, 
 			  FacebookPassword = @FacebookPassword, 
-			  InstegramUserName = @InstegramUserName, 
-			  InstegramPassword = @InstegramPassword, 
+			  InstegramUserName = @InstagramUserName, 
+			  InstegramPassword = @InstagramPassword, 
 			  TimeToReport = @TimeToReport, 
 			  [Name] = @Name, 
 			  PhotoUrl = @PhotoUrl, 
