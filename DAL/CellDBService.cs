@@ -8,7 +8,7 @@ namespace hameluna_server.DAL
     {
         public CellDBService() : base()
         {
-            spIUD = "CellTableIUD";
+            spIUD = "CellsTableIUD";
         }
 
         //create command for general SP CRUD
@@ -201,105 +201,101 @@ namespace hameluna_server.DAL
 
         }
 
-        //public List<Cell> ReadCell(int i)
-        //{
+        public List<Cell> ReadShelterCells(int shelterId)
+        {
 
-        //    SqlConnection con;
-        //    SqlCommand cmd;
-        //    List<Cell> cList = new();
+            SqlConnection con;
+            SqlCommand cmd;
+            List<Cell> cList = new();
 
-        //    try
-        //    {
-        //        con = connect(conString); // create the connection
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        write to log
-        //        throw (ex);
-        //    }
+            try
+            {
+                con = connect(conString); // create the connection
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
 
-        //    cmd = CellSPCmd(spIUD, con, new(), "Select");             // create the command
+            cmd = CellSPCmd(spIUD, con, new() { ShelterNumber = shelterId}, "SelectFromShelter");             // create the command
 
-        //    try
-        //    {
-        //        SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            try
+            {
+                SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
 
-        //        while (dataReader.Read())
-        //        {
+                while (dataReader.Read())
+                {
 
-        //            Cell c = new()
-        //            {
-        //                Number = Convert.ToInt32(dataReader["Number"]),
-        //                Capacity = Convert.ToInt32(dataReader["Capacity"]),
-        //                Id = Convert.ToInt32(dataReader["Id"]),
-        //                ShelterNumber = Convert.ToInt32(dataReader["ShelterNumber"])
-        //            };
-        //            cList.Add(c);
+                    Cell c = new()
+                    {
+                        Number = Convert.ToInt32(dataReader["Number"]),
+                        Capacity = Convert.ToInt32(dataReader["Capacity"]),
+                        Id = Convert.ToInt32(dataReader["Id"]),
+                        ShelterNumber = Convert.ToInt32(dataReader["ShelterNumber"])
+                    };
+                    cList.Add(c);
 
-        //        };
-        //        return cList;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        write to log
-        //        throw (ex);
-        //    }
+                };
+                return cList;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
 
-        //    finally
-        //    {
-        //        con?.Close();
-        //    }
+            finally
+            {
+                con?.Close();
+            }
 
-        //}
+        }
 
-        //public Cell ReadCell(int id)
-        //{
+        public Cell ReadCell(int id)
+        {
 
-        //    SqlConnection con;
-        //    SqlCommand cmd;
+            SqlConnection con;
+            SqlCommand cmd;
 
-        //    try
-        //    {
-        //        con = connect(conString); // create the connection
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        write to log
-        //        throw (ex);
-        //    }
+            try
+            {
+                con = connect(conString); // create the connection
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
 
-        //    cmd = CellSPCmd(spIUD, con, new() { Id = id }, "SelectOne");             // create the command
-        //    Cell c = new();
+            cmd = CellSPCmd(spIUD, con, new() { Id = id }, "SelectOne");             // create the command
+            Cell c = new();
 
-        //    try
-        //    {
-        //        SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            try
+            {
+                SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
 
-        //        while (dataReader.Read())
-        //        {
-        //            c = new()
-        //            {
-        //                Number = Convert.ToInt32(dataReader["Number"]),
-        //                Capacity = Convert.ToInt32(dataReader["Capacity"]),
-        //                Id = Convert.ToInt32(dataReader["Id"]),
-        //                ShelterNumber = Convert.ToInt32(dataReader["ShelterNumber"])
-        //            };
-        //        }
+                while (dataReader.Read())
+                {
+                    c = new()
+                    {
+                        Number = Convert.ToInt32(dataReader["Number"]),
+                        Capacity = Convert.ToInt32(dataReader["Capacity"]),
+                        Id = Convert.ToInt32(dataReader["Id"]),
+                        ShelterNumber = Convert.ToInt32(dataReader["ShelterNumber"])
+                    };
+                }
 
-        //        return c;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        write to log
-        //        throw (ex);
-        //    }
+                return c;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
 
-        //    finally
-        //    {
-        //        con?.Close();
-        //    }
+            finally
+            {
+                con?.Close();
+            }
 
-        //}
+        }
 
     }
 }
