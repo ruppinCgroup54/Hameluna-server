@@ -98,47 +98,30 @@ AS
   END
 
 
-
-Drop procedure if exists BreedTableIUD
+Drop procedure if exists BreedOfDogTableIUD
 GO
-
-Drop procedure if exists BreedTableIUD
-GO
-create PROCEDURE BreedTableIUD 
-				@Breed nvarchar(12), 
+create PROCEDURE BreedOfDogTableIUD 
+				@Breed Breed,
+				@DogId int,
 				@StatementType varchar(10)
 AS
   BEGIN
       IF @StatementType = 'Insert'
         BEGIN
-				INSERT INTO Breed
-						  (Breed) 
+				INSERT INTO Dog_Breed
+						  (Breed,
+						  DogNumberId) 
 						VALUES 
-						  (@Breed)
+						  (@Breed,
+						  @DogId)
 			
         END
 
       IF @StatementType = 'Select'
         BEGIN
             SELECT Breed
-			From Breed
-
-        END
-
-      IF @StatementType = 'Update'
-        BEGIN
-			UPDATE Breed SET 
-			Breed = @Breed
-			WHERE
-			  Breed = @Breed
-
-        END
-
-	  IF @StatementType = 'Delete'
-        BEGIN
-        DELETE FROM Breed 
-		WHERE Breed = @Breed;
-
+			From Dog_Breed
+			Where DogNumberId = @DogId
 
         END
   END
@@ -203,8 +186,8 @@ AS
 		IF @StatementType = 'SelectOne'
         BEGIN
             SELECT ChipNumber, NumberId, [Name], DateOfBirth, Gender, EntranceDate, IsAdoptable, [Size], Adopted, IsReturned, Cellid
-			FROM Dog
-			where NumberId=3;
+			FROM dbo.Dog
+			where NumberId=@NumberId;
         END
 
       IF @StatementType = 'Update'
@@ -235,6 +218,12 @@ AS
         END
   END
 GO
+
+
+
+
+
+
 
 Drop procedure if exists AdoptersTableIUD
 GO
