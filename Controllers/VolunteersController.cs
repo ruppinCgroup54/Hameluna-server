@@ -7,7 +7,7 @@ namespace hameluna_server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VolunteerController : ControllerBase
+    public class VolunteersController : ControllerBase
     {
         // GET: api/<VolunteerController>
         [HttpGet]

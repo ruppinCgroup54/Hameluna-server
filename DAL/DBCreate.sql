@@ -77,8 +77,10 @@ CREATE TABLE Characteristics_Dog (
 CREATE TABLE City (
   CityName nvarchar(12) NOT NULL, 
   Region   nvarchar(20) NULL, 
-  Id       int IDENTITY(0, 1) NOT NULL, 
-  PRIMARY KEY (Id));
+  PRIMARY KEY (CityName));
+
+
+
 CREATE TABLE Color (
   ColorName nvarchar(20) NOT NULL, 
   PRIMARY KEY (ColorName));
@@ -223,6 +225,6 @@ ALTER TABLE Cell ADD CONSTRAINT Contained FOREIGN KEY (ShelterNumber) REFERENCES
 ALTER TABLE [File] ADD CONSTRAINT has FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
 ALTER TABLE Dog ADD CONSTRAINT [in] FOREIGN KEY (Cellid) REFERENCES Cell (id);
 ALTER TABLE Dog_Breed ADD CONSTRAINT [is a] FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
-ALTER TABLE UserAddress ADD CONSTRAINT [is in] FOREIGN KEY (Cityid) REFERENCES City (Id);
+ALTER TABLE UserAddress ADD CONSTRAINT [is in] FOREIGN KEY (City) REFERENCES City (CityName);
 ALTER TABLE Shelter ADD CONSTRAINT manages FOREIGN KEY (AdminPhoneNumber) REFERENCES ShelterAdmin (PhoneNumber);
 ALTER TABLE Image ADD CONSTRAINT [of] FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);

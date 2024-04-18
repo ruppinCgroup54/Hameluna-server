@@ -8,7 +8,7 @@ namespace hameluna_server.DAL
     {
         public VolunteerDBService() : base()
         {
-            string spIUD = "VolunteerTableIUD";
+             spIUD = "VolunteerTableIUD";
         }
 
 

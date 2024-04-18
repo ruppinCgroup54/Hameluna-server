@@ -209,7 +209,7 @@ namespace hameluna_server.DAL
 
             SqlConnection con;
             SqlCommand cmd;
-            Admin ad = new();
+            Admin ad = new() { PhoneNumber = id };
 
             try
             {
@@ -221,7 +221,7 @@ namespace hameluna_server.DAL
                 throw (ex);
             }
 
-            cmd = AdminSPCmd(spIUD, con, new() { PhoneNumber = id }, "SelectOne");             // create the command
+            cmd = AdminSPCmd(spIUD, con, ad, "SelectOne");             // create the command
 
             try
             {

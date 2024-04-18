@@ -1,22 +1,23 @@
 ﻿using hameluna_server.BL;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace hameluna_server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AdminController : Controller
+    public class SheltersController : ControllerBase
     {
-        // GET: api/<VolunteerController>
+        // GET: api/<ShelterController>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Admin[]> Get()
+        public ActionResult<Shelter[]> Get()
         {
             try
             {
-                List<Admin> vl = Admin.ReadAll();
-                return Ok(vl);
+                List<Shelter> sh = Shelter.ReadAll();
+                return Ok(sh);
             }
             catch (Exception e)
             {
@@ -26,20 +27,20 @@ namespace hameluna_server.Controllers
 
         }
 
-        // GET api/<VolunteerController>/5
+        // GET api/<ShelterController>/5
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Admin))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Shelter))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Get(string id)
+        public IActionResult Get(int id)
         {
             try
             {
-                Admin ad = Admin.ReadOne(id);
-                if (ad.PhoneNumber == "")
+                Shelter sh = Shelter.ReadOne(id);
+                if (sh.ShelterId == -1)
                 {
-                    return NotFound($"There is no admin with phone number {id}");
+                    return NotFound($"There is no shelter with id {id}");
                 }
-                return Ok(ad);
+                return Ok(sh);
             }
             catch (Exception e)
             {
@@ -48,18 +49,19 @@ namespace hameluna_server.Controllers
             }
         }
 
-        // POST api/<VolunteerController>
+        // POST api/<ShelterController>
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Volunteer))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Shelter))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-        public IActionResult Post([FromBody] Admin ad)
+        public IActionResult Post([FromBody] Shelter sh)
         {
             try
             {
-                string newId = ad.Insert();
-                return CreatedAtAction(nameof(Get), new { id = newId }, ad);
+                 sh.Insert();
+
+                return CreatedAtAction(nameof(Get), new { id = sh.ShelterId }, sh);
 
             }
             catch (Exception e)
@@ -69,24 +71,24 @@ namespace hameluna_server.Controllers
             }
         }
 
-        // PUT api/<VolunteerController>/5
+        // PUT api/<ShelterController>/5
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-        public IActionResult Put(string id, [FromBody] Admin ad)
+        public IActionResult Put(int id, [FromBody] Shelter sh)
         {
             try
             {
-                if (ad == null || ad.PhoneNumber != id)
+                if (sh == null || sh.ShelterId != id)
                 {
                     return BadRequest();
                 }
-                int numEffected = ad.Update();
+                int numEffected = sh.Update();
                 if (numEffected == 0)
                 {
-                    return NotFound($"There is no admin with phone number {id}");
+                    return NotFound($"There is no shelter with id {id}");
                 }
 
                 return NoContent();
@@ -100,23 +102,23 @@ namespace hameluna_server.Controllers
             }
         }
 
-        // DELETE api/<VolunteerController>/5
+        // DELETE api/<ShelterController>/5
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult Delete(string id)
+        public IActionResult Delete(int id)
         {
             try
             {
-                if (id == "")
+                if (id == -1)
                 {
                     return BadRequest();
                 }
-                int numEffected = Admin.Delete(id);
+                int numEffected = Shelter.Delete(id);
                 if (numEffected == 0)
                 {
-                    return NotFound($"There is no admin with phone number {id}");
+                    return NotFound($"There is no shelter with id {id}");
                 }
 
                 return NoContent();

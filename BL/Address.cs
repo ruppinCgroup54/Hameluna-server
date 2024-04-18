@@ -29,7 +29,9 @@ namespace hameluna_server.BL
             {
                 DBservices db = new();
 
-                return db.InsertAddress(this);
+                this.Id= db.InsertAddress(this);
+
+                return this.Id;
             }
             catch (Exception)
             {
