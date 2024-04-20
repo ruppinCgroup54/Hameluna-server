@@ -34,7 +34,7 @@ namespace hameluna_server.Controllers
         {
             try
             {
-                List<Cell> cl = Cell.ReadAll();
+                List<Cell> cl = Cell.ReadAllFromShelter(sheltereNumber);
                 return Ok(cl);
             }
             catch (Exception e)

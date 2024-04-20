@@ -46,14 +46,13 @@ namespace hameluna_server.BL
         public static List<Cell> ReadAllFromShelter(int shelterId)
         {
             CellDBService db = new();
-            return db.ReadCell();
+            return db.ReadShelterCells(shelterId);
         }
 
         public static Cell ReadOne(int id)
         {
             CellDBService db = new();
-            return new();
-            //return db.ReadCell(id);
+            return db.ReadCell(id);
         }
 
         public static int Delete(int id)
