@@ -187,7 +187,7 @@ namespace hameluna_server.DAL
                     Dog a = new()
                     {
                         ChipNumber = dataReader["ChipNumber"].ToString(),
-                        NumberId = Convert.ToInt32(dataReader["ChipNumber"]),
+                        NumberId = Convert.ToInt32(dataReader["NumberId"]),
                         Name = dataReader["Name"].ToString(),
                         DateOfBirth = Convert.ToDateTime(dataReader["DateOfBirth"]),
                         Gender = Convert.ToChar(dataReader["Gender"]),
@@ -198,6 +198,8 @@ namespace hameluna_server.DAL
                         IsReturned = Convert.ToBoolean(dataReader["IsReturned"]),
                         CellId = Convert.ToInt32(dataReader["CellId"])
                     };
+
+                    a.Breed = GetDogBreed(a.NumberId);
 
                     dogsList.Add(a);
                 }
@@ -255,6 +257,7 @@ namespace hameluna_server.DAL
                         IsReturned = Convert.ToBoolean(dataReader["IsReturned"]),
                         CellId = Convert.ToInt32(dataReader["CellId"])
                     };
+                    d.Breed = GetDogBreed(d.NumberId);
                 }
                 return d;
             }
@@ -271,6 +274,7 @@ namespace hameluna_server.DAL
 
         }
 
+        //create command for dog breed
         private SqlCommand BreedDogSPCmd(String spName, SqlConnection con, int dogId, string dogBreed, string action)
         {
 
@@ -286,7 +290,7 @@ namespace hameluna_server.DAL
 
             cmd.Parameters.AddWithValue("@StatementType", action);
 
-            cmd.Parameters.AddWithValue("@NumberId", dogId);
+            cmd.Parameters.AddWithValue("@DogId", dogId);
             cmd.Parameters.AddWithValue("@Breed", dogBreed);
 
             return cmd;
@@ -329,5 +333,48 @@ namespace hameluna_server.DAL
             }
 
         }
+
+        public List<string> GetDogBreed(int dogId)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect(conString); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            cmd = BreedDogSPCmd(spDogBreedIUD, con, dogId, "", "Select"); // create the command
+
+            try
+            {
+                SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                List<string> breed = new();
+
+                while (dataReader.Read())
+                {
+                         breed.Add(dataReader["Breed"].ToString());
+                }
+                return breed;
+
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            finally
+            {
+                con?.Close();
+            }
+        }
+
     }
 }

@@ -70,7 +70,7 @@ namespace hameluna_server.BL
         }
         public static List<Dog> ReadAll()
         {
-            DogDBService db = new();
+            DogDBService db = new(); 
             return db.ReadAll();
         }
 
