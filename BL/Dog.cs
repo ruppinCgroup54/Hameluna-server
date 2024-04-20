@@ -57,6 +57,7 @@ namespace hameluna_server.BL
 
             this.NumberId = db.InsertDog(this);
             db.InsertBreedOfDog(this);
+            db.InsertColorOfDog(this);
             return this.NumberId;
 
         }

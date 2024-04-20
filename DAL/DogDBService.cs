@@ -10,9 +10,10 @@ namespace hameluna_server.DAL
         {
             spIUD = "DogTableIUD";
             spDogBreedIUD = "BreedOfDogTableIUD";
+            spDogColorIUD = "ColorOfDogTableIUD";
         }
         public string spDogBreedIUD { get; set; }
-
+        public string spDogColorIUD { get; set; }
         //create command for general SP CRUD
         private SqlCommand DogSPCmd(String spName, SqlConnection con, Dog dog, string action)
         {
@@ -200,6 +201,7 @@ namespace hameluna_server.DAL
                     };
 
                     a.Breed = GetDogBreed(a.NumberId);
+                    a.Color = GetDogColor(a.NumberId);
 
                     dogsList.Add(a);
                 }
@@ -258,6 +260,7 @@ namespace hameluna_server.DAL
                         CellId = Convert.ToInt32(dataReader["CellId"])
                     };
                     d.Breed = GetDogBreed(d.NumberId);
+                    d.Color = GetDogColor(d.NumberId);
                 }
                 return d;
             }
@@ -318,6 +321,7 @@ namespace hameluna_server.DAL
                 for (int i = 0; i < dog.Breed.Count; i++)
                 {
                     cmd = BreedDogSPCmd(spDogBreedIUD, con, dog.NumberId, dog.Breed[i], "Insert"); // create the command
+                    int numEffected = cmd.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
@@ -376,5 +380,106 @@ namespace hameluna_server.DAL
             }
         }
 
+        private SqlCommand ColorDogSPCmd(String spName, SqlConnection con, int dogId, string dogColor, string action)
+        {
+
+            SqlCommand cmd = new SqlCommand(); // create the command object
+
+            cmd.Connection = con;              // assign the connection to the command object
+
+            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+
+            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+            cmd.Parameters.AddWithValue("@StatementType", action);
+
+            cmd.Parameters.AddWithValue("@DogId", dogId);
+            cmd.Parameters.AddWithValue("@Color", dogColor);
+
+            return cmd;
+        }
+
+        public void InsertColorOfDog(Dog dog)
+        {
+
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect(conString); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+
+            try
+            {
+                for (int i = 0; i < dog.Color.Count; i++)
+                {
+                    cmd = ColorDogSPCmd(spDogColorIUD, con, dog.NumberId, dog.Color[i], "Insert"); // create the command
+                    int numEffected = cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            finally
+            {
+                // close the db connection
+                con?.Close();
+            }
+
+        }
+
+        public List<string> GetDogColor(int dogId)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect(conString); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            cmd = ColorDogSPCmd(spDogColorIUD, con, dogId, "", "Select"); // create the command
+
+            try
+            {
+                SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                List<string> colors = new();
+
+                while (dataReader.Read())
+                {
+                    colors.Add(dataReader["ColorName"].ToString());
+                }
+                return colors;
+
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            finally
+            {
+                con?.Close();
+            }
+        }
     }
 }
