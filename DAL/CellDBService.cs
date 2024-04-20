@@ -1,6 +1,7 @@
 ﻿using hameluna_server.BL;
 using System.Data.SqlClient;
 using System.Data;
+using System.Diagnostics;
 
 namespace hameluna_server.DAL
 {
@@ -139,7 +140,14 @@ namespace hameluna_server.DAL
             catch (Exception ex)
             {
                 // write to log
-                throw (ex);
+                if (ex.Message.Contains("conflicted with the REFERENCE constraint"))
+                {
+                    throw (new InvalidOperationException("Cell contains dogs, first empty the cell"));
+                }
+                else
+                {
+                    throw (ex);
+                }
             }
 
             finally

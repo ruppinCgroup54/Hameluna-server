@@ -97,36 +97,52 @@ AS
         END
   END
 
-
-Drop procedure if exists BreedOfDogTableIUD
+Drop procedure if exists BreedTableIUD
 GO
-create PROCEDURE BreedOfDogTableIUD 
-				@Breed Breed,
-				@DogId int,
+
+
+
+Drop procedure if exists BreedTableIUD
+GO
+create PROCEDURE BreedTableIUD 
+				@Breed  nvarchar(12), 
 				@StatementType varchar(10)
 AS
   BEGIN
       IF @StatementType = 'Insert'
         BEGIN
-				INSERT INTO Dog_Breed
-						  (Breed,
-						  DogNumberId) 
+				INSERT INTO Breed
+						  (Breed) 
 						VALUES 
-						  (@Breed,
-						  @DogId)
+						  (@Breed)
 			
         END
 
       IF @StatementType = 'Select'
         BEGIN
             SELECT Breed
-			From Dog_Breed
-			Where DogNumberId = @DogId
+			From Breed
+
+        END
+
+      IF @StatementType = 'Update'
+        BEGIN
+			UPDATE Breed SET 
+			Breed = @Breed
+			WHERE
+			  Breed = @Breed
+
+        END
+
+	  IF @StatementType = 'Delete'
+        BEGIN
+        DELETE FROM Breed 
+		WHERE Breed = @Breed;
+
 
         END
   END
 GO
-
 
 Drop procedure if exists DogTableIUD
 GO
@@ -186,8 +202,8 @@ AS
 		IF @StatementType = 'SelectOne'
         BEGIN
             SELECT ChipNumber, NumberId, [Name], DateOfBirth, Gender, EntranceDate, IsAdoptable, [Size], Adopted, IsReturned, Cellid
-			FROM dbo.Dog
-			where NumberId=@NumberId;
+			FROM Dog
+			where NumberId=3;
         END
 
       IF @StatementType = 'Update'
@@ -218,12 +234,6 @@ AS
         END
   END
 GO
-
-
-
-
-
-
 
 Drop procedure if exists AdoptersTableIUD
 GO
@@ -332,11 +342,11 @@ create PROCEDURE CellsTableIUD
 					@ShelterNumber int, 
 					 @Number int, 
 					  @capacity int, 
-					@StatementType varchar(10)
+					@StatementType varchar(20)
 
 AS
   BEGIN
-      IF @StatementType = 'Insert'
+	IF @StatementType = 'Insert'
         BEGIN
 			INSERT INTO Cell
 					  (
@@ -349,18 +359,30 @@ AS
 						@Number, 
 						@capacity);
 
-				SELECT SCOPE_IDENTITY() 
+				SELECT SCOPE_IDENTITY(); 
 			
         END
+	IF @StatementType = 'SelectFromShelter'
+        BEGIN
+			SELECT Id, ShelterNumber, Number,  capacity
+			FROM Cell
+			where ShelterNumber=@ShelterNumber ;
 
-      IF @StatementType = 'Select'
+        END
+    IF @StatementType = 'Select'
         BEGIN
           SELECT Id, ShelterNumber, Number,  capacity
 		FROM Cell;
 
         END
+	IF @StatementType = 'SelectOne'
+        BEGIN
+          SELECT Id, ShelterNumber, Number,  capacity
+		FROM Cell
+		where id=@id;
 
-      IF @StatementType = 'Update'
+       END
+    IF @StatementType = 'Update'
         BEGIN
         UPDATE Cell SET 
 				  ShelterNumber = @ShelterNumber, 
@@ -375,7 +397,7 @@ AS
 	  IF @StatementType = 'Delete'
         BEGIN
            DELETE FROM Cell 
-				WHERE id = @id;;
+				WHERE id = 2;
 
         END
   END

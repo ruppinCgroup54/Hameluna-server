@@ -59,6 +59,7 @@ CREATE TABLE Adoption_request (
 CREATE TABLE Breed (
   Breed nvarchar(20) NOT NULL, 
   PRIMARY KEY (Breed));
+
 CREATE TABLE Cell (
   ShelterNumber int NOT NULL, 
   Number        int NOT NULL, 
@@ -110,8 +111,10 @@ CREATE TABLE Dog (
   Adopted      bit DEFAULT 'false' NOT NULL, 
   IsReturned   bit DEFAULT 'false' NOT NULL, 
   Cellid       int NULL, 
-  Deleted      bit DEFAULT 'false' NULL 					, 
   PRIMARY KEY (NumberId));
+
+    alter table dog drop column Deleted
+
 CREATE TABLE Dog_Breed (
   Breed       nvarchar(20) NOT NULL, 
   DogNumberId int NOT NULL, 
@@ -228,3 +231,12 @@ ALTER TABLE Dog_Breed ADD CONSTRAINT [is a] FOREIGN KEY (DogNumberId) REFERENCES
 ALTER TABLE UserAddress ADD CONSTRAINT [is in] FOREIGN KEY (City) REFERENCES City (CityName);
 ALTER TABLE Shelter ADD CONSTRAINT manages FOREIGN KEY (AdminPhoneNumber) REFERENCES ShelterAdmin (PhoneNumber);
 ALTER TABLE Image ADD CONSTRAINT [of] FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
+
+
+alter table breed alter column breed nvarchar(30)
+
+insert into Breed (Breed)
+values ('לברדור'),('גולדן רטריבר'),('בולדוג צרפתי'),('יורקשייר טריר'),('בוקסר'),('פאג'),('ביגל'),('דלמטי'),('בורדר קולי'),('רועה גרמני'),('דובר-מן'),('רועה אוסטרלי'),('שיצו'),('קוקר ספניאל'),('בולדוג אנגלי'),('פודל'),('בולמסטיף'),('בוסטון טריר'),('ציוואווה'),('רועה בלגי'),('אקיטה'),('האסקי סיבירי'),('רוטוויילר'),('קאנה קורסו'),('שארפיי'),('גק ראסל טריר'),('קינג צארלס ספניאל'),('סמויד'),('בול טרייר')
+
+
+
