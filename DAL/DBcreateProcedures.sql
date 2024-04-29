@@ -1,6 +1,21 @@
 USE [igroup154_test1]
 GO
 
+Drop procedure if exists LoginAdmin
+GO
+create PROCEDURE LoginAdmin 
+				@PhoneNumber char(10),
+				@Password varchar(20)
+
+AS
+  BEGIN
+
+    SELECT s.ShelterNumber
+	from ShelterAdmin sa inner join Shelter s on sa.PhoneNumber=s.AdminPhoneNumber
+	where sa.Password = @Password and sa.PhoneNumber=@PhoneNumber
+
+  END
+
 
 
 Drop procedure if exists CityTableIUD
