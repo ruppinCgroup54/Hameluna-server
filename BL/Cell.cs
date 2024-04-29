@@ -6,14 +6,14 @@ namespace hameluna_server.BL
     {
         public Cell()
         {
-
+            DogsInCell = new();
         }
 
         public int Number { get; set; }
         public int Capacity { get; set; }
         public int Id { get; set; }
         public int ShelterNumber { get; set; }
-
+        public List<Dog> DogsInCell { get; set; }
         public Cell(int number=-1, int capacity=-1, int id=-1, int shelterNumber=-1)
         {
             Number = number;
@@ -21,7 +21,7 @@ namespace hameluna_server.BL
             Id = id;
             ShelterNumber = shelterNumber;
         }
-
+ 
         public void Insert()
         {
             CellDBService db = new();
@@ -46,7 +46,17 @@ namespace hameluna_server.BL
         public static List<Cell> ReadAllFromShelter(int shelterId)
         {
             CellDBService db = new();
-            return db.ReadShelterCells(shelterId);
+            List<Cell> cells = db.ReadShelterCells(shelterId);
+
+            DogDBService dogDb = new();
+            List<Dog> dogsInShelter = dogDb.ReadDogByShelter(shelterId);
+
+            for (int i = 0; i < cells.Count; i++)
+            {
+                cells[i].DogsInCell = dogsInShelter.FindAll((d) => d.CellId == cells[i].Id);
+            }
+
+            return cells;
         }
 
         public static Cell ReadOne(int id)

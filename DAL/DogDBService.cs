@@ -15,7 +15,7 @@ namespace hameluna_server.DAL
         public string spDogBreedIUD { get; set; }
         public string spDogColorIUD { get; set; }
         //create command for general SP CRUD
-        private SqlCommand DogSPCmd(String spName, SqlConnection con, Dog dog, string action)
+        private SqlCommand DogSPCmd(String spName, SqlConnection con, Dog dog, string action, int shelterNum = -1)
         {
 
             SqlCommand cmd = new SqlCommand(); // create the command object
@@ -30,8 +30,6 @@ namespace hameluna_server.DAL
 
             cmd.Parameters.AddWithValue("@StatementType", action);
 
-            if (dog != null)
-            {
                 cmd.Parameters.AddWithValue("@ChipNumber", dog.ChipNumber);
                 cmd.Parameters.AddWithValue("@NumberId", dog.NumberId);
                 cmd.Parameters.AddWithValue("@Name", dog.Name);
@@ -43,7 +41,7 @@ namespace hameluna_server.DAL
                 cmd.Parameters.AddWithValue("@Adopted", dog.Adopted);
                 cmd.Parameters.AddWithValue("@IsReturned", dog.IsReturned);
                 cmd.Parameters.AddWithValue("@CellId", dog.CellId);
-            }
+                cmd.Parameters.AddWithValue("@shelter", shelterNum);
 
 
             return cmd;
@@ -263,6 +261,55 @@ namespace hameluna_server.DAL
                     d.Color = GetDogColor(d.NumberId);
                 }
                 return d;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            finally
+            {
+                con?.Close();
+            }
+
+        }
+        public List<Dog> ReadDogByShelter(int id)
+        {
+
+            SqlConnection con;
+            SqlCommand cmd;
+            Dog d = new();
+
+            try
+            {
+                con = connect(conString); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            cmd = DogSPCmd(spIUD, con, d, "SelectByShelter", id);             // create the command
+
+            try
+            {
+                SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                List<Dog> dogsList = new();
+
+                while (dataReader.Read())
+                {
+                    d = new()
+                    {
+                        NumberId = Convert.ToInt32(dataReader["NumberId"]),
+                        Name = dataReader["Name"].ToString(),
+                        CellId = Convert.ToInt32(dataReader["CellId"])
+                    };
+                    dogsList.Add(d);
+                }
+                return dogsList;
             }
             catch (Exception ex)
             {

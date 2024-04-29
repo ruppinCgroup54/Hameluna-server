@@ -144,6 +144,7 @@ AS
   END
 GO
 
+
 Drop procedure if exists DogTableIUD
 GO
 create PROCEDURE DogTableIUD 
@@ -158,7 +159,8 @@ create PROCEDURE DogTableIUD
 				  @Adopted bit, 
 				  @IsReturned bit, 
 				  @Cellid int, 
-				  @StatementType varchar(10)
+				  @shelter int,
+				  @StatementType varchar(20)
 
 AS
   BEGIN
@@ -204,6 +206,13 @@ AS
             SELECT ChipNumber, NumberId, [Name], DateOfBirth, Gender, EntranceDate, IsAdoptable, [Size], Adopted, IsReturned, Cellid
 			FROM Dog
 			where NumberId=3;
+        END
+
+		IF @StatementType = 'SelectByShelter'
+        BEGIN
+            SELECT d.NumberId, d.[Name], d.Cellid
+			FROM Dog d join Cell c on d.Cellid=c.id
+			where c.ShelterNumber = @shelter and d.Adopted = 'false'
         END
 
       IF @StatementType = 'Update'
