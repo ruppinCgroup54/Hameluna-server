@@ -111,8 +111,11 @@ CREATE TABLE Dog (
   Adopted      bit DEFAULT 'false' NOT NULL, 
   IsReturned   bit DEFAULT 'false' NOT NULL, 
   Cellid       int NULL, 
+  Note			nvarchar(1000),
   PRIMARY KEY (NumberId));
 
+  use [igroup154_test1]
+  alter table Dog add Note nvarchar(1000)
 
 CREATE TABLE Dog_Breed (
   Breed       nvarchar(20) NOT NULL, 
@@ -158,7 +161,7 @@ CREATE TABLE Routine_item_in_Shelter_ (
   PRIMARY KEY (ShelterNumber, 
   [DailyRoutine itemID]));
 CREATE TABLE Shelter (
-  ShelterNumber     int IDENTITY(0, 1) NOT NULL, 
+  ShelterNumber     int IDENTITY(1, 1) NOT NULL, 
   AdminPhoneNumber  char(10) NOT NULL, 
   FacebookUserName  nvarchar(30) NULL, 
   FacebookPassword  nvarchar(20) NULL, 
@@ -170,6 +173,8 @@ CREATE TABLE Shelter (
   AddressId         int NOT NULL, 
   Deleted           bit DEFAULT 'false' NULL, 
   PRIMARY KEY (ShelterNumber));
+
+
 
 CREATE TABLE ShelterAdmin (
   PhoneNumber char(10) NOT NULL, 
