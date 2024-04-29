@@ -1,6 +1,7 @@
 ﻿using hameluna_server.BL;
 using System.Data.SqlClient;
 using System.Data;
+using System.Text.Json;
 
 namespace hameluna_server.DAL
 {
@@ -8,7 +9,7 @@ namespace hameluna_server.DAL
     {
         public AdminDBService() : base()
         {
-             spIUD = "AdminTableIUD";
+            spIUD = "AdminTableIUD";
         }
 
         //create command for general SP CRUD
@@ -37,6 +38,25 @@ namespace hameluna_server.DAL
                 cmd.Parameters.AddWithValue("@Password", admin.Password);
             }
 
+
+            return cmd;
+        }
+        //create login porcedure
+        private SqlCommand LoginSP(SqlConnection con, JsonElement admin)
+        {
+
+            SqlCommand cmd = new SqlCommand(); // create the command object
+
+            cmd.Connection = con;              // assign the connection to the command object
+
+            cmd.CommandText = "LoginAdmin";      // can be Select, Insert, Update, Delete 
+
+            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+            cmd.Parameters.AddWithValue("@PhoneNumber", admin.GetProperty("phone").GetString());
+            cmd.Parameters.AddWithValue("@Password", admin.GetProperty("password").GetString());
 
             return cmd;
         }
@@ -131,7 +151,7 @@ namespace hameluna_server.DAL
                 throw (ex);
             }
 
-            cmd = AdminSPCmd(spIUD, con, new(){PhoneNumber=id}, "delete");             // create the command
+            cmd = AdminSPCmd(spIUD, con, new() { PhoneNumber = id }, "delete");             // create the command
 
             try
             {
@@ -185,7 +205,7 @@ namespace hameluna_server.DAL
                         LastName = dataReader["LastName"].ToString(),
                         UserName = dataReader["UserName"].ToString(),
                         Password = dataReader["Password"].ToString()
-                        
+
                     };
                     AdList.Add(a);
                 }
@@ -253,5 +273,41 @@ namespace hameluna_server.DAL
             }
 
         }
+
+        public int Login(JsonElement ad)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect(conString); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            cmd = LoginSP(con, ad);             // create the command
+
+            try
+            {
+                return Convert.ToInt32(cmd.ExecuteScalar());
+
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            finally
+            {
+                con?.Close();
+            }
+        }
     }
+
+
 }

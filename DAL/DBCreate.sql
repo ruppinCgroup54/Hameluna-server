@@ -104,7 +104,7 @@ CREATE TABLE Dog (
   NumberId     int IDENTITY(0, 1) NOT NULL, 
   Name         nvarchar(20) NOT NULL, 
   DateOfBirth  date NULL, 
-  Gender       char(1) NOT NULL CHECK(Gender in ('m','f')), 
+  Gender       nvarchar(5) NOT NULL CHECK(Gender in ('זכר','נקבה')), 
   EntrandeDate date NOT NULL, 
   IsAdoptable  bit DEFAULT 'false' NOT NULL, 
   [Size]       varchar(20) NOT NULL CHECK(Size in ('קטן','קטן-בינוני','בינוני','בינוני-גדול','גדול')), 
@@ -113,7 +113,6 @@ CREATE TABLE Dog (
   Cellid       int NULL, 
   PRIMARY KEY (NumberId));
 
-    alter table dog drop column Deleted
 
 CREATE TABLE Dog_Breed (
   Breed       nvarchar(20) NOT NULL, 

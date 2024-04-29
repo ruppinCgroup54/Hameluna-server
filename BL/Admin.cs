@@ -1,4 +1,5 @@
 ﻿
+using System.Text.Json;
 using hameluna_server.DAL;
 
 namespace hameluna_server.BL
@@ -21,6 +22,12 @@ namespace hameluna_server.BL
         public string UserName { get; set; }
         public string Password { get; set; }
 
+        public static int Login(JsonElement ad)
+        {
+            AdminDBService db = new();
+           int shelterNum = db.Login(ad);
+            return shelterNum != 0 ? shelterNum : throw new BadHttpRequestException("Invalid user name or password");
+        }
 
         public string Insert()
         {

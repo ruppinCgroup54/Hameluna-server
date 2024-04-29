@@ -10,7 +10,7 @@ namespace hameluna_server.BL
             NumberId = -1;
             Name = "";
             DateOfBirth = DateTime.Now;
-            Gender = ' ';
+            Gender = "";
             EntranceDate = DateTime.Now;
             IsAdoptable = false;
             Size = "";
@@ -20,7 +20,7 @@ namespace hameluna_server.BL
             Color = new();
             Breed = new();
         }
-        public Dog(string chipNumber, int numberId, string name, DateTime dateOfBirth, char gender, DateTime entranceDate, bool isAdoptable, string size, bool adopted, bool isReturned, int cellId, List<string> color, List<string> breed)
+        public Dog(string chipNumber, int numberId, string name, DateTime dateOfBirth, string gender, DateTime entranceDate, bool isAdoptable, string size, bool adopted, bool isReturned, int cellId, List<string> color, List<string> breed)
         {
             ChipNumber = chipNumber;
             NumberId = numberId;
@@ -42,7 +42,7 @@ namespace hameluna_server.BL
         public int NumberId { get; set; }
         public string Name { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public char Gender { get; set; }
+        public string Gender { get; set; }
         public DateTime EntranceDate { get; set; }
         public bool IsAdoptable { get; set; }
         public string Size { get; set; }
@@ -51,6 +51,8 @@ namespace hameluna_server.BL
         public int CellId { get; set; }
         public List<string> Color { get; set; }
         public List<string> Breed { get; set; }
+        public float Age { get => (DateOnly.FromDateTime(DateTime.Now).Year - DateOfBirth.Year); }
+
         public int Insert()
         {
             DogDBService db = new();

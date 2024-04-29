@@ -1,4 +1,5 @@
-﻿using hameluna_server.BL;
+﻿using System.Text.Json;
+using hameluna_server.BL;
 using Microsoft.AspNetCore.Mvc;
 
 namespace hameluna_server.Controllers
@@ -49,9 +50,30 @@ namespace hameluna_server.Controllers
             }
         }
 
+        //api/admin/login
+        [HttpPost]
+        [Route("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+
+        public IActionResult LogIn(JsonElement ad)
+        {
+            try
+            {
+                int shelterNumber = Admin.Login(ad);
+                return Ok(shelterNumber);
+            }
+            catch (Exception e)
+            {
+
+                return Unauthorized(e.Message);
+            }
+        }
+
+
         // POST api/<VolunteerController>
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Volunteer))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Admin))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
