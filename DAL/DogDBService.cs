@@ -314,11 +314,9 @@ namespace hameluna_server.DAL
                         Adopted = Convert.ToBoolean(dataReader["Adopted"]),
                         IsReturned = Convert.ToBoolean(dataReader["IsReturned"]),
                         CellId = Convert.ToInt32(dataReader["CellId"])
-
-                        //NumberId = Convert.ToInt32(dataReader["NumberId"]),
-                        //Name = dataReader["Name"].ToString(),
-                        //CellId = Convert.ToInt32(dataReader["CellId"])
                     };
+                    d.Breed = GetDogBreed(d.NumberId);
+                    d.Color = GetDogColor(d.NumberId);
                     dogsList.Add(d);
                 }
                 return dogsList;
