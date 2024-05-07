@@ -4,7 +4,7 @@ namespace hameluna_server.BL
 {
     public class AdoptionRequest
     {
-       
+
         public int RequestId { get; set; }
         public Persone Adopter { get; set; }
         public DateTime SendDate { get; set; }
@@ -30,7 +30,27 @@ namespace hameluna_server.BL
         {
             AdoptionRequestDBService db = new();
 
-            this.RequestId = db.InsertAdoptionRequest(this);
+            try
+            {
+                Adopter ad = new() { 
+                    PhoneNumber=this.Adopter.PhoneNumber ,
+                    FirstName=this.Adopter.FirstName ,
+                    LastName=this.Adopter.LastName ,
+                    Email=this.Adopter.Email 
+                    };
+                ad.Insert();
+            }
+            catch
+            {
+                Console.WriteLine("User exits");
+            }
+            finally
+            {
+                this.RequestId = db.InsertAdoptionRequest(this);
+
+            }
+
+
         }
 
         public int Update()

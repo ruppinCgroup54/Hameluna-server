@@ -6,7 +6,7 @@ namespace hameluna_server.BL
     public class Adopter :Persone
     {
 
-
+        
 
         public Adopter(string phoneNumber, string firstName, string lastName, string email, DateTime dateOfBirth, string houseMembers, string dogsPlace, string additionalPets, string experience, string note, Address address) : base(phoneNumber, firstName, lastName, email)
         {
