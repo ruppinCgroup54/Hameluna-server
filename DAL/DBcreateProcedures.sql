@@ -116,7 +116,6 @@ Drop procedure if exists BreedTableIUD
 GO
 
 
-
 Drop procedure if exists BreedTableIUD
 GO
 create PROCEDURE BreedTableIUD 
@@ -671,3 +670,69 @@ AS
 GO
 
 
+Drop procedure if exists AdoptionRequestTableIUD
+GO
+create PROCEDURE AdoptionRequestTableIUD 
+					@RequestID int = null ,
+					@Optional_adopterPhoneNumber char(10) = null,
+					@SentDate date,
+					@Status nvarchar(5) = null,
+					@DogNumberId int = null,
+					@Deleted bit = null,
+					@StatementType varchar(10) =null
+
+AS
+  BEGIN
+      IF @StatementType = 'Insert'
+        BEGIN
+		INSERT INTO Adoption_request
+						  ( 
+						  Optional_adopterPhoneNumber, 
+						  SentDate, 
+						  [Status],
+						  DogNumberId 
+						  ) 
+						VALUES 
+						  ( 
+						  @Optional_adopterPhoneNumber, 
+						  @SentDate, 
+						  @Status, 
+						  @DogNumberId
+						  );
+
+
+
+				SELECT SCOPE_IDENTITY() 
+		
+        END
+
+      IF @StatementType = 'Select'
+        BEGIN
+			SELECT RequestID, Optional_adopterPhoneNumber, SentDate, Status, DogNumberId, Deleted 
+			FROM Adoption_request
+			where Deleted = 'false';
+
+        END
+      IF @StatementType = 'Update'
+        BEGIN
+        UPDATE Adoption_request SET 
+				  Optional_adopterPhoneNumber = @Optional_adopterPhoneNumber , 
+				  SentDate = @SentDate, 
+				  Status = @Status,
+				  DogNumberId = @DogNumberId
+				WHERE
+				  RequestID = @RequestID;
+
+
+        END
+      ELSE
+	  IF @StatementType = 'Delete'
+        BEGIN
+		UPDATE Adoption_request SET
+				Deleted ='true'
+		WHERE RequestID = @RequestID;
+
+
+        END
+  END
+GO

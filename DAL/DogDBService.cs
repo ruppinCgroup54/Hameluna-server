@@ -246,7 +246,7 @@ namespace hameluna_server.DAL
                     d = new()
                     {
                         ChipNumber = dataReader["ChipNumber"].ToString(),
-                        NumberId = Convert.ToInt32(dataReader["ChipNumber"]),
+                        NumberId = Convert.ToInt32(dataReader["NumberId"]),
                         Name = dataReader["Name"].ToString(),
                         DateOfBirth = Convert.ToDateTime(dataReader["DateOfBirth"]),
                         Gender = dataReader["Gender"].ToString(),

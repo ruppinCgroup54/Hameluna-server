@@ -19,7 +19,7 @@ namespace hameluna_server.BL
             Address = address;
         }
 
-        public Adopter()
+        public Adopter():base()
         {
             DateOfBirth = DateTime.Now;
             HouseMembers = "";

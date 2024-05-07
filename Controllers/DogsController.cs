@@ -8,7 +8,7 @@ namespace hameluna_server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DogController : Controller
+    public class DogsController : Controller
     {
 
         // GET: api/<DogController>

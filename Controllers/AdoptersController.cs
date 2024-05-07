@@ -51,6 +51,27 @@ namespace hameluna_server.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
         }
+        [HttpGet("contect/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult GetContectData(string id)
+        {
+            try
+            {
+                Adopter ad = Adopter.ReadOne(id);
+                if (ad.PhoneNumber == "")
+                {
+                    return NotFound($"There is no adopter with phone number {id}");
+                }
+
+                return Ok(ad);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
+        }
 
         // POST api/<VolunteerController>
         [HttpPost]
@@ -62,6 +83,7 @@ namespace hameluna_server.Controllers
         {
             try
             {
+
                 string newId = ad.Insert();
 
                 return CreatedAtAction(nameof(Get), new { id = newId }, ad);
