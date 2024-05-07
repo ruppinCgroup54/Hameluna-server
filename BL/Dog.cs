@@ -51,7 +51,7 @@ namespace hameluna_server.BL
         public int CellId { get; set; }
         public List<string> Color { get; set; }
         public List<string> Breed { get; set; }
-        public float Age { get => (DateOnly.FromDateTime(DateTime.Now).Year - DateOfBirth.Year); }
+        public double Age { get => Convert.ToDouble(DateTime.Now - DateOfBirth); }
 
         public int Insert()
         {

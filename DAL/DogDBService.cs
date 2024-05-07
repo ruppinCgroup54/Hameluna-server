@@ -303,9 +303,21 @@ namespace hameluna_server.DAL
                 {
                     d = new()
                     {
+                        ChipNumber = dataReader["ChipNumber"].ToString(),
                         NumberId = Convert.ToInt32(dataReader["NumberId"]),
                         Name = dataReader["Name"].ToString(),
+                        DateOfBirth = Convert.ToDateTime(dataReader["DateOfBirth"]),
+                        Gender = dataReader["Gender"].ToString(),
+                        EntranceDate = Convert.ToDateTime(dataReader["EntranceDate"]),
+                        IsAdoptable = Convert.ToBoolean(dataReader["IsAdoptable"]),
+                        Size = dataReader["Size"].ToString(),
+                        Adopted = Convert.ToBoolean(dataReader["Adopted"]),
+                        IsReturned = Convert.ToBoolean(dataReader["IsReturned"]),
                         CellId = Convert.ToInt32(dataReader["CellId"])
+
+                        //NumberId = Convert.ToInt32(dataReader["NumberId"]),
+                        //Name = dataReader["Name"].ToString(),
+                        //CellId = Convert.ToInt32(dataReader["CellId"])
                     };
                     dogsList.Add(d);
                 }
