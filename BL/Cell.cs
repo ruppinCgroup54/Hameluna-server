@@ -53,11 +53,6 @@ namespace hameluna_server.BL
 
             for (int i = 0; i < cells.Count; i++)
             {
-                //List<Dog> dogs = dogsInShelter.FindAll((d) => d.CellId == cells[i].Id);
-                //for (int j = 0; j < dogs.Count; j++)
-                //{
-                //   dogs[j].Breed = dogDb.GetDogBreed(dogs[j].NumberId);
-                //}
                 cells[i].DogsInCell = dogsInShelter.FindAll((d) => d.CellId == cells[i].Id);
             }
 

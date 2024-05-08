@@ -736,3 +736,14 @@ AS
         END
   END
 GO
+
+Drop procedure if exists ColorTableIUD
+GO
+create PROCEDURE ColorTableIUD 
+AS
+  BEGIN
+      SELECT ColorName 
+			FROM Color
+		
+        END
+		Go

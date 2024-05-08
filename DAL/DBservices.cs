@@ -131,4 +131,126 @@ public class DBservices
     }
 
 
+    public SqlCommand BreedsSPCmd(String spName, SqlConnection con, string action)
+    {
+
+        SqlCommand cmd = new SqlCommand(); // create the command object
+
+        cmd.Connection = con;              // assign the connection to the command object
+
+        cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+
+        cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+        cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+        cmd.Parameters.AddWithValue("@StatementType", action);
+
+        cmd.Parameters.AddWithValue("@Breed", "");
+
+
+        return cmd;
+    }
+
+    public List<string> GetAllBreeds()
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect(conString); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cmd = BreedsSPCmd("BreedTableIUD", con, "Select");             // create the command
+
+        try
+        {
+            SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+            List<string> breeds = new();
+
+            while (dataReader.Read())
+            {
+                string a = dataReader["Breed"].ToString();
+                breeds.Add(a);
+            }
+            return breeds;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            // close the db connection
+            con?.Close();
+        }
+    }  
+    public SqlCommand ColorSPCmd(String spName, SqlConnection con)
+    {
+
+        SqlCommand cmd = new SqlCommand(); // create the command object
+
+        cmd.Connection = con;              // assign the connection to the command object
+
+        cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+
+        cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+        cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+
+        return cmd;
+    }
+
+    public List<string> GetAllColors()
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect(conString); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cmd = ColorSPCmd("ColorTableIUD", con);             // create the command
+
+        try
+        {
+            SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+            List<string> colors = new();
+
+            while (dataReader.Read())
+            {
+                string a = dataReader["ColorName"].ToString();
+                colors.Add(a);
+            }
+            return colors;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            // close the db connection
+            con?.Close();
+        }
+    }
 }
