@@ -73,7 +73,7 @@ namespace hameluna_server.DAL
             catch (Exception ex)
             {
 
-                throw new InvalidExpressionException("Invalide Address");
+                //throw new InvalidExpressionException("Invalide Address");
             }
 
             cmd = AdopterSPCmd(spIUD, con, adopter, "Insert");             // create the command

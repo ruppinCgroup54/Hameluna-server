@@ -1,6 +1,7 @@
 ﻿using hameluna_server.BL;
 using System.Data.SqlClient;
 using System.Data;
+using System.Xml;
 
 namespace hameluna_server.DAL
 {
@@ -64,8 +65,15 @@ namespace hameluna_server.DAL
             }
             catch (Exception ex)
             {
+               
+
+                if (ex.Message.StartsWith("Violation of UNIQUE KEY constraint 'UC_adoption'"))
+                {
+                    throw new ConstraintException();
+                }
                 // write to log
                 throw (ex);
+
             }
 
             finally

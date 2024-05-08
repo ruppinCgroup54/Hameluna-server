@@ -46,169 +46,214 @@ DROP TABLE Volunteer;
 DROP TABLE Volunteer_Shelter;
 
 drop table Adoption_request
-CREATE TABLE Adoption_request (
-  RequestID                   int IDENTITY(1, 1) NOT NULL, 
-  Optional_adopterPhoneNumber char(10) NOT NULL, 
-  SentDate                    Date NULL, 
-  Status                      nvarchar(5) NULL, 
-  DogNumberId                 int NOT NULL, 
-  Deleted                     bit DEFAULT 'false' NULL, 
-  PRIMARY KEY (RequestID));
-CREATE TABLE Breed (
-  Breed nvarchar(20) NOT NULL, 
-  PRIMARY KEY (Breed));
+CREATE TABLE Adoption_request
+(
+  RequestID int IDENTITY(1, 1) NOT NULL,
+  Optional_adopterPhoneNumber char(10) NOT NULL,
+  SentDate Date NULL,
+  Status nvarchar(5) NULL,
+  DogNumberId int NOT NULL,
+  Deleted bit DEFAULT 'false' NULL,
+  PRIMARY KEY (RequestID)
+);
+CREATE TABLE Breed
+(
+  Breed nvarchar(20) NOT NULL,
+  PRIMARY KEY (Breed)
+);
 
-CREATE TABLE Cell (
-  ShelterNumber int NOT NULL, 
-  Number        int NOT NULL, 
-  capacity      int NOT NULL, 
-  id            int IDENTITY(1, 1) NOT NULL, 
-  PRIMARY KEY (id));
-CREATE TABLE Characteristics (
-  id        int IDENTITY(0, 1) NOT NULL, 
-  attribute nvarchar(20) NOT NULL, 
-  PRIMARY KEY (id));
-CREATE TABLE Characteristics_Dog (
-  Characteristicsid int NOT NULL, 
-  DogNumberId       int NOT NULL, 
+CREATE TABLE Cell
+(
+  ShelterNumber int NOT NULL,
+  Number int NOT NULL,
+  capacity int NOT NULL,
+  id int IDENTITY(1, 1) NOT NULL,
+  PRIMARY KEY (id)
+);
+CREATE TABLE Characteristics
+(
+  id int IDENTITY(0, 1) NOT NULL,
+  attribute nvarchar(20) NOT NULL,
+  PRIMARY KEY (id)
+);
+CREATE TABLE Characteristics_Dog
+(
+  Characteristicsid int NOT NULL,
+  DogNumberId int NOT NULL,
   PRIMARY KEY (Characteristicsid, 
-  DogNumberId));
-CREATE TABLE City (
-  CityName nvarchar(12) NOT NULL, 
-  Region   nvarchar(20) NULL, 
-  PRIMARY KEY (CityName));
+  DogNumberId)
+);
+CREATE TABLE City
+(
+  CityName nvarchar(12) NOT NULL,
+  Region nvarchar(20) NULL,
+  PRIMARY KEY (CityName)
+);
 
 
 
-CREATE TABLE Color (
-  ColorName nvarchar(20) NOT NULL, 
-  PRIMARY KEY (ColorName));
-CREATE TABLE [Daily routine item] (
-  ItemID        int IDENTITY(0, 1) NOT NULL, 
-  ShelterNumber varchar(10) NOT NULL, 
-  Type          varchar(10) NULL, 
-  PRIMARY KEY (ItemID));
-CREATE TABLE Daily_routine (
-  routineId            int IDENTITY(0, 1) NOT NULL, 
-  FiiledDate           datetime DEFAULT GETDATE() NOT NULL, 
-  Note                 nvarchar(2048) NULL, 
-  DogNumberId          int NOT NULL, 
-  VolunteerPhoneNumber char(10) NULL, 
-  ShelterNumber        int NULL, 
-  Deleted              bit DEFAULT 'false' NULL, 
-  PRIMARY KEY (routineId));
-CREATE TABLE Dog (
-  ChipNumber   varchar(15) NOT NULL UNIQUE, 
-  NumberId     int IDENTITY(0, 1) NOT NULL, 
-  Name         nvarchar(20) NOT NULL, 
-  DateOfBirth  date NULL, 
-  Gender       nvarchar(5) NOT NULL CHECK(Gender in ('жлш','рчбд')), 
-  EntrandeDate date NOT NULL, 
-  IsAdoptable  bit DEFAULT 'false' NOT NULL, 
-  [Size]       varchar(20) NOT NULL CHECK(Size in ('чип','чип-бйрерй','бйрерй','бйрерй-вгем','вгем')), 
-  Adopted      bit DEFAULT 'false' NOT NULL, 
-  IsReturned   bit DEFAULT 'false' NOT NULL, 
-  Cellid       int NULL, 
-  Note			nvarchar(1000),
-  PRIMARY KEY (NumberId));
+CREATE TABLE Color
+(
+  ColorName nvarchar(20) NOT NULL,
+  PRIMARY KEY (ColorName)
+);
+CREATE TABLE [Daily routine item]
+(
+  ItemID int IDENTITY(0, 1) NOT NULL,
+  ShelterNumber varchar(10) NOT NULL,
+  Type varchar(10) NULL,
+  PRIMARY KEY (ItemID)
+);
+CREATE TABLE Daily_routine
+(
+  routineId int IDENTITY(0, 1) NOT NULL,
+  FiiledDate datetime DEFAULT GETDATE() NOT NULL,
+  Note nvarchar(2048) NULL,
+  DogNumberId int NOT NULL,
+  VolunteerPhoneNumber char(10) NULL,
+  ShelterNumber int NULL,
+  Deleted bit DEFAULT 'false' NULL,
+  PRIMARY KEY (routineId)
+);
+CREATE TABLE Dog
+(
+  ChipNumber varchar(15) NOT NULL UNIQUE,
+  NumberId int IDENTITY(0, 1) NOT NULL,
+  Name nvarchar(20) NOT NULL,
+  DateOfBirth date NULL,
+  Gender nvarchar(5) NOT NULL CHECK(Gender in ('пїЅпїЅпїЅ','пїЅпїЅпїЅпїЅ')),
+  EntrandeDate date NOT NULL,
+  IsAdoptable bit DEFAULT 'false' NOT NULL,
+  [Size] varchar(20) NOT NULL CHECK(Size in ('пїЅпїЅпїЅ','пїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅ','пїЅпїЅпїЅпїЅпїЅпїЅ','пїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅ','пїЅпїЅпїЅпїЅ')),
+  Adopted bit DEFAULT 'false' NOT NULL,
+  IsReturned bit DEFAULT 'false' NOT NULL,
+  Cellid int NULL,
+  Note nvarchar(1000),
+  PRIMARY KEY (NumberId)
+);
 
-  use [igroup154_test1]
-  alter table Dog add Note nvarchar(1000)
+use [igroup154_test1]
+alter table Dog add Note nvarchar(1000)
 
-CREATE TABLE Dog_Breed (
-  Breed       nvarchar(20) NOT NULL, 
-  DogNumberId int NOT NULL, 
+CREATE TABLE Dog_Breed
+(
+  Breed nvarchar(20) NOT NULL,
+  DogNumberId int NOT NULL,
   PRIMARY KEY (Breed, 
-  DogNumberId));
-CREATE TABLE Dog_Color (
-  DogNumberId int NOT NULL, 
-  ColorName   nvarchar(20) NOT NULL, 
+  DogNumberId)
+);
+CREATE TABLE Dog_Color
+(
+  DogNumberId int NOT NULL,
+  ColorName nvarchar(20) NOT NULL,
   PRIMARY KEY (DogNumberId, 
-  ColorName));
-CREATE TABLE [File] (
-  FileId      int IDENTITY(0, 1) NOT NULL, 
-  Type        varchar(10) NULL, 
-  Url         nvarchar(1000) NULL, 
-  FileName    nvarchar(12) NOT NULL, 
-  DogNumberId int NOT NULL, 
-  PRIMARY KEY (FileId));
-CREATE TABLE Image (
-  DogNumberId int NOT NULL, 
-  ImageId     int IDENTITY(0, 1) NOT NULL, 
-  Path        nvarchar(1000) NOT NULL, 
-  Description nvarchar(255) NULL, 
-  PRIMARY KEY (ImageId));
-CREATE TABLE Optional_adopter (
-  PhoneNumber    char(10) NOT NULL, 
-  Email          varchar(40) NOT NULL UNIQUE, 
-  FirstName      nvarchar(12) NOT NULL, 
-  LastName       nvarchar(12) NOT NULL, 
-  DateOfBirth    date NULL, 
-  HouseMembers   nvarchar(20) NULL, 
-  DogsPlace      nvarchar(20) NULL, 
-  AdditionalPets nvarchar(20) NULL, 
-  Experience     nvarchar(20) NULL, 
-  Note           nvarchar(2048) NULL, 
-  Addressid      int NOT NULL, 
-  Deleted        bit DEFAULT 'false' NULL, 
-  PRIMARY KEY (PhoneNumber));
-CREATE TABLE Routine_item_in_Shelter_ (
-  ShelterNumber         int NOT NULL, 
-  [DailyRoutine itemID] int NOT NULL, 
-  DailyRoutineId        int NOT NULL, 
+  ColorName)
+);
+CREATE TABLE [File]
+(
+  FileId int IDENTITY(0, 1) NOT NULL,
+  Type varchar(10) NULL,
+  Url nvarchar(1000) NULL,
+  FileName nvarchar(12) NOT NULL,
+  DogNumberId int NOT NULL,
+  PRIMARY KEY (FileId)
+);
+
+CREATE TABLE Image
+(
+  DogNumberId int NOT NULL,
+  ImageId int IDENTITY(1, 1) NOT NULL,
+  Path nvarchar(1000) NOT NULL,
+  isProfile bit DEFAULT 'false',
+  PRIMARY KEY (ImageId)
+);
+CREATE TABLE Optional_adopter
+(
+  PhoneNumber char(10) NOT NULL,
+  Email varchar(40) NOT NULL UNIQUE,
+  FirstName nvarchar(12) NOT NULL,
+  LastName nvarchar(12) NOT NULL,
+  DateOfBirth date NULL,
+  HouseMembers nvarchar(20) NULL,
+  DogsPlace nvarchar(20) NULL,
+  AdditionalPets nvarchar(20) NULL,
+  Experience nvarchar(20) NULL,
+  Note nvarchar(2048) NULL,
+  Addressid int NOT NULL,
+  Deleted bit DEFAULT 'false' NULL,
+  PRIMARY KEY (PhoneNumber)
+);
+CREATE TABLE Routine_item_in_Shelter_
+(
+  ShelterNumber int NOT NULL,
+  [DailyRoutine itemID] int NOT NULL,
+  DailyRoutineId int NOT NULL,
   PRIMARY KEY (ShelterNumber, 
-  [DailyRoutine itemID]));
-CREATE TABLE Shelter (
-  ShelterNumber     int IDENTITY(1, 1) NOT NULL, 
-  AdminPhoneNumber  char(10) NOT NULL, 
-  FacebookUserName  nvarchar(30) NULL, 
-  FacebookPassword  nvarchar(20) NULL, 
-  InstegramUserName nvarchar(30) NULL, 
-  InstegramPassword nvarchar(20) NULL, 
-  TimeToReport      time(7) NULL, 
-  [Name]              nvarchar(12) NOT NULL, 
-  PhotoUrl          nvarchar(1000) NULL, 
-  AddressId         int NOT NULL, 
-  Deleted           bit DEFAULT 'false' NULL, 
-  PRIMARY KEY (ShelterNumber));
+  [DailyRoutine itemID])
+);
+CREATE TABLE Shelter
+(
+  ShelterNumber int IDENTITY(1, 1) NOT NULL,
+  AdminPhoneNumber char(10) NOT NULL,
+  FacebookUserName nvarchar(30) NULL,
+  FacebookPassword nvarchar(20) NULL,
+  InstegramUserName nvarchar(30) NULL,
+  InstegramPassword nvarchar(20) NULL,
+  TimeToReport time(7) NULL,
+  [Name] nvarchar(12) NOT NULL,
+  PhotoUrl nvarchar(1000) NULL,
+  AddressId int NOT NULL,
+  Deleted bit DEFAULT 'false' NULL,
+  PRIMARY KEY (ShelterNumber)
+);
 
 
 
-CREATE TABLE ShelterAdmin (
-  PhoneNumber char(10) NOT NULL, 
-  UserName    nvarchar(12) NOT NULL, 
-  [Password]    varchar(20), 
-  Email       varchar(40) NULL UNIQUE, 
-  FirstName   nvarchar(12) NOT NULL, 
-  LastName    nvarchar(12) NOT NULL, 
-  Deleted     bit DEFAULT 'false' NULL, 
-  PRIMARY KEY (PhoneNumber));
-CREATE TABLE Todo_Item (
-  TodoId        int IDENTITY(0, 1) NOT NULL, 
-  Done          bit DEFAULT 'false' NOT NULL, 
-  DoDate        date NOT NULL CHECK(DoDate>=GETDATE()), 
-  text          nvarchar(50) NOT NULL, 
-  Repetition    int NULL, 
-  ShelterNumber int NOT NULL, 
-  PRIMARY KEY (TodoId));
-CREATE TABLE UserAddress (
-  Id          int IDENTITY(0, 1) NOT NULL, 
-  HouseNumber int NOT NULL, 
-  StreetName  nvarchar(12) NOT NULL, 
-  Cityid      int NOT NULL, 
-  PRIMARY KEY (Id));
-CREATE TABLE Volunteer (
-  PhoneNumber   char(10) NOT NULL, 
-  Email         varchar(40) NULL UNIQUE, 
-  FirstName     nvarchar(12) NOT NULL, 
-  LastName      nvarchar(12) NOT NULL, 
-  Deleted       bit DEFAULT 'false' NULL, 
-  PRIMARY KEY (PhoneNumber));
-CREATE TABLE Volunteer_Shelter (
-  volunteerPhoneNumber char(10) NOT NULL, 
-  ShelterNumber        int NOT NULL, 
+CREATE TABLE ShelterAdmin
+(
+  PhoneNumber char(10) NOT NULL,
+  UserName nvarchar(12) NOT NULL,
+  [Password] varchar(20),
+  Email varchar(40) NULL UNIQUE,
+  FirstName nvarchar(12) NOT NULL,
+  LastName nvarchar(12) NOT NULL,
+  Deleted bit DEFAULT 'false' NULL,
+  PRIMARY KEY (PhoneNumber)
+);
+CREATE TABLE Todo_Item
+(
+  TodoId int IDENTITY(0, 1) NOT NULL,
+  Done bit DEFAULT 'false' NOT NULL,
+  DoDate date NOT NULL CHECK(DoDate>=GETDATE()),
+  text nvarchar(50) NOT NULL,
+  Repetition int NULL,
+  ShelterNumber int NOT NULL,
+  PRIMARY KEY (TodoId)
+);
+CREATE TABLE UserAddress
+(
+  Id int IDENTITY(0, 1) NOT NULL,
+  HouseNumber int NOT NULL,
+  StreetName nvarchar(12) NOT NULL,
+  Cityid int NOT NULL,
+  PRIMARY KEY (Id)
+);
+CREATE TABLE Volunteer
+(
+  PhoneNumber char(10) NOT NULL,
+  Email varchar(40) NULL UNIQUE,
+  FirstName nvarchar(12) NOT NULL,
+  LastName nvarchar(12) NOT NULL,
+  Deleted bit DEFAULT 'false' NULL,
+  PRIMARY KEY (PhoneNumber)
+);
+CREATE TABLE Volunteer_Shelter
+(
+  volunteerPhoneNumber char(10) NOT NULL,
+  ShelterNumber int NOT NULL,
   PRIMARY KEY (volunteerPhoneNumber, 
-  ShelterNumber));
+  ShelterNumber)
+);
 ALTER TABLE Dog_Breed ADD CONSTRAINT FKDog_Breed732075 FOREIGN KEY (Breed) REFERENCES Breed (Breed);
 ALTER TABLE Daily_routine ADD CONSTRAINT FKDaily_rout691654 FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
 ALTER TABLE Adoption_request ADD CONSTRAINT FKAdoption_r875844 FOREIGN KEY (Optional_adopterPhoneNumber) REFERENCES Optional_adopter (PhoneNumber);
@@ -233,12 +278,42 @@ ALTER TABLE Dog_Breed ADD CONSTRAINT [is a] FOREIGN KEY (DogNumberId) REFERENCES
 ALTER TABLE UserAddress ADD CONSTRAINT [is in] FOREIGN KEY (City) REFERENCES City (CityName);
 ALTER TABLE Shelter ADD CONSTRAINT manages FOREIGN KEY (AdminPhoneNumber) REFERENCES ShelterAdmin (PhoneNumber);
 ALTER TABLE Image ADD CONSTRAINT [of] FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
+ALTER TABLE Adoption_request ADD CONSTRAINT UC_adoption UNIQUE (DogNumberId,Optional_adopterPhoneNumber)
 
 
 
-
-insert into Breed (Breed)
-values ('мбшгеш'),('вемгп шишйбш'),('бемгев цшфъй'),('йешчщййш ишйш'),('бечсш'),('фав'),('бйвм'),('гмоий'),('бешгш чемй'),('шетд вшорй'),('гебш-оп'),('шетд аесишмй'),('щйце'),('чечш сфрйам'),('бемгев арвмй'),('фегм'),('бемосийу'),('бесиеп ишйш'),('цйееаеед'),('шетд бмвй'),('ачйид'),('дасчй сйбйшй'),('шеиеейймш'),('чард чешсе'),('щашфйй'),('вч шасм ишйш'),('чйрв цашмс сфрйам'),('соейг'),('бем ишййш')
+insert into Breed
+  (Breed)
+values
+  ('пїЅпїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅ-пїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅпїЅпїЅ'),
+  ('пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ')
 
 
 

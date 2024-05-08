@@ -1,4 +1,5 @@
-﻿using hameluna_server.BL;
+﻿using System.Data;
+using hameluna_server.BL;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,6 +35,7 @@ namespace hameluna_server.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AdoptionRequest))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
 
         public IActionResult Post([FromBody] AdoptionRequest ar)
         {
@@ -44,11 +46,16 @@ namespace hameluna_server.Controllers
                 return CreatedAtAction(nameof(Get), new { id = ar.RequestId }, ar);
 
             }
+            catch (ConstraintException c)
+            {
+                return Conflict("כבר שלחת בקשה על הכלב הזה, נווו....");
+            }
             catch (Exception e)
             {
 
                 return BadRequest(e.Message);
             }
+            
         }
 
         // PUT api/<AdoptionRequestController>/5
