@@ -23,31 +23,31 @@ namespace hameluna_server.Controllers
             {
                 List<string> imageLinks = new();
 
-                //string path = System.IO.Directory.GetCurrentDirectory();
+                string path = System.IO.Directory.GetCurrentDirectory();
 
-                ////add shalter diractory if not exists
 
-                //string shelterDir = Path.Combine(path, "uploadedImages/" + shelterId + "/");
-                //if (!Directory.Exists(shelterDir))
-                //{
-                //    Directory.CreateDirectory(shelterDir);
-                //}
+                //check for shelters diractory if noe exists create new one with shleter id
+                string shelterDir = Path.Combine(path, "uploadedImages/");
+                if (!Directory.Exists(shelterDir))
+                {
+                    Directory.CreateDirectory(shelterDir);
+                }
 
-                //long size = images.Sum(i => i.Length);
+                long size = images.Sum(i => i.Length);
 
-                //foreach (var formImage in images)
-                //{
-                //    if (formImage.Length > 0)
-                //    {
-                //        var imagePath = Path.Combine(shelterDir, formImage.FileName);
+                foreach (var formImage in images)
+                {
+                    if (formImage.Length > 0)
+                    {
+                        var imagePath = Path.Combine(shelterDir, formImage.FileName);
 
-                //        using (var stream = System.IO.File.Create(imagePath))
-                //        {
-                //            await formImage.CopyToAsync(stream);
-                //        }
-                //        imageLinks.Add(formImage.FileName);
-                //    }
-                //}
+                        using (var stream = System.IO.File.Create(imagePath))
+                        {
+                            await formImage.CopyToAsync(stream);
+                        }
+                        imageLinks.Add(formImage.FileName);
+                    }
+                }
 
                 return Ok(imageLinks);
             }
