@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NewFolder\**" />
+    <Content Remove="NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="BL\Class.cs" />
   </ItemGroup>
 
@@ -19,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="NewFolder\" />
     <Folder Include="uploadedImages\" />
   </ItemGroup>
 

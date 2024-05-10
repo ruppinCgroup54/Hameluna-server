@@ -24,29 +24,41 @@ namespace hameluna_server.Controllers
             settings.ServerApi = new ServerApi(ServerApiVersion.V1);
             // Create a new client and connect to the server
             var client = new MongoClient(settings);
-            // Send a ping to confirm a successful connection
+
             try
             {
-                //var result = client.GetDatabase("admin").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
-                //return "Pinged your deployment. You successfully connected to MongoDB!";
 
                 var dbList = client.ListDatabases().ToList();
                 var database = client.GetDatabase("ChatApp");
                 var collection = database.GetCollection<BsonDocument>("users");
 
-                var document = new BsonDocument {
-                    { "student_id", 10000 }, 
-                    {"scores", new BsonArray {
-                            new BsonDocument { { "type", "exam" }, { "score", 88.12334193287023 } },
-                            new BsonDocument { { "type", "quiz" }, { "score", 74.92381029342834 } },
-                            new BsonDocument { { "type", "homework" }, { "score", 89.97929384290324 } },
-                            new BsonDocument { { "type", "homework" }, { "score", 82.12931030513218 } }
-                            }
-                        }, 
-                    { "class_id", 480 }
+                //var currentUser = new BsonDocument {
+                //    { "student_id", 10000 }, 
+                //    {"scores", new BsonArray {
+                //            new BsonDocument { { "type", "exam" }, { "score", 88.12334193287023 } },
+                //            new BsonDocument { { "type", "quiz" }, { "score", 74.92381029342834 } },
+                //            new BsonDocument { { "type", "homework" }, { "score", 89.97929384290324 } },
+                //            new BsonDocument { { "type", "homework" }, { "score", 82.12931030513218 } }
+                //            }
+                //        }, 
+                //    { "class_id", 480 }
+                //};
+
+
+                var currentUser = new BsonDocument
+                {
+                    {"userID","109.303.20290.2" },
+                    {"message",new BsonArray
+                    {
+                        new BsonDocument{
+                            {"role","user"},
+                            {"content","Hiii" }
+                        }
+                    }
+                    }
                 };
 
-                await collection.InsertOneAsync(document);
+                await collection.InsertOneAsync(currentUser);
 
                 return "done";
             }

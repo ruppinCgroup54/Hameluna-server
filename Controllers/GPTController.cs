@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using hameluna_server.DAL;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using OpenAI_API;
@@ -15,22 +16,28 @@ namespace hameluna_server.Controllers
         [Route("UseChatGpt")]
         public async Task<IActionResult> UseChatGpt(string query)
         {
-
+            //get the api key
             IConfigurationRoot configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json").Build();
             string apiKey =  configuration.GetSection("OpenAISetting").GetValue("ApiKey", "string");
+
+
             string outputResuolt = "";
+
+            // create a connection to ChatGPT
             var OpenAi = new OpenAIAPI(apiKey);
+
+            // create chat request - ope a chart with Gpt
             ChatRequest chatRequest = new();
 
             //crate messages list
             List<ChatMessage> mess = new();
 
             ChatMessage newMess = new ChatMessage(ChatMessageRole.User, query);
-
             mess.Add(newMess);
 
             chatRequest.Messages = mess;
+
 
             chatRequest.Model = OpenAI_API.Models.Model.GPT4_Turbo;
 
