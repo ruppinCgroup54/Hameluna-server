@@ -1,4 +1,6 @@
-﻿using hameluna_server.DAL;
+﻿using System.Text.Json.Nodes;
+using hameluna_server.BL;
+using hameluna_server.DAL;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -8,14 +10,18 @@ using OpenAI_API.Completions;
 
 namespace hameluna_server.Controllers
 {
-    //[Route("api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class GPTController : ControllerBase
     {
-        [HttpGet]
-        [Route("UseChatGpt")]
-        public async Task<IActionResult> UseChatGpt(string query)
+
+     
+
+
+        [HttpPost]
+        public async Task<IActionResult> UseChatGpt([FromBody] JsonObject js)
         {
+            string query = js["query"].GetValue<string>();
             //get the api key
             IConfigurationRoot configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json").Build();
