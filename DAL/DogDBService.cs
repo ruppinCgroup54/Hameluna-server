@@ -538,5 +538,107 @@ namespace hameluna_server.DAL
                 con?.Close();
             }
         }
+
+        private SqlCommand CharecteristicsDogSPCmd(String spName, SqlConnection con, int dogId, string dogAttribute, string action)
+        {
+
+            SqlCommand cmd = new SqlCommand(); // create the command object
+
+            cmd.Connection = con;              // assign the connection to the command object
+
+            cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+
+            cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+            cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+            cmd.Parameters.AddWithValue("@StatementType", action);
+
+            cmd.Parameters.AddWithValue("@DogId", dogId);
+            cmd.Parameters.AddWithValue("@attribute", dogAttribute);
+
+            return cmd;
+        }
+
+        public void InsertCharecterOfDog(Dog dog)
+        {
+
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect(conString); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+
+            try
+            {
+                for (int i = 0; i < dog.Charecteristics.Count; i++)
+                {
+                    cmd = CharecteristicsDogSPCmd("CharecteristicsOfDogTableIUD", con, dog.NumberId, dog.Charecteristics[i], "Insert"); // create the command
+                    int numEffected = cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            finally
+            {
+                // close the db connection
+                con?.Close();
+            }
+
+        }
+
+        public List<string> GetDogCharecteristics(int dogId)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect(conString); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            cmd = CharecteristicsDogSPCmd("CharecteristicsOfDogTableIUD", con, dogId, "", "Select"); // create the command
+
+            try
+            {
+                SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                List<string> character = new();
+
+                while (dataReader.Read())
+                {
+                    character.Add(dataReader["attribute"].ToString());
+                }
+                return character;
+
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            finally
+            {
+                con?.Close();
+            }
+        }
     }
 }

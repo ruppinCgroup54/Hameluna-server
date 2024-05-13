@@ -58,21 +58,22 @@ namespace hameluna_server.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-        public IActionResult Post([FromBody] Dog d)
-        {
-            try
-            {
-                int newId = d.Insert();
+        //public IActionResult Post([FromForm] FilesDog formData)
+        //{
+            
+        //    try
+        //    {
+        //        int newId = formData.Insert();
 
-                return CreatedAtAction(nameof(Get), new { id = newId }, d);
+        //        return CreatedAtAction(nameof(Get), new { id = newId }, d);
 
-            }
-            catch (Exception e)
-            {
+        //    }
+        //    catch (Exception e)
+        //    {
 
-                return BadRequest(e.Message);
-            }
-        }
+        //        return BadRequest(e.Message);
+        //    }
+        //}
 
         // PUT api/<DogController>/5
         [HttpPut("{id}")]

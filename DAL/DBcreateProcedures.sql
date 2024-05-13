@@ -747,3 +747,32 @@ AS
 		
         END
 		Go
+
+Drop procedure if exists CharacteristicsTableIUD
+GO
+create PROCEDURE CharacteristicsTableIUD
+AS
+  BEGIN
+		IF @StatementType = 'Insert'
+        BEGIN
+		INSERT INTO Characteristics_Dog
+						  ( 
+						  attribute, 
+						  DogNumberId 
+						  ) 
+						VALUES 
+						  ( 
+						  @attribute, 
+						  @DogNumberId
+						  );
+		
+        END
+
+		IF @StatementType = 'Select'
+		BEGIN
+		SELECT ColorName 
+			FROM Color
+		END
+
+  END
+  Go
