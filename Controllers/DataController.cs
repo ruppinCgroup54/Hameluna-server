@@ -35,7 +35,16 @@ namespace hameluna_server.Controllers
             
             return Address.GetCities();
         }
+        
+        [HttpGet("Characteristics")]
 
+        public IEnumerable<string> GetCharacteristics()
+        {
+            DBservices db = new();
+            List<string> characteristics = db.GetAllCharacteristics();
+            return characteristics;
+        }
+        
         //// GET api/<DataController>/5
         //[HttpGet("{id}")]
         //public string Get(int id)

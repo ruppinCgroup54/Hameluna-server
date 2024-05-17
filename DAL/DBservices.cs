@@ -314,4 +314,65 @@ public class DBservices
             con?.Close();
         }
     }
+
+    public SqlCommand CharacteristicsSPCmd(String spName, SqlConnection con)
+    {
+
+        SqlCommand cmd = new SqlCommand(); // create the command object
+
+        cmd.Connection = con;              // assign the connection to the command object
+
+        cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+
+        cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+        cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+        return cmd;
+    }
+
+    public List<string> GetAllCharacteristics()
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect(conString); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cmd = CharacteristicsSPCmd("CharacteristicsTableIUD", con);             // create the command
+
+        try
+        {
+            SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+            List<string> characteristics = new();
+
+            while (dataReader.Read())
+            {
+                string c = dataReader["attribute"].ToString();
+                characteristics.Add(c);
+            }
+            return characteristics;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            // close the db connection
+            con?.Close();
+        }
+    }
+
+
 }
