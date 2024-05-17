@@ -18,45 +18,6 @@ namespace hameluna_server.Controllers
      
 
 
-        [HttpPost]
-        public async Task<IActionResult> UseChatGpt([FromBody] JsonObject js)
-        {
-            string query = js["query"].GetValue<string>();
-            //get the api key
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json").Build();
-            string apiKey =  configuration.GetSection("OpenAISetting").GetValue("ApiKey", "string");
-
-
-            string outputResuolt = "";
-
-            // create a connection to ChatGPT
-            var OpenAi = new OpenAIAPI(apiKey);
-
-            // create chat request - ope a chart with Gpt
-            ChatRequest chatRequest = new();
-
-            //crate messages list
-            List<ChatMessage> mess = new();
-
-            ChatMessage newMess = new ChatMessage(ChatMessageRole.User, query);
-            mess.Add(newMess);
-
-            chatRequest.Messages = mess;
-
-
-            chatRequest.Model = OpenAI_API.Models.Model.GPT4_Turbo;
-
-            var chats = OpenAi.Chat.CreateChatCompletionAsync(chatRequest);
-
-            foreach (var chat in chats.Result.Choices)
-            {
-                outputResuolt += chat.Message.TextContent;
-
-            }
-            return Ok(outputResuolt);
-
-        }
 
     }
 }

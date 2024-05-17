@@ -1,8 +1,11 @@
 ﻿using System.Data;
+using System.Text.Json.Nodes;
 using hameluna_server.BL;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using OpenAI_API.Chat;
+using OpenAI_API;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -94,6 +97,20 @@ namespace hameluna_server.Controllers
         {
             return "value";
         }
+
+
+
+        [HttpPost("{id}")]
+        public ActionResult<JsonObject> UseChatGpt(string id,[FromBody] JsonObject js)
+        {
+            Chat c = new();
+
+            JsonObject ans =c.GetAnswer(js,id);
+            return Ok(ans);
+           
+
+        }
+
 
         // POST api/<ChatsController>
         [HttpPost]

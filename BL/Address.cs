@@ -42,5 +42,11 @@ namespace hameluna_server.BL
 
         }
 
+        static public List<string> GetCities()
+        {
+            DBservices db = new();
+            return db.GetAllCities();
+        }
+
     }
 }
