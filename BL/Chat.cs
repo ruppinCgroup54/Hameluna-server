@@ -1,11 +1,28 @@
 ﻿using System.Text.Json.Nodes;
 using hameluna_server.DAL;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using OpenAI_API;
 using OpenAI_API.Chat;
 
 namespace hameluna_server.BL
 {
+    public class JsonMessage
+    {
+        public JsonMessage()
+        {
+        }
+
+        public JsonMessage(string role, string content)
+        {
+            this.role = role;
+            this.content = content;
+        }
+
+        public string  role { get; set; }
+        public string content { get; set; } 
+
+    }
     public class Chat
     {
         public Chat()
@@ -23,20 +40,26 @@ namespace hameluna_server.BL
             return db.CreateDocument();
         }
 
-        public JsonObject GetAnswer(JsonObject message, string id)
+        public JsonMessage GetAnswer(JsonMessage message, string id)
         {
             ChatDBService chatDB = new();
 
-            BsonArray messages = chatDB.GetUserMessages(id);
-            messages.Add(BsonDocument.Parse(message.ToString()));
+            List<JsonMessage> messages = chatDB.GetUserMessages(id).ToList();
+            messages.Add(message);
 
             this.ChatMessages = chatDB.ConvertConverastion(messages);
 
-            return new JsonObject
+            JsonMessage response = new()
             {
-                ["role"] = "assistant",
-                ["content"] = SendToChat()
+                role = "assistant",
+                content = SendToChat()
             };
+
+            messages.Add(response);
+
+            chatDB.UpdateDocument(messages, id);
+
+            return response;
 
         }
 
@@ -74,7 +97,12 @@ namespace hameluna_server.BL
             return outputResuolt;
         }
 
-
+        public JsonMessage[] GetConversation(string id)
+        {
+            ChatDBService db = new();
+            JsonMessage[] jsonArray = db.GetUserMessages(id);
+            return jsonArray;
+        }
 
 
     }

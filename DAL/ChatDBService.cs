@@ -3,8 +3,10 @@ using System.Text.Json.Nodes;
 using hameluna_server.BL;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using OpenAI_API.Chat;
+using static MongoDB.Driver.WriteConcern;
 
 namespace hameluna_server.DAL
 {
@@ -45,7 +47,7 @@ namespace hameluna_server.DAL
 
         public string CreateDocument()
         {
-            IMongoCollection<BsonDocument> collection ;
+            IMongoCollection<BsonDocument> collection;
 
             try
             {
@@ -54,7 +56,7 @@ namespace hameluna_server.DAL
             }
             catch (Exception ex)
             {
-                throw(ex);
+                throw (ex);
             }
 
             BsonArray messages = new BsonArray
@@ -65,7 +67,7 @@ namespace hameluna_server.DAL
                 },
                 new BsonDocument{
                     { "role","Assistant" },
-                    { "content","how can i help you today" }
+                    { "content"," היי אני דוגבוט ואני הולך למצוא לך את הכלב המושלם!\r\n    ספר לי על עצמך ועל הכלב שאתה מחפש." }
                 }
             };
 
@@ -80,7 +82,41 @@ namespace hameluna_server.DAL
 
         }
 
-        public BsonArray GetUserMessages(string id)
+        public void UpdateDocument(List<JsonMessage> messages, string id)
+        {
+            IMongoCollection<BsonDocument> collection;
+
+            try
+            {
+                collection = GetCollection();
+
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+
+            // Creates a filter for all documents 
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", new ObjectId(id));
+            // Creates instructions to update the "name" field of the first document
+            // that matches the filter
+            var update = Builders<BsonDocument>.Update
+                .Set("messages", messages);
+
+            // Updates the first document that has a "name" value of "Bagels N Buns"
+            try
+            {
+                collection.UpdateOne(filter, update).ModifiedCount.ToString();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw(ex);
+            }
+        }
+
+        public JsonMessage[] GetUserMessages(string id)
         {
 
             IMongoCollection<BsonDocument> collection;
@@ -96,38 +132,37 @@ namespace hameluna_server.DAL
             }
 
             var filter = Builders<BsonDocument>.Filter.Eq("_id", new ObjectId(id));
-            BsonDocument userChat = collection.Find(filter).FirstOrDefault().AsBsonDocument;
+            BsonDocument userChat = collection.Find(filter).FirstOrDefault();
 
-            BsonArray messages = userChat["messages"].AsBsonArray;
+            JsonMessage[] messages = BsonSerializer.Deserialize<JsonMessage[]>(userChat["messages"].AsBsonArray.ToJson());
 
-          
             return messages;
         }
 
-        public List<ChatMessage> ConvertConverastion(BsonArray arr)
+        public List<ChatMessage> ConvertConverastion(List<JsonMessage> arr)
         {
             List<ChatMessage> chatList = new();
 
             for (int i = 0; i < arr.Count; i++)
             {
-                chatList.Add(ConvertFromBsonToChat(arr[i].AsBsonDocument));
+                chatList.Add(ConvertFromBsonToChat(arr[i]));
             }
             return chatList;
 
         }
 
-        public ChatMessage ConvertFromBsonToChat(BsonDocument mess)
+        public ChatMessage ConvertFromBsonToChat(JsonMessage mess)
         {
-            ChatMessageRole current ;
+            ChatMessageRole current;
 
-            switch (mess["role"].ToString())
+            switch (mess.role)
             {
                 case "system":
                     current = ChatMessageRole.System;
-                    break; 
+                    break;
                 case "user":
                     current = ChatMessageRole.User;
-                    break; 
+                    break;
                 case "assistant":
                     current = ChatMessageRole.Assistant;
                     break;
@@ -136,7 +171,7 @@ namespace hameluna_server.DAL
                     break;
             }
 
-            ChatMessage newMess = new ChatMessage(current, mess["content"].ToString());
+            ChatMessage newMess = new ChatMessage(current, mess.content);
 
             return newMess;
 

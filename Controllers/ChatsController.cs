@@ -93,19 +93,27 @@ namespace hameluna_server.Controllers
 
         // GET api/<ChatsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult GetChat(string id)
         {
-            return "value";
+            Chat c = new();
+            try
+            {
+                return Ok(c.GetConversation(id));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Could not retrive your conversation.");
+            }
         }
 
 
 
         [HttpPost("{id}")]
-        public ActionResult<JsonObject> UseChatGpt(string id,[FromBody] JsonObject js)
+        public IActionResult UseChatGpt(string id,[FromBody] JsonMessage js)
         {
             Chat c = new();
 
-            JsonObject ans =c.GetAnswer(js,id);
+            JsonMessage ans =c.GetAnswer(js,id);
             return Ok(ans);
            
 
