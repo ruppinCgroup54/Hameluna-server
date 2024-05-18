@@ -70,17 +70,18 @@ CREATE TABLE Cell
   id int IDENTITY(1, 1) NOT NULL,
   PRIMARY KEY (id)
 );
+
 CREATE TABLE Characteristics
 (
-  id int IDENTITY(0, 1) NOT NULL,
   attribute nvarchar(20) NOT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (attribute)
 );
+
 CREATE TABLE Characteristics_Dog
 (
-  Characteristicsid int NOT NULL,
+  attribute nvarchar(20) NOT NULL,
   DogNumberId int NOT NULL,
-  PRIMARY KEY (Characteristicsid, 
+  PRIMARY KEY (attribute, 
   DogNumberId)
 );
 CREATE TABLE City
@@ -129,11 +130,12 @@ CREATE TABLE Dog
   IsReturned bit DEFAULT 'false' NOT NULL,
   Cellid int NULL,
   Note nvarchar(1000),
+  profileImg nvarchar(1000),
   PRIMARY KEY (NumberId)
 );
 
 use [igroup154_test1]
-alter table Dog add Note nvarchar(1000)
+alter table Dog add profileImg nvarchar(1000)
 
 CREATE TABLE Dog_Breed
 (
@@ -149,23 +151,19 @@ CREATE TABLE Dog_Color
   PRIMARY KEY (DogNumberId, 
   ColorName)
 );
+
 CREATE TABLE [File]
 (
-  FileId int IDENTITY(0, 1) NOT NULL,
-  Type varchar(10) NULL,
-  Url nvarchar(1000) NULL,
-  FileName nvarchar(12) NOT NULL,
+  Url nvarchar(1000),
   DogNumberId int NOT NULL,
-  PRIMARY KEY (FileId)
+  PRIMARY KEY (Url)
 );
 
 CREATE TABLE Image
 (
   DogNumberId int NOT NULL,
-  ImageId int IDENTITY(1, 1) NOT NULL,
   Path nvarchar(1000) NOT NULL,
-  isProfile bit DEFAULT 'false',
-  PRIMARY KEY (ImageId)
+  PRIMARY KEY (Path)
 );
 CREATE TABLE Optional_adopter
 (
@@ -268,12 +266,13 @@ ALTER TABLE Optional_adopter ADD CONSTRAINT FKOptional_a86884 FOREIGN KEY (Addre
 ALTER TABLE Volunteer_Shelter ADD CONSTRAINT FKVolunteer_318949 FOREIGN KEY (volunteerPhoneNumber) REFERENCES Volunteer (PhoneNumber);
 ALTER TABLE Volunteer_Shelter ADD CONSTRAINT FKVolunteer_236131 FOREIGN KEY (ShelterNumber) REFERENCES Shelter (ShelterNumber);
 ALTER TABLE Routine_item_in_Shelter_ ADD CONSTRAINT FKRoutine_it74644 FOREIGN KEY (DailyRoutineId) REFERENCES Daily_routine (routineId);
-ALTER TABLE Characteristics_Dog ADD CONSTRAINT FKCharacteri993916 FOREIGN KEY (Characteristicsid) REFERENCES Characteristics (id);
+ALTER TABLE Characteristics_Dog ADD CONSTRAINT FKCharacteri993916 FOREIGN KEY (attribute) REFERENCES Characteristics (attribute);
 ALTER TABLE Characteristics_Dog ADD CONSTRAINT FKCharacteri784397 FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
 ALTER TABLE Daily_routine ADD CONSTRAINT checks FOREIGN KEY (VolunteerPhoneNumber, ShelterNumber) REFERENCES Volunteer_Shelter (volunteerPhoneNumber, ShelterNumber);
 ALTER TABLE Cell ADD CONSTRAINT Contained FOREIGN KEY (ShelterNumber) REFERENCES Shelter (ShelterNumber);
 ALTER TABLE [File] ADD CONSTRAINT has FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
 ALTER TABLE Dog ADD CONSTRAINT [in] FOREIGN KEY (Cellid) REFERENCES Cell (id);
+ALTER TABLE Dog ADD CONSTRAINT [inImage] FOREIGN KEY (profileImg) REFERENCES Image (path);
 ALTER TABLE Dog_Breed ADD CONSTRAINT [is a] FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
 ALTER TABLE UserAddress ADD CONSTRAINT [is in] FOREIGN KEY (City) REFERENCES City (CityName);
 ALTER TABLE Shelter ADD CONSTRAINT manages FOREIGN KEY (AdminPhoneNumber) REFERENCES ShelterAdmin (PhoneNumber);
@@ -282,38 +281,39 @@ ALTER TABLE Adoption_request ADD CONSTRAINT UC_adoption UNIQUE (DogNumberId,Opti
 
 
 
-insert into Breed
-  (Breed)
+insert into Characteristics
+  (attribute)
 values
-  ('������'),
-  ('����� ������'),
-  ('������ �����'),
-  ('�������� ����'),
-  ('�����'),
-  ('���'),
-  ('����'),
-  ('�����'),
-  ('����� ����'),
-  ('���� �����'),
-  ('����-��'),
-  ('���� �������'),
-  ('����'),
-  ('���� ������'),
-  ('������ �����'),
-  ('����'),
-  ('��������'),
-  ('������ ����'),
-  ('��������'),
-  ('���� ����'),
-  ('�����'),
-  ('����� ������'),
-  ('���������'),
-  ('���� �����'),
-  ('������'),
-  ('�� ���� ����'),
-  ('���� ����� ������'),
-  ('�����'),
-  ('��� �����')
+  ('חמוד'),
+  ('נאמנ/ה'),
+  ('חברותי'),
+  ('אגרסיבי'),
+  ('תוקפני'),
+  ('סקרן'),
+  ('עצמאי'),
+  ('עדין'),
+  ('שונא חתולים'),
+  ('מסתדר עם ילדים'),
+  ('מסתדר עם כלבים'),
+  ('מסתדר עם אנשים'),
+  ('ממושמע'),
+  ('מסורס'),
+  ('מעוקר'),
+  ('עקשן'),
+  ('שובב'),
+  ('שמחת חיים'),
+  ('טריטוריאלי'),
+  ('אנרגטי'),
+  ('לא מחונך לצרכים'),
+  ('מחונך לצרכים'),
+  ('לא מסתדר עם כלבים'),
+  ('מפחד מאנשים'),
+  ('נטוש'),
+  ('לא מססתדר עם חתולים'),
+  ('מנשיר'),
+  ('היפואלרגני')
+
+
 
 
 

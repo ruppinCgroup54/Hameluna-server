@@ -27,6 +27,13 @@ namespace hameluna_server.Controllers
             DBservices db = new();
             List<string> colors= db.GetAllColors();
             return colors;
+        } 
+        
+        [HttpGet("Cities")]
+        public IEnumerable<string> GetCities()
+        {
+            
+            return Address.GetCities();
         }
         
         [HttpGet("Characteristics")]
