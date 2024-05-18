@@ -62,11 +62,11 @@ namespace hameluna_server.DAL
             BsonArray messages = new BsonArray
             {
                 new BsonDocument{
-                    { "role","System" },
+                    { "role","system" },
                     { "content",this.Prompt }
                 },
                 new BsonDocument{
-                    { "role","Assistant" },
+                    { "role","assistant" },
                     { "content"," היי אני דוגבוט ואני הולך למצוא לך את הכלב המושלם!\r\n    ספר לי על עצמך ועל הכלב שאתה מחפש." }
                 }
             };

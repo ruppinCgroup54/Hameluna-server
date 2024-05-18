@@ -85,7 +85,7 @@ namespace hameluna_server.Controllers
             catch (Exception)
             {
 
-                return BadRequest("hahaha but noooo");
+                return BadRequest(null);
             }
 
         }
