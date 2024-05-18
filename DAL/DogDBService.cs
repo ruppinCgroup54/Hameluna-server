@@ -579,9 +579,9 @@ namespace hameluna_server.DAL
 
             try
             {
-                for (int i = 0; i < dog.Charecteristics.Count; i++)
+                for (int i = 0; i < dog.Attributes.Count; i++)
                 {
-                    cmd = CharecteristicsDogSPCmd("CharecteristicsOfDogTableIUD", con, dog.NumberId, dog.Charecteristics[i], "Insert"); // create the command
+                    cmd = CharecteristicsDogSPCmd("CharecteristicsOfDogTableIUD", con, dog.NumberId, dog.Attributes[i], "Insert"); // create the command
                     int numEffected = cmd.ExecuteNonQuery();
                 }
             }
