@@ -317,6 +317,7 @@ namespace hameluna_server.DAL
                     };
                     d.Breed = GetDogBreed(d.NumberId);
                     d.Color = GetDogColor(d.NumberId);
+                    d.Attributes = GetDogCharecteristics(d.NumberId);
                     dogsList.Add(d);
                 }
                 return dogsList;
