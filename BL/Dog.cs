@@ -21,7 +21,7 @@ namespace hameluna_server.BL
             Breed = new();
             Attributes = new();
         }
-        public Dog(string chipNumber, int numberId, string name, DateTime dateOfBirth, string gender, DateTime entranceDate, string size, bool adopted, int cellId, List<string> color, List<string> breed, List<string> attributes, bool isAdoptable=false, bool isReturned=false)
+        public Dog(string chipNumber, int numberId, string name, DateTime dateOfBirth, string gender, DateTime entranceDate, string size, int cellId, List<string> color, List<string> breed, List<string> attributes, bool isAdoptable=false, bool isReturned=false, bool adopted=false)
         {
             ChipNumber = chipNumber;
             NumberId = numberId;
