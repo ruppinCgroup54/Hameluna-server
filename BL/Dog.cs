@@ -1,4 +1,5 @@
-﻿using hameluna_server.DAL;
+﻿using System.Text.Json.Nodes;
+using hameluna_server.DAL;
 
 namespace hameluna_server.BL
 {
@@ -99,6 +100,26 @@ namespace hameluna_server.BL
         {
             DogDBService db = new(); 
             return db.ReadAll();
+        }
+
+        public static List<Dog> GetDogsForUser(string userId)
+        {
+            ChatDBService chatDB = new();
+            List<JsonObject> dogsRank = chatDB.GetDogRank(userId);
+
+            DogDBService dogDB = new();
+            List<Dog> dogs = dogDB.ReadAll();
+
+            List<Dog> filteredDogs = new();  
+
+            foreach (JsonObject dr in dogsRank)
+            {
+
+                filteredDogs.Add(dogs.FirstOrDefault(d => d.NumberId == int.Parse(dr["id"].ToString())));
+
+            }
+            return filteredDogs;
+
         }
 
         public static Dog ReadOne(int id)

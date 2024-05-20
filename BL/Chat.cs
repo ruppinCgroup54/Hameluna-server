@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 using hameluna_server.DAL;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
@@ -19,8 +20,8 @@ namespace hameluna_server.BL
             this.content = content;
         }
 
-        public string  role { get; set; }
-        public string content { get; set; } 
+        public string role { get; set; }
+        public string content { get; set; }
 
     }
     public class Chat
@@ -51,15 +52,55 @@ namespace hameluna_server.BL
 
             JsonMessage response = new()
             {
-                role = "assistant",
+                role = "assistant", 
                 content = SendToChat()
             };
 
             messages.Add(response);
 
-            chatDB.UpdateDocument(messages, id);
+            this.ChatMessages.Add(chatDB.ConvertFromBsonToChat(response));
+
+            CheckIfFinish(response.content);
+
+            chatDB.UpdateMessages(messages, id);
 
             return response;
+
+        }
+
+        public string CheckIfFinish( string res)
+        {
+            ChatDBService chatDb = new();
+
+            if (res.Contains("finish"))
+            {
+                ChatMessage messGetDogs = new ChatMessage
+                {
+                    Role = ChatMessageRole.System,
+                    TextContent = "send the dogs list"
+                };
+
+                this.ChatMessages.Add(messGetDogs);
+                try
+                {
+                    string response = SendToChat();
+                    List<JsonObject> dogs = JsonSerializer.Deserialize<List<JsonObject>>(response);
+
+                    chatDb.UpdateDogRank(dogs, Id);
+                }
+                catch (Exception ex)
+                {
+
+                    chatDb.UpdateDogRank(new(), Id);
+
+                }
+
+
+
+                return res.Replace("finish", "");
+            }
+
+            return res;
 
         }
 
@@ -76,14 +117,14 @@ namespace hameluna_server.BL
 
             string outputResuolt = "";
 
-
+            
             // create chat request - open a chart with Gpt
             ChatRequest chatRequest = new()
             {
                 Messages = this.ChatMessages,
                 Model = OpenAI_API.Models.Model.GPT4_Turbo,
                 Temperature = 0.2,
-                MaxTokens=1000
+                MaxTokens = 1000
             };
 
 

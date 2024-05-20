@@ -80,12 +80,12 @@ namespace hameluna_server.Controllers
         {
             try
             {
-                return Ok(Chat.CreateChat());
+                return Ok(new { id = Chat.CreateChat() });
             }
             catch (Exception)
             {
 
-                return BadRequest(null);
+                return BadRequest("Sorry there was a problem");
             }
 
         }
@@ -98,7 +98,11 @@ namespace hameluna_server.Controllers
             Chat c = new();
             try
             {
-                return Ok(c.GetConversation(id));
+                return Ok(new {chat= c.GetConversation(id) });
+            }
+            catch (NullReferenceException ne)
+            {
+                return NotFound(new { id = ne.Message });
             }
             catch (Exception)
             {
@@ -120,22 +124,23 @@ namespace hameluna_server.Controllers
         }
 
 
-        // POST api/<ChatsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        // GET: api/<ChatController>
+        [HttpGet("DogForUser/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Dog[]> GetByUser(string id)
         {
-        }
+            try
+            {
+                List<Dog> dogs = Dog.ReadAll();
+                return Ok(dogs);
+            }
+            catch (Exception e)
+            {
 
-        // PUT api/<ChatsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
 
-        // DELETE api/<ChatsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

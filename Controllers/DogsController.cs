@@ -30,6 +30,27 @@ namespace hameluna_server.Controllers
 
         }
 
+
+        // GET: api/<DogController>
+        [HttpGet("DogsForUser/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Dog[]> GetByUser(string id)
+        {
+            try
+            {
+                List<Dog> dogs = Dog.GetDogsForUser(id);
+                return Ok(dogs);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
+
+        }
+
+
         // GET api/<DogController>/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dog))]
