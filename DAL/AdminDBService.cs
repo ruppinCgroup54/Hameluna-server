@@ -294,7 +294,13 @@ namespace hameluna_server.DAL
             try
             {
                 return Convert.ToInt32(cmd.ExecuteScalar());
-
+                //SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                //var number = 0;
+                //while (dataReader.Read())
+                //{
+                //    number = Convert.ToInt32(dataReader["ShelterNumber"]);
+                //}
+                //return number;
             }
             catch (Exception ex)
             {
