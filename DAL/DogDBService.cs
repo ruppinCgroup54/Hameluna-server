@@ -195,7 +195,9 @@ namespace hameluna_server.DAL
                         Size = dataReader["Size"].ToString(),
                         Adopted = Convert.ToBoolean(dataReader["Adopted"]),
                         IsReturned = Convert.ToBoolean(dataReader["IsReturned"]),
-                        CellId = Convert.ToInt32(dataReader["CellId"])
+                        CellId = Convert.ToInt32(dataReader["CellId"]),
+                        ProfileImage = dataReader["profileImg"].ToString()
+
                     };
 
                     a.Breed = GetDogBreed(a.NumberId);

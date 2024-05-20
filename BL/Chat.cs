@@ -100,6 +100,7 @@ namespace hameluna_server.BL
 
                     // extract the json response to json objectss
                     response = response.Replace("`","");
+                    response = response.Replace("json","");
                     List<JsonObject> dogs = JsonSerializer.Deserialize<List<JsonObject>>(response);
 
                     //update the dog rank array in the data base

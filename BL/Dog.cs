@@ -55,6 +55,7 @@ namespace hameluna_server.BL
         public List<string> Color { get; set; }
         public List<string> Breed { get; set; }
         public List<string> Attributes { get; set; }
+        public string ProfileImage { get; set; }
         public float Age { get => GetAge(DateOfBirth); }
 
 
