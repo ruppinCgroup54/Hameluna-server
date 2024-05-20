@@ -15,69 +15,11 @@ namespace hameluna_server.Controllers
     [ApiController]
     public class ChatsController : ControllerBase
     {
-        // GET: api/<ChatsController>
-        //[HttpGet]
-        //public async Task<string> Get()
-        //{
-        //    IConfigurationRoot configuration = new ConfigurationBuilder()
-        //    .AddJsonFile("appsettings.json").Build();
-        //    string cStr = configuration.GetConnectionString("MongoDBHameluna");
-
-        //    var settings = MongoClientSettings.FromConnectionString(cStr);
-        //    // Set the ServerApi field of the settings object to set the version of the Stable API on the client
-        //    settings.ServerApi = new ServerApi(ServerApiVersion.V1);
-        //    // Create a new client and connect to the server
-        //    var client = new MongoClient(settings);
-
-        //    try
-        //    {
-
-        //        var dbList = client.ListDatabases().ToList();
-        //        var database = client.GetDatabase("ChatApp");
-        //        var collection = database.GetCollection<BsonDocument>("users");
-
-        //        //var currentUser = new BsonDocument {
-        //        //    { "student_id", 10000 }, 
-        //        //    {"scores", new BsonArray {
-        //        //            new BsonDocument { { "type", "exam" }, { "score", 88.12334193287023 } },
-        //        //            new BsonDocument { { "type", "quiz" }, { "score", 74.92381029342834 } },
-        //        //            new BsonDocument { { "type", "homework" }, { "score", 89.97929384290324 } },
-        //        //            new BsonDocument { { "type", "homework" }, { "score", 82.12931030513218 } }
-        //        //            }
-        //        //        }, 
-        //        //    { "class_id", 480 }
-        //        //};
-
-
-        //        var currentUser = new BsonDocument
-        //        {
-        //            {"userID","109.303.20290.2" },
-        //            {"message",new BsonArray
-        //            {
-        //                new BsonDocument{
-        //                    {"role","user"},
-        //                    {"content","Hiii" }
-        //                }
-        //            }
-        //            }
-        //        };
-
-        //        await collection.InsertOneAsync(currentUser);
-
-        //        return "done";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return ex.Message;
-        //    }
-
-
-        //}
-
 
         [HttpGet]
         public ActionResult<string> GetNewID()
         {
+            // create new chat and return the new chat id
             try
             {
                 return Ok(new { id = Chat.CreateChat() });
@@ -98,10 +40,11 @@ namespace hameluna_server.Controllers
             Chat c = new();
             try
             {
-                return Ok(new {chat= c.GetConversation(id) });
+                return Ok(new { chat = c.GetConversation(id) });
             }
             catch (NullReferenceException ne)
             {
+                // ne.Meassage contains the new user id
                 return NotFound(new { id = ne.Message });
             }
             catch (Exception)
@@ -113,13 +56,21 @@ namespace hameluna_server.Controllers
 
 
         [HttpPost("{id}")]
-        public IActionResult UseChatGpt(string id,[FromBody] JsonMessage js)
+        public IActionResult UseChatGpt(string id, [FromBody] JsonMessage js)
         {
-            Chat c = new();
+            Chat c = new(id);
+            try
+            {
+                JsonMessage ans = c.GetAnswer(js);
+                return Ok(ans);
 
-            JsonMessage ans =c.GetAnswer(js,id);
-            return Ok(ans);
-           
+            }
+            catch (Exception)
+            {
+
+                return BadRequest("could not send");
+            }
+
 
         }
 

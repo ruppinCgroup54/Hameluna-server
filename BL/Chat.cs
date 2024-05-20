@@ -31,6 +31,12 @@ namespace hameluna_server.BL
         }
 
         public string Id { get; set; }
+
+        public Chat(string id)
+        {
+            Id = id;
+        }
+
         public List<ChatMessage> ChatMessages { get; set; }
         public List<Dog> LovesDogs { get; set; }
 
@@ -41,38 +47,45 @@ namespace hameluna_server.BL
             return db.CreateDocument();
         }
 
-        public JsonMessage GetAnswer(JsonMessage message, string id)
+        public JsonMessage GetAnswer(JsonMessage message)
         {
             ChatDBService chatDB = new();
 
-            List<JsonMessage> messages = chatDB.GetUserMessages(id).ToList();
-            messages.Add(message);
+            //gets the user previouse messages
+            List<JsonMessage> jsonMessages = chatDB.GetUserMessages(this.Id).ToList();
 
-            this.ChatMessages = chatDB.ConvertConverastion(messages);
+            // add the new user message
+            jsonMessages.Add(message);
+
+            // convert the messages to ChatGpt type for the chat request
+            this.ChatMessages = chatDB.ConvertConverastion(jsonMessages);
 
             JsonMessage response = new()
             {
                 role = "assistant", 
-                content = SendToChat()
+                content = GetResponseFromGPT()
             };
+            
+            // add for the database to continoues saving of the chat
+            jsonMessages.Add(response);
 
-            messages.Add(response);
-
+            // add incase that we need to get another response from chat
             this.ChatMessages.Add(chatDB.ConvertFromBsonToChat(response));
 
-            CheckIfFinish(response.content);
+            CheckIfFinish(response);
 
-            chatDB.UpdateMessages(messages, id);
+            //update the new messages in the chat
+            chatDB.UpdateMessages(jsonMessages, this.Id);
 
             return response;
 
         }
 
-        public string CheckIfFinish( string res)
+        public void CheckIfFinish(JsonMessage res)
         {
             ChatDBService chatDb = new();
 
-            if (res.Contains("finish"))
+            if (res.content.Contains("finish"))
             {
                 ChatMessage messGetDogs = new ChatMessage
                 {
@@ -83,9 +96,13 @@ namespace hameluna_server.BL
                 this.ChatMessages.Add(messGetDogs);
                 try
                 {
-                    string response = SendToChat();
+                    string response = GetResponseFromGPT();
+
+                    // extract the json response to json objectss
+                    response = response.Replace("`","");
                     List<JsonObject> dogs = JsonSerializer.Deserialize<List<JsonObject>>(response);
 
+                    //update the dog rank array in the data base
                     chatDb.UpdateDogRank(dogs, Id);
                 }
                 catch (Exception ex)
@@ -97,14 +114,14 @@ namespace hameluna_server.BL
 
 
 
-                return res.Replace("finish", "");
+                res.content= res.content.Replace("finish", "");
             }
 
-            return res;
+
 
         }
 
-        public string SendToChat()
+        public string GetResponseFromGPT()
         {
             //get the api key
             IConfigurationRoot configuration = new ConfigurationBuilder()
@@ -130,6 +147,7 @@ namespace hameluna_server.BL
 
             var chats = OpenAi.Chat.CreateChatCompletionAsync(chatRequest);
 
+            //get the ChatGpt response
             foreach (var chat in chats.Result.Choices)
             {
                 outputResuolt += chat.Message.TextContent;
@@ -141,8 +159,8 @@ namespace hameluna_server.BL
         public JsonMessage[] GetConversation(string id)
         {
             ChatDBService db = new();
-            JsonMessage[] jsonArray = db.GetUserMessages(id);
-            return jsonArray;
+            JsonMessage[] jsonMessages = db.GetUserMessages(id);
+            return jsonMessages;
         }
 
 

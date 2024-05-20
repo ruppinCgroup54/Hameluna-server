@@ -72,14 +72,14 @@ namespace hameluna_server.DAL
                 }
             };
 
-            var document = new BsonDocument
+            var user = new BsonDocument
             {
                 {"messages", messages}
             };
 
-            collection.InsertOne(document);
+            collection.InsertOne(user);
 
-            return document["_id"].ToString();
+            return user["_id"].ToString();
 
         }
 
@@ -154,11 +154,11 @@ namespace hameluna_server.DAL
         public JsonMessage[] GetUserMessages(string id)
         {
 
-            IMongoCollection<BsonDocument> collection;
+            IMongoCollection<BsonDocument> users;
 
             try
             {
-                collection = GetCollection();
+                users = GetCollection();
 
             }
             catch (Exception ex)
@@ -167,9 +167,10 @@ namespace hameluna_server.DAL
             }
 
             var filter = Builders<BsonDocument>.Filter.Eq("_id", new ObjectId(id));
-            BsonDocument userChat = collection.Find(filter).FirstOrDefault();
+            BsonDocument userChat = users.Find(filter).FirstOrDefault();
             try
             {
+                //convert the bson array in messages to array of json objects
                 JsonMessage[]  messages = BsonSerializer.Deserialize<JsonMessage[]>(userChat["messages"].AsBsonArray.ToJson());
                 return messages;
 
