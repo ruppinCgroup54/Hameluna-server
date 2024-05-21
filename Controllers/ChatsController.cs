@@ -24,10 +24,10 @@ namespace hameluna_server.Controllers
             {
                 return Ok(new { id = Chat.CreateChat() });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest("Sorry there was a problem");
+                return BadRequest(ex.Message);
             }
 
         }
