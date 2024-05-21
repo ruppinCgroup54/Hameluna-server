@@ -14,6 +14,7 @@ namespace hameluna_server.BL
         public int Id { get; set; }
         public int ShelterNumber { get; set; }
         public List<Dog> DogsInCell { get; set; }
+
         public Cell(int number=-1, int capacity=-1, int id=-1, int shelterNumber=-1)
         {
             Number = number;
