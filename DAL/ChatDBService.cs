@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Amazon.Runtime.Internal.Auth;
@@ -8,6 +9,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using OpenAI_API.Chat;
+using static System.Net.Mime.MediaTypeNames;
 using static MongoDB.Driver.WriteConcern;
 
 namespace hameluna_server.DAL
@@ -40,6 +42,7 @@ namespace hameluna_server.DAL
             // Set the ServerApi field of the settings object to set the version of the Stable API on the client
             settings.ServerApi = new ServerApi(ServerApiVersion.V1);
 
+
             // Create a new client and connect to the server
             var client = new MongoClient(settings);
             var database = client.GetDatabase("DogBot");
@@ -58,18 +61,30 @@ namespace hameluna_server.DAL
             }
             catch (Exception ex)
             {
-                throw (ex);
+                Exception temp = ex;
+                using (StreamWriter writer = new StreamWriter("LogErrors.txt", append: true)) // append: true to append to the file
+                {
+                    do
+                    {
+                        writer.WriteLine( temp.Message);
+                        temp = temp.InnerException;
+                    } while (temp != null);
+                }
+                throw ex;
             }
 
             BsonArray messages = new BsonArray
             {
                 new BsonDocument{
                     { "role","system" },
-                    { "content",this.Prompt }
+                    { "content",this.Prompt },
+                    {"indFinish",false }
+
                 },
                 new BsonDocument{
                     { "role","assistant" },
-                    { "content"," היי אני דוגבוט ואני הולך למצוא לך את הכלב המושלם!\r\n    ספר לי על עצמך ועל הכלב שאתה מחפש." }
+                    { "content"," היי אני דוגבוט ואני הולך למצוא לך את הכלב המושלם!\r\n    ספר לי על עצמך ועל הכלב שאתה מחפש." },
+                    {"indFinish",false }
                 }
             };
 
@@ -114,11 +129,11 @@ namespace hameluna_server.DAL
             catch (Exception ex)
             {
 
-                throw(ex);
+                throw (ex);
             }
         }
 
-        public void UpdateDogRank(List<JsonObject> dogsRanks, string id)
+        public void UpdateDogRank(List<JsonRank> dogsRanks, string id)
         {
             IMongoCollection<BsonDocument> collection;
 
@@ -136,27 +151,49 @@ namespace hameluna_server.DAL
             var filter = Builders<BsonDocument>.Filter.Eq("_id", new ObjectId(id));
             // Creates instructions to update the "name" field of the first document
             // that matches the filter
-            BsonArray bsonDogs = new BsonArray();
-
-            foreach (var dogR in dogsRanks)
-            {
-
-                // Parse the JSON string into a BsonDocument
-                BsonDocument bsonDocument = BsonDocument.Parse(dogR.ToString());
-
-                // Add the BsonDocument to the BsonArray
-                bsonDogs.Add(bsonDocument);
-            }
-
-  
 
             var update = Builders<BsonDocument>.Update
-                .Set("dogsRanks", bsonDogs);
+                .Set("dogsRanks", dogsRanks);
 
-        
+
             try
             {
                 collection.UpdateOne(filter, update).ModifiedCount.ToString();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw (ex);
+            }
+        }
+
+        public int UpdateFavoritesDogs(int[] favDogs, string id)
+        {
+            IMongoCollection<BsonDocument> collection;
+
+            try
+            {
+                collection = GetCollection();
+
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+
+            // Creates a filter for all documents 
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", new ObjectId(id));
+            // Creates instructions to update the "name" field of the first document
+            // that matches the filter
+
+            var update = Builders<BsonDocument>.Update
+                .Set("favorites", favDogs);
+
+
+            try
+            {
+                return Convert.ToInt32(collection.UpdateOne(filter, update).ModifiedCount);
 
             }
             catch (Exception ex)
@@ -186,22 +223,21 @@ namespace hameluna_server.DAL
             try
             {
                 //convert the bson array in messages to array of json objects
-                JsonMessage[]  messages = BsonSerializer.Deserialize<JsonMessage[]>(userChat["messages"].AsBsonArray.ToJson());
+                JsonMessage[] messages = BsonSerializer.Deserialize<JsonMessage[]>(userChat["messages"].AsBsonArray.ToJson());
                 return messages;
 
             }
-            catch (NullReferenceException)
+            catch (Exception ex)
             {
-               string newId= CreateDocument();
 
-                throw new NullReferenceException(newId);
+                throw (ex);
             }
 
-            
+
 
         }
 
-        public List<JsonObject> GetDogRank(string id)
+        public List<JsonRank> GetDogRank(string id)
         {
             IMongoCollection<BsonDocument> collection;
 
@@ -218,20 +254,51 @@ namespace hameluna_server.DAL
             var filter = Builders<BsonDocument>.Filter.Eq("_id", new ObjectId(id));
             BsonDocument userChat = collection.Find(filter).FirstOrDefault();
 
-            BsonArray bDogs = userChat["dogsRanks"].AsBsonArray;
-
-            List<JsonObject> dogs = new();
-
-            foreach (var d in bDogs)
+            try
             {
-                // Convert JObject to JSON string
+                //convert the bson array in messages to array of json objects
+                List<JsonRank> dogsList = BsonSerializer.Deserialize<List<JsonRank>>(userChat["dogsRanks"].AsBsonArray.ToJson());
+                return dogsList.OrderByDescending(d => d.matchPrecent).ToList();
+            }
+            catch (Exception)
+            {
 
-                JsonObject newD = JsonObject.Parse(d.ToJson()).AsObject();
-
-                dogs.Add(newD);
+                throw new NullReferenceException("Could't find dogs for you");
             }
 
-            return dogs;
+
+        }
+
+        public List<int> GetUserFavorites(string id)
+        {
+            IMongoCollection<BsonDocument> collection;
+
+            try
+            {
+                collection = GetCollection();
+
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", new ObjectId(id));
+            BsonDocument userChat = collection.Find(filter).FirstOrDefault();
+
+            try
+            {
+                //convert the bson array in messages to array of json objects
+                List<int> dogsList = BsonSerializer.Deserialize<List<int>>(userChat["favorites"].AsBsonArray.ToJson());
+                return dogsList;
+            }
+            catch (Exception)
+            {
+
+                return new();
+            }
+
+
         }
 
         public List<ChatMessage> ConvertConverastion(List<JsonMessage> arr)

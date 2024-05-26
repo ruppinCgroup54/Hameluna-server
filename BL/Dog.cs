@@ -106,22 +106,55 @@ namespace hameluna_server.BL
         public static List<Dog> GetDogsForUser(string userId)
         {
             ChatDBService chatDB = new();
-            List<JsonObject> dogsRank = chatDB.GetDogRank(userId);
+            //get all the dog sorted from the best match down
+            List<JsonRank> dogsRank = chatDB.GetDogRank(userId);
+            List<int> favorites = chatDB.GetUserFavorites(userId);
+
+            dogsRank = dogsRank.FindAll(d => !favorites.Contains(d.id));
 
             DogDBService dogDB = new();
             List<Dog> dogs = dogDB.ReadAll();
 
             List<Dog> filteredDogs = new();  
 
-            foreach (JsonObject dr in dogsRank)
+            foreach (JsonRank dr in dogsRank)
             {
 
-                filteredDogs.Add(dogs.FirstOrDefault(d => d.NumberId == int.Parse(dr["id"].ToString())));
+                filteredDogs.Add(dogs.FirstOrDefault(d => d.NumberId == dr.id));
 
             }
             return filteredDogs;
 
         }
+
+        public static List<Dog> GetFavorites(string userId)
+        {
+            ChatDBService chatDB = new();
+            //get all the dog sorted from the best match down
+            List<int> favorites = chatDB.GetUserFavorites(userId);
+
+            DogDBService dogDB = new();
+            List<Dog> dogs = dogDB.ReadAll();
+
+            List<Dog> filteredDogs = new();  
+
+            foreach (int fav in favorites)
+            {
+
+                filteredDogs.Add(dogs.FirstOrDefault(d => d.NumberId ==fav));
+
+            }
+            return filteredDogs;
+
+        }
+        public static int UpdateFavorites(int[] newFav,string userId)
+        {
+            ChatDBService chatDB = new();
+            //get all the dog sorted from the best match down
+            return chatDB.UpdateFavoritesDogs(newFav,userId);
+        }
+
+
 
         public static Dog ReadOne(int id)
         {

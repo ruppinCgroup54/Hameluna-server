@@ -1,0 +1,3 @@
+success yota, lech lishonsuccess yota, lech lishon
+success yota, lech lishon
+./LogErrors.txt

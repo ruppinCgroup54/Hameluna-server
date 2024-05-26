@@ -46,12 +46,16 @@ namespace hameluna_server.BL
         
         public static List<Cell> ReadAllFromShelter(int shelterId)
         {
+            // import al cells of sheltet
             CellDBService db = new();
             List<Cell> cells = db.ReadShelterCells(shelterId);
 
+            // import all dog of shelter
             DogDBService dogDb = new();
             List<Dog> dogsInShelter = dogDb.ReadDogByShelter(shelterId);
 
+
+            // insert dogs to thier cells
             for (int i = 0; i < cells.Count; i++)
             {
                 cells[i].DogsInCell = dogsInShelter.FindAll((d) => d.CellId == cells[i].Id);
