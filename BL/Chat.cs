@@ -1,10 +1,13 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Threading.Tasks.Dataflow;
+using Amazon.Auth.AccessControlPolicy.ActionIdentifiers;
 using hameluna_server.DAL;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using OpenAI_API;
 using OpenAI_API.Chat;
+using OpenAI_API.Models;
 
 namespace hameluna_server.BL
 {
@@ -22,6 +25,23 @@ namespace hameluna_server.BL
 
         public string role { get; set; }
         public string content { get; set; }
+        public bool indFinish { get; set; }
+
+    }
+    public class JsonRank
+    {
+        public JsonRank()
+        {
+        }
+
+        public JsonRank(int id, int matchPrecent)
+        {
+            this.id = id;
+            this.matchPrecent = matchPrecent;
+        }
+
+        public int id { get; set; }
+        public int matchPrecent { get; set; }
 
     }
     public class Chat
@@ -72,7 +92,7 @@ namespace hameluna_server.BL
             // add incase that we need to get another response from chat
             this.ChatMessages.Add(chatDB.ConvertFromBsonToChat(response));
 
-            CheckIfFinish(response);
+            response.indFinish=CheckIfFinish(response);
 
             //update the new messages in the chat
             chatDB.UpdateMessages(jsonMessages, this.Id);
@@ -81,7 +101,7 @@ namespace hameluna_server.BL
 
         }
 
-        public void CheckIfFinish(JsonMessage res)
+        public bool CheckIfFinish(JsonMessage res)
         {
             ChatDBService chatDb = new();
 
@@ -101,7 +121,7 @@ namespace hameluna_server.BL
                     // extract the json response to json objectss
                     response = response.Replace("`","");
                     response = response.Replace("json","");
-                    List<JsonObject> dogs = JsonSerializer.Deserialize<List<JsonObject>>(response);
+                    List<JsonRank> dogs = JsonSerializer.Deserialize<List<JsonRank>>(response);
 
                     //update the dog rank array in the data base
                     chatDb.UpdateDogRank(dogs, Id);
@@ -116,9 +136,10 @@ namespace hameluna_server.BL
 
 
                 res.content= res.content.Replace("finish", "");
+                return true;
             }
 
-
+            return false;
 
         }
 
@@ -135,7 +156,7 @@ namespace hameluna_server.BL
 
             string outputResuolt = "";
 
-            
+
             // create chat request - open a chart with Gpt
             ChatRequest chatRequest = new()
             {
@@ -155,6 +176,29 @@ namespace hameluna_server.BL
 
             }
             return outputResuolt;
+        }
+        
+        static public Conversation GetStreamFRomCaht()
+        {
+            //get the api key
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json").Build();
+            string apiKey = configuration.GetSection("OpenAISetting").GetValue("ApiKey", "string");
+
+            // create a connection to ChatGPT
+            var OpenAi = new OpenAIAPI(apiKey);
+
+            var chat= OpenAi.Chat.CreateConversation();
+
+            chat.Model = Model.GPT4_Turbo;
+
+            chat.RequestParameters.Temperature = 0.2;
+            
+            chat.AppendUserInput("Tell me how are you");
+
+
+            return chat;
+          
         }
 
         public JsonMessage[] GetConversation(string id)

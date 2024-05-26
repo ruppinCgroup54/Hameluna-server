@@ -50,6 +50,24 @@ namespace hameluna_server.Controllers
 
         }
 
+         [HttpGet("favorites/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Dog[]> GetUserFavorites(string id)
+        {
+            try
+            {
+                List<Dog> dogs = Dog.GetFavorites(id);
+                return Ok(dogs);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
+
+        }
+
 
         // GET api/<DogController>/5
         [HttpGet("{id}")]
@@ -84,6 +102,25 @@ namespace hameluna_server.Controllers
             try
             {
                 return Ok(dog.Insert());
+
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
+        }
+        
+        // POST api/<DogController>
+        [HttpPost("favorites/{id}")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
+        public IActionResult AddToFavorites(string id,[FromBody] int[] favs)
+        {
+            try
+            {
+                return Ok(Dog.UpdateFavorites(favs,id));
 
             }
             catch (Exception e)

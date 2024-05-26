@@ -42,11 +42,6 @@ namespace hameluna_server.Controllers
             {
                 return Ok(new { chat = c.GetConversation(id) });
             }
-            catch (NullReferenceException ne)
-            {
-                // ne.Meassage contains the new user id
-                return NotFound(new { id = ne.Message });
-            }
             catch (Exception)
             {
                 return BadRequest("Could not retrive your conversation.");
