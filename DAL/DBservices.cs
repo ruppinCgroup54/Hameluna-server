@@ -90,7 +90,7 @@ public class DBservices
             throw new InvalidExpressionException("Invalide Address");
         }
 
-      
+
     }
 
     public int UpdateAddress(Address address)
@@ -253,7 +253,7 @@ public class DBservices
             // close the db connection
             con?.Close();
         }
-    }  
+    }
 
     public SqlCommand ColorSPCmd(String spName, SqlConnection con)
     {
@@ -374,5 +374,124 @@ public class DBservices
         }
     }
 
+    public async Task<List<string>> insertDogImages(string shelterId, List<IFormFile> images)
+    {
+        List<string> imageLinks = new();
+
+        string path = System.IO.Directory.GetCurrentDirectory();
+
+
+        //check for shelters diractory if noe exists create new one with shleter id
+        string shelterDir = Path.Combine(path, "uploadedImages/" + shelterId);
+        if (!Directory.Exists(shelterDir))
+        {
+            Directory.CreateDirectory(shelterDir);
+        }
+
+        long size = images.Sum(i => i.Length);
+
+        foreach (var formImage in images)
+        {
+            if (formImage.Length > 0)
+            {
+                var imagePath = Path.Combine(shelterDir, formImage.FileName + DateTime.Now.ToString());
+
+                using (var stream = System.IO.File.Create(imagePath))
+                {
+                    await formImage.CopyToAsync(stream);
+                }
+                imageLinks.Add(formImage.FileName);
+            }
+        }
+
+        return imageLinks;
+    }
+
+    public async Task<string> insertProfileImage(string shelterId, int dogId, IFormFile image)
+    {
+        string imageLink = "";
+
+        string path = System.IO.Directory.GetCurrentDirectory();
+
+
+        //check for shelters diractory if noe exists create new one with shleter id
+        string shelterDir = Path.Combine(path, "uploadedImages/" + shelterId);
+        if (!Directory.Exists(shelterDir))
+        {
+            Directory.CreateDirectory(shelterDir);
+        }
+
+        long size = image.Length;
+
+            if (image.Length > 0)
+            {
+                var imagePath = Path.Combine(shelterDir, image.FileName + DateTime.Now.ToString());
+
+                using (var stream = System.IO.File.Create(imagePath))
+                {
+                    await image.CopyToAsync(stream);
+                }
+                imageLink = image.FileName;
+            }
+
+        return imageLink;
+    }
+
+    public SqlCommand FilesSPCmd(String spName, SqlConnection con, string action, string url, int dogId)
+    {
+
+        SqlCommand cmd = new SqlCommand(); // create the command object
+
+        cmd.Connection = con;              // assign the connection to the command object
+
+        cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+
+        cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+        cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+        cmd.Parameters.AddWithValue("@StatementType", action);
+
+        if (url != null)
+        {
+            cmd.Parameters.AddWithValue("@Url", url);
+            cmd.Parameters.AddWithValue("@DogId", dogId);
+        }
+
+        return cmd;
+    }
+
+    public int InsertProfile(string url, int dogId)
+    {
+
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect(conString); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        //insert new address
+        cmd = FilesSPCmd("DogsFiles", con, "InsertProfile", url, dogId);
+
+        try
+        {
+            return cmd.ExecuteNonQuery();
+        }
+        catch (Exception ex)
+        {
+
+            throw new Exception("profile image is fail to uploaded.");
+        }
+
+
+    }
 
 }
+

@@ -10,63 +10,24 @@ namespace hameluna_server.Controllers
     {
 
 
-
         // POST api/<CellController>
-        [HttpPost("{shelterId}")]
+        [HttpPost("shelterId/{shelterId}/dogId/{dogId}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-        public async Task<IActionResult> Post(string shelterId,[FromForm] List<IFormFile> images)
+        public async Task<IActionResult> Post(string shelterId, int dogId, [FromForm] List<IFormFile> images)
         {
+            DBservices db = new();
             try
             {
-                List<string> imageLinks = new();
-
-                string path = System.IO.Directory.GetCurrentDirectory();
-
-
-                //check for shelters diractory if noe exists create new one with shleter id
-                string shelterDir = Path.Combine(path, "uploadedImages/");
-                if (!Directory.Exists(shelterDir))
-                {
-                    Directory.CreateDirectory(shelterDir);
-                }
-
-                long size = images.Sum(i => i.Length);
-
-                foreach (var formImage in images)
-                {
-                    if (formImage.Length > 0)
-                    {
-                        var imagePath = Path.Combine(shelterDir, formImage.FileName);
-
-                        using (var stream = System.IO.File.Create(imagePath))
-                        {
-                            await formImage.CopyToAsync(stream);
-                        }
-                        imageLinks.Add(formImage.FileName);
-                    }
-                }
-
-                return Ok(imageLinks);
+                string path = await db.insertProfileImage(shelterId, dogId, images[0]);
+                return Ok(db.insertProfileImage(shelterId, dogId, images[0]));
             }
-            catch
+            catch (Exception)
             {
-                return BadRequest("oops");
+                return BadRequest("image is failed to insert");
             }
-            //try
-            //{
-            //    sh.Insert();
-
-            //    return CreatedAtAction(nameof(Get), new { id = sh.Id }, sh);
-
-            //}
-            //catch (Exception e)
-            //{
-
-            //    return BadRequest(e.Message);
-            //}
         }
     }
 }
