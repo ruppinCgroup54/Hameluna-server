@@ -425,13 +425,14 @@ public class DBservices
 
             if (image.Length > 0)
             {
-                var imagePath = Path.Combine(shelterDir, image.FileName + DateTime.Now.ToString());
+            string fileName = DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_" + image.FileName;
+                var imagePath = Path.Combine(shelterDir, fileName);
 
                 using (var stream = System.IO.File.Create(imagePath))
                 {
                     await image.CopyToAsync(stream);
                 }
-                imageLink = image.FileName;
+                imageLink = $"Images/{shelterId}/{fileName}";
             }
 
         return imageLink;

@@ -22,7 +22,7 @@ namespace hameluna_server.Controllers
             try
             {
                 string path = await db.insertProfileImage(shelterId, dogId, images[0]);
-                return Ok(db.insertProfileImage(shelterId, dogId, images[0]));
+                return Ok(db.InsertProfile(path, dogId));
             }
             catch (Exception)
             {
