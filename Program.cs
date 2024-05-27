@@ -28,6 +28,13 @@ app.UseStaticFiles(new StaticFileOptions()
     RequestPath = new PathString("/Images")
 });
 
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), @"uploadedFiles")),
+    RequestPath = new PathString("/Files")
+});
+
 app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 app.UseAuthorization(); 

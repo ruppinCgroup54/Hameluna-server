@@ -438,6 +438,37 @@ public class DBservices
         return imageLink;
     }
 
+    public async Task<string> insertFile(string shelterId, int dogId, IFormFile file)
+    {
+        string imageLink = "";
+
+        string path = System.IO.Directory.GetCurrentDirectory();
+
+
+        //check for shelters diractory if noe exists create new one with shleter id
+        string shelterDir = Path.Combine(path, "uploadedFiles/" + shelterId);
+        if (!Directory.Exists(shelterDir))
+        {
+            Directory.CreateDirectory(shelterDir);
+        }
+
+        long size = file.Length;
+
+        if (file.Length > 0)
+        {
+            string fileName = DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_" + file.FileName;
+            var filePath = Path.Combine(shelterDir, fileName);
+
+            using (var stream = System.IO.File.Create(filePath))
+            {
+                await file.CopyToAsync(stream);
+            }
+            imageLink = $"Files/{shelterId}/{fileName}";
+        }
+
+        return imageLink;
+    }
+
     public SqlCommand FilesSPCmd(String spName, SqlConnection con, string action, string url, int dogId)
     {
 
@@ -491,6 +522,37 @@ public class DBservices
             throw new Exception("profile image is fail to uploaded.");
         }
 
+
+    }
+
+    public int InsertFileToData(string url, int dogId)
+    {
+
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect(conString); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        //insert new address
+        cmd = FilesSPCmd("DogsFiles", con, "InsertFiles", url, dogId);
+
+        try
+        {
+            return cmd.ExecuteNonQuery();
+        }
+        catch (Exception ex)
+        {
+
+            throw new Exception("profile image is fail to uploaded.");
+        }
 
     }
 
