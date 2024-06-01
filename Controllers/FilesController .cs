@@ -24,7 +24,7 @@ namespace hameluna_server.Controllers
                 int num = 0;
                 for (int i = 0; i < files.Count; i++)
                 {
-                    string path = await db.insertFile(shelterId, dogId, files[i]);
+                    string path = await db.InsertFile(shelterId, dogId, files[i]);
                     num = db.InsertFileToData(path, dogId);
                 }
                 return Ok(num);

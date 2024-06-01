@@ -97,6 +97,14 @@ namespace hameluna_server.BL
             return db.UpdateDog(this);
 
         }
+
+        public  List<string> GetAllImages()
+        {
+            DBservices db = new();
+            
+            return db.GetDogImages(this.NumberId);
+        }
+
         public static List<Dog> ReadAll()
         {
             DogDBService db = new(); 
@@ -147,14 +155,13 @@ namespace hameluna_server.BL
             return filteredDogs;
 
         }
+
         public static int UpdateFavorites(int[] newFav,string userId)
         {
             ChatDBService chatDB = new();
             //get all the dog sorted from the best match down
             return chatDB.UpdateFavoritesDogs(newFav,userId);
         }
-
-
 
         public static Dog ReadOne(int id)
         {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
+using System.Security.Cryptography;
 using hameluna_server.BL;
 
 /// <summary>
@@ -374,7 +376,50 @@ public class DBservices
         }
     }
 
-    public async Task<List<string>> insertDogImages(string shelterId, List<IFormFile> images)
+    public List<string> GetDogImages(int id)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect(conString); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cmd = FilesSPCmd("DogsFiles", con, "GetImages", "",id);          // create the command
+
+        try
+        {
+            SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+            List<string> characteristics = new();
+
+            while (dataReader.Read())
+            {
+                string c = dataReader["Path"].ToString();
+                characteristics.Add(c);
+            }
+            return characteristics;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            // close the db connection
+            con?.Close();
+        }
+    }
+
+    public async Task<List<string>> InsertDogImages(string shelterId, List<IFormFile> images)
     {
         List<string> imageLinks = new();
 
@@ -407,7 +452,7 @@ public class DBservices
         return imageLinks;
     }
 
-    public async Task<string> insertProfileImage(string shelterId, int dogId, IFormFile image)
+    public async Task<string> InsertProfileImage(string shelterId, int dogId, IFormFile image)
     {
         string imageLink = "";
 
@@ -438,7 +483,7 @@ public class DBservices
         return imageLink;
     }
 
-    public async Task<string> insertFile(string shelterId, int dogId, IFormFile file)
+    public async Task<string> InsertFile(string shelterId, int dogId, IFormFile file)
     {
         string imageLink = "";
 
@@ -464,6 +509,37 @@ public class DBservices
                 await file.CopyToAsync(stream);
             }
             imageLink = $"Files/{shelterId}/{fileName}";
+        }
+
+        return imageLink;
+    }
+
+    public async Task<string> InsertShelterImage( IFormFile image)
+    {
+        string imageLink = "";
+
+        string path = System.IO.Directory.GetCurrentDirectory();
+
+
+        //check for shelters diractory if noe exists create new one with shleter id
+        string shelterDir = Path.Combine(path, "uploadedImages/shelters");
+        if (!Directory.Exists(shelterDir))
+        {
+            Directory.CreateDirectory(shelterDir);
+        }
+
+        long size = image.Length;
+
+        if (image.Length > 0)
+        {
+            string fileName = DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_" + image.FileName;
+            var imagePath = Path.Combine(shelterDir, fileName);
+
+            using (var stream = System.IO.File.Create(imagePath))
+            {
+                await image.CopyToAsync(stream);
+            }
+            imageLink = $"Images/shelters/{fileName}";
         }
 
         return imageLink;

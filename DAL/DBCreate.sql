@@ -122,7 +122,7 @@ CREATE TABLE Dog
   NumberId int IDENTITY(0, 1) NOT NULL,
   Name nvarchar(20) NOT NULL,
   DateOfBirth date NULL,
-  Gender nvarchar(5) NOT NULL CHECK(Gender in ('���','����')),
+  Gender nvarchar(5) NOT NULL CHECK(Gender in ('זכר','נקבה')),
   EntrandeDate date NOT NULL,
   IsAdoptable bit DEFAULT 'false' NOT NULL,
   [Size] varchar(20) NOT NULL CHECK(Size in ('���','���-������','������','������-����','����')),
@@ -254,32 +254,31 @@ CREATE TABLE Volunteer_Shelter
 );
 ALTER TABLE Dog_Breed ADD CONSTRAINT FKDog_Breed732075 FOREIGN KEY (Breed) REFERENCES Breed (Breed);
 ALTER TABLE Daily_routine ADD CONSTRAINT FKDaily_rout691654 FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
-ALTER TABLE Adoption_request ADD CONSTRAINT FKAdoption_r875844 FOREIGN KEY (Optional_adopterPhoneNumber) REFERENCES Optional_adopter (PhoneNumber);
-ALTER TABLE Adoption_request ADD CONSTRAINT FKAdoption_r376637 FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
-ALTER TABLE Dog_Color ADD CONSTRAINT FKDog_Color318530 FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
-ALTER TABLE Dog_Color ADD CONSTRAINT FKDog_Color998865 FOREIGN KEY (ColorName) REFERENCES Color (ColorName);
-ALTER TABLE Todo_Item ADD CONSTRAINT FKTodo_Item503662 FOREIGN KEY (ShelterNumber) REFERENCES Shelter (ShelterNumber);
-ALTER TABLE Routine_item_in_Shelter_ ADD CONSTRAINT FKRoutine_it190235 FOREIGN KEY (ShelterNumber) REFERENCES Shelter (ShelterNumber);
-ALTER TABLE Routine_item_in_Shelter_ ADD CONSTRAINT FKRoutine_it352508 FOREIGN KEY ([DailyRoutine itemID]) REFERENCES [Daily routine item] (ItemID);
-ALTER TABLE Shelter ADD CONSTRAINT FKShelter711890 FOREIGN KEY (AddressId) REFERENCES UserAddress (Id);
-ALTER TABLE Optional_adopter ADD CONSTRAINT FKOptional_a86884 FOREIGN KEY (Addressid) REFERENCES UserAddress (Id);
-ALTER TABLE Volunteer_Shelter ADD CONSTRAINT FKVolunteer_318949 FOREIGN KEY (volunteerPhoneNumber) REFERENCES Volunteer (PhoneNumber);
-ALTER TABLE Volunteer_Shelter ADD CONSTRAINT FKVolunteer_236131 FOREIGN KEY (ShelterNumber) REFERENCES Shelter (ShelterNumber);
-ALTER TABLE Routine_item_in_Shelter_ ADD CONSTRAINT FKRoutine_it74644 FOREIGN KEY (DailyRoutineId) REFERENCES Daily_routine (routineId);
-ALTER TABLE Characteristics_Dog ADD CONSTRAINT FKCharacteri993916 FOREIGN KEY (attribute) REFERENCES Characteristics (attribute);
-ALTER TABLE Characteristics_Dog ADD CONSTRAINT FKCharacteri784397 FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
-ALTER TABLE Daily_routine ADD CONSTRAINT checks FOREIGN KEY (VolunteerPhoneNumber, ShelterNumber) REFERENCES Volunteer_Shelter (volunteerPhoneNumber, ShelterNumber);
-ALTER TABLE Cell ADD CONSTRAINT Contained FOREIGN KEY (ShelterNumber) REFERENCES Shelter (ShelterNumber);
-ALTER TABLE [File] ADD CONSTRAINT has FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
-ALTER TABLE Dog ADD CONSTRAINT [in] FOREIGN KEY (Cellid) REFERENCES Cell (id);
-ALTER TABLE Dog ADD CONSTRAINT [inImage] FOREIGN KEY (profileImg) REFERENCES Image (path);
-ALTER TABLE Dog_Breed ADD CONSTRAINT [is a] FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
-ALTER TABLE UserAddress ADD CONSTRAINT [is in] FOREIGN KEY (City) REFERENCES City (CityName);
-ALTER TABLE Shelter ADD CONSTRAINT manages FOREIGN KEY (AdminPhoneNumber) REFERENCES ShelterAdmin (PhoneNumber);
-ALTER TABLE Image ADD CONSTRAINT [of] FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId);
+ALTER TABLE Adoption_request ADD CONSTRAINT FKAdoption_r875844 FOREIGN KEY (Optional_adopterPhoneNumber) REFERENCES Optional_adopter (PhoneNumber) on Delete CASCADE;
+ALTER TABLE Adoption_request ADD CONSTRAINT FKAdoption_r376637 FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId)  on Delete CASCADE;
+ALTER TABLE Dog_Color ADD CONSTRAINT FKDog_Color318530 FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId)  on Delete CASCADE;
+ALTER TABLE Dog_Color ADD CONSTRAINT FKDog_Color998865 FOREIGN KEY (ColorName) REFERENCES Color (ColorName)  on Delete CASCADE;
+ALTER TABLE Todo_Item ADD CONSTRAINT FKTodo_Item503662 FOREIGN KEY (ShelterNumber) REFERENCES Shelter (ShelterNumber)  on Delete CASCADE;
+ALTER TABLE Routine_item_in_Shelter_ ADD CONSTRAINT FKRoutine_it190235 FOREIGN KEY (ShelterNumber) REFERENCES Shelter (ShelterNumber)  on Delete CASCADE;
+ALTER TABLE Routine_item_in_Shelter_ ADD CONSTRAINT FKRoutine_it352508 FOREIGN KEY ([DailyRoutine itemID]) REFERENCES [Daily routine item] (ItemID)  on Delete CASCADE;
+ALTER TABLE Shelter ADD CONSTRAINT FKShelter711890 FOREIGN KEY (AddressId) REFERENCES UserAddress (Id)  on Delete CASCADE;
+ALTER TABLE Optional_adopter ADD CONSTRAINT FKOptional_a86884 FOREIGN KEY (Addressid) REFERENCES UserAddress (Id)  on Delete CASCADE;
+ALTER TABLE Volunteer_Shelter ADD CONSTRAINT FKVolunteer_318949 FOREIGN KEY (volunteerPhoneNumber) REFERENCES Volunteer (PhoneNumber)  on Delete CASCADE;
+ALTER TABLE Volunteer_Shelter ADD CONSTRAINT FKVolunteer_236131 FOREIGN KEY (ShelterNumber) REFERENCES Shelter (ShelterNumber)  on Delete CASCADE;
+ALTER TABLE Routine_item_in_Shelter_ ADD CONSTRAINT FKRoutine_it74644 FOREIGN KEY (DailyRoutineId) REFERENCES Daily_routine (routineId)  on Delete CASCADE;
+ALTER TABLE Characteristics_Dog ADD CONSTRAINT FKCharacteri993916 FOREIGN KEY (attribute) REFERENCES Characteristics (attribute)  on Delete CASCADE;
+ALTER TABLE Characteristics_Dog ADD CONSTRAINT FKCharacteri784397 FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId)  on Delete CASCADE;
+ALTER TABLE Daily_routine ADD CONSTRAINT checks FOREIGN KEY (VolunteerPhoneNumber, ShelterNumber) REFERENCES Volunteer_Shelter (volunteerPhoneNumber, ShelterNumber)  on Delete CASCADE;
+ALTER TABLE Cell ADD CONSTRAINT Contained FOREIGN KEY (ShelterNumber) REFERENCES Shelter (ShelterNumber)  on Delete CASCADE;
+ALTER TABLE [File] ADD CONSTRAINT has FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId)  on Delete CASCADE;
+ALTER TABLE Dog ADD CONSTRAINT [in] FOREIGN KEY (Cellid) REFERENCES Cell (id)  on Delete CASCADE;
+ALTER TABLE Dog ADD CONSTRAINT [inImage] FOREIGN KEY (profileImg) REFERENCES Image (path)  on Delete CASCADE;
+ALTER TABLE Dog_Breed ADD CONSTRAINT [is a] FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId)  on Delete CASCADE;
+ALTER TABLE UserAddress ADD CONSTRAINT [is in] FOREIGN KEY (City) REFERENCES City (CityName)  on Delete CASCADE;
+ALTER TABLE Shelter ADD CONSTRAINT manages FOREIGN KEY (AdminPhoneNumber) REFERENCES ShelterAdmin (PhoneNumber)  on Delete CASCADE;
+ALTER TABLE Image ADD CONSTRAINT [of] FOREIGN KEY (DogNumberId) REFERENCES Dog (NumberId)  on Delete CASCADE;
 ALTER TABLE Adoption_request ADD CONSTRAINT UC_adoption UNIQUE (DogNumberId,Optional_adopterPhoneNumber)
-
-
+3
 
 insert into Characteristics
   (attribute)

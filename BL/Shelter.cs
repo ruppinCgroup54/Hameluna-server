@@ -56,6 +56,12 @@ namespace hameluna_server.BL
             ShelterDBService db = new();
 
             this.ShelterId= db.InsertShelter(this);
+
+            foreach (Cell cell in Cells)
+            {
+                cell.ShelterNumber = this.ShelterId;
+                cell.Insert();
+            }
         }
 
         public int Update()

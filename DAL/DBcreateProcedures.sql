@@ -19,6 +19,14 @@ AS
 
 
 Drop procedure if exists CityTableIUD
+
+CREATE PROCEDURE CityTableIUD 
+AS
+BEGIN
+
+	SELECT CityName FROM City
+end 
+
 GO
 create PROCEDURE CityTableIUD  @CityName NVARCHAR(12), @Region nvarchar(30),@StatementType varchar(10)
 AS
@@ -166,7 +174,7 @@ create PROCEDURE DogTableIUD
 				  @NumberId int, 
 				  @Name nvarchar(20), 
 				  @DateOfBirth date, 
-				  @Gender char(1), 
+				  @Gender nvarchar(4), 
 				  @EntranceDate date, 
 				  @IsAdoptable bit, 
 				  @Size varchar(20), 
@@ -206,25 +214,24 @@ AS
 				  ) ;
 
 				SELECT SCOPE_IDENTITY() 
-			
         END
 
       IF @StatementType = 'Select'
         BEGIN
-            SELECT ChipNumber, NumberId, [Name], DateOfBirth, Gender, EntranceDate, IsAdoptable, [Size], Adopted, IsReturned, Cellid
+            SELECT ChipNumber, NumberId, [Name], DateOfBirth, Gender, EntranceDate, IsAdoptable, [Size], Adopted, IsReturned, Cellid,profileImg
 			FROM Dog;
         END
 
 		IF @StatementType = 'SelectOne'
         BEGIN
-            SELECT ChipNumber, NumberId, [Name], DateOfBirth, Gender, EntranceDate, IsAdoptable, [Size], Adopted, IsReturned, Cellid
+            SELECT ChipNumber, NumberId, [Name], DateOfBirth, Gender, EntranceDate, IsAdoptable, [Size], Adopted, IsReturned, Cellid,profileImg
 			FROM Dog
 			where NumberId=3;
         END
 
 		IF @StatementType = 'SelectByShelter'
         BEGIN
-            SELECT d.NumberId, d.[Name], d.Cellid
+		  SELECT d.*,c.Number
 			FROM Dog d join Cell c on d.Cellid=c.id
 			where c.ShelterNumber = @shelter and d.Adopted = 'false'
         END
@@ -773,6 +780,6 @@ AS
 		SELECT ColorName 
 			FROM Color
 		END
-
-  END
-  Go
+		
+        END
+		Go
