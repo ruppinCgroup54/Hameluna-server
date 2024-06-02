@@ -6,12 +6,12 @@ namespace hameluna_server.BL
     {
 
         public int RequestId { get; set; }
-        public Persone Adopter { get; set; }
+        public Adopter Adopter { get; set; }
         public DateTime SendDate { get; set; }
         public int DogId { get; set; }
         public string Status { get; set; }
 
-        public AdoptionRequest(int requestId, Persone adopter, DateTime sendDate, int dogId, string status)
+        public AdoptionRequest(int requestId, Adopter adopter, DateTime sendDate, int dogId, string status)
         {
             RequestId = requestId;
             Adopter = adopter;
@@ -32,13 +32,7 @@ namespace hameluna_server.BL
 
             try
             {
-                Adopter ad = new() { 
-                    PhoneNumber=this.Adopter.PhoneNumber ,
-                    FirstName=this.Adopter.FirstName ,
-                    LastName=this.Adopter.LastName ,
-                    Email=this.Adopter.Email 
-                    };
-                ad.Insert();
+                this.Adopter.Insert();
             }
             catch
             {
