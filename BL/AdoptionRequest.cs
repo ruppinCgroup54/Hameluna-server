@@ -8,21 +8,22 @@ namespace hameluna_server.BL
         public int RequestId { get; set; }
         public Adopter Adopter { get; set; }
         public DateTime SendDate { get; set; }
-        public int DogId { get; set; }
+        public Dog Dog { get; set; }
         public string Status { get; set; }
 
-        public AdoptionRequest(int requestId, Adopter adopter, DateTime sendDate, int dogId, string status)
+        public AdoptionRequest(int requestId, Adopter adopter, DateTime sendDate, Dog dog, string status)
         {
             RequestId = requestId;
             Adopter = adopter;
             SendDate = sendDate;
-            DogId = dogId;
+            Dog = dog;
             Status = status;
         }
 
         public AdoptionRequest()
         {
             Adopter = new();
+            Dog = new();
             SendDate = DateTime.Now;
         }
 
@@ -36,6 +37,7 @@ namespace hameluna_server.BL
             }
             catch
             {
+                this.Adopter.Update();
                 Console.WriteLine("User exits");
             }
             finally

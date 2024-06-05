@@ -52,7 +52,7 @@ public class DBservices
         if (address != null)
         {
             cmd.Parameters.AddWithValue("@Id", address.Id);
-            cmd.Parameters.AddWithValue("@City", address.City);
+            cmd.Parameters.AddWithValue("@CityName", address.City);
             cmd.Parameters.AddWithValue("@StreetName", address.StreetName);
             cmd.Parameters.AddWithValue("@HouseNumber", address.HouseNumber);
             cmd.Parameters.AddWithValue("@Region", address.Region);

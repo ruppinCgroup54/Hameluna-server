@@ -31,7 +31,7 @@ namespace hameluna_server.DAL
             cmd.Parameters.AddWithValue("@StatementType", action);
             cmd.Parameters.AddWithValue("@RequestID", adoptionRequest.RequestId);
             cmd.Parameters.AddWithValue("@SentDate", adoptionRequest.SendDate);
-            cmd.Parameters.AddWithValue("@DogNumberId", adoptionRequest.DogId);
+            cmd.Parameters.AddWithValue("@DogNumberId", adoptionRequest.Dog.NumberId);
             cmd.Parameters.AddWithValue("@Optional_adopterPhoneNumber", adoptionRequest.Adopter.PhoneNumber);
             cmd.Parameters.AddWithValue("@Status", adoptionRequest.Status);
 
@@ -69,6 +69,7 @@ namespace hameluna_server.DAL
 
                 if (ex.Message.StartsWith("Violation of UNIQUE KEY constraint 'UC_adoption'"))
                 {
+                    UpdateAdoptionRequest(adoptionRequest);
                     throw new ConstraintException();
                 }
                 // write to log
@@ -189,10 +190,10 @@ namespace hameluna_server.DAL
                         RequestId = Convert.ToInt32(dataReader["RequestID"]),
                         Status = dataReader["Status"].ToString(),
                         SendDate =DateTime.Parse(dataReader["SentDate"].ToString()),
-                        DogId= Convert.ToInt32(dataReader["DogNumberId"])
 
                     };
                     ar.Adopter = Adopter.ReadOne(dataReader["Optional_adopterPhoneNumber"].ToString());
+                    ar.Dog = Dog.ReadOne(Convert.ToInt32(dataReader["DogNumberId"]));
                     adoptionReqList.Add(ar);
                 }
                 return adoptionReqList;
