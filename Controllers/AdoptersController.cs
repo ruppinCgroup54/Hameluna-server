@@ -11,6 +11,7 @@ namespace hameluna_server.Controllers
     public class AdoptersController : Controller
     {
 
+
         // GET: api/<VolunteerController>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
