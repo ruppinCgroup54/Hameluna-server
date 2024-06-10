@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
+using MongoDB.Driver;
 using OpenAI_API;
 using OpenAI_API.Chat;
 using OpenAI_API.Completions;
@@ -50,6 +51,61 @@ namespace hameluna_server.Controllers
 
                 return BadRequest("done");
             }
+        }
+        [HttpGet("mongo")]
+        public async Task<IActionResult> GetIp()
+        {
+
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Access-Control-Request-Headers", "*");
+            client.DefaultRequestHeaders.Add("api-key", "9iCKysgYgHsH4oPsPavJa64Ksqy1E1a2mPA4xohaMUdTkfOjVPNuktlnCjsU0Gd1");
+
+
+
+
+            //var body = @"\{""collection"":""Users"",""database"":""DogBot"", ""dataSource"":""ChatApp"",""projection"":{""_id"": 1}\}";
+
+            //using StringContent jsonContent = new(body,
+            //                                           Encoding.UTF8,
+            //                                           "application/json");
+            try
+            {
+                // Send the GET request
+                HttpResponseMessage response = await client.GetAsync("https://eu-central-1.aws.data.mongodb-api.com/app/data-wqefo/endpoint/GetUsers");
+
+                // Ensure the request was successful
+                response.EnsureSuccessStatusCode();
+
+                // Read the response content as a string
+                string responseData = await response.Content.ReadAsStringAsync();
+
+                // Print the response data
+                Console.WriteLine(responseData);
+                return Ok(responseData);
+            }
+            catch (HttpRequestException e)
+            {
+                // Handle HTTP request errors
+                Console.WriteLine($"Request error: {e.Message}");
+            }
+            catch (Exception e)
+            {
+                // Handle general errors
+                Console.WriteLine($"Error: {e.Message}");
+            }
+            finally
+            {
+                // Dispose the HttpClient instance if you don't plan to reuse it
+                client.Dispose();
+            }
+
+                return NotFound();
+
+
+
+
+
+
         }
 
     }

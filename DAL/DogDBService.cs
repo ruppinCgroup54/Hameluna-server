@@ -30,18 +30,18 @@ namespace hameluna_server.DAL
 
             cmd.Parameters.AddWithValue("@StatementType", action);
 
-                cmd.Parameters.AddWithValue("@ChipNumber", dog.ChipNumber);
-                cmd.Parameters.AddWithValue("@NumberId", dog.NumberId);
-                cmd.Parameters.AddWithValue("@Name", dog.Name);
-                cmd.Parameters.AddWithValue("@DateOfBirth", dog.DateOfBirth);
-                cmd.Parameters.AddWithValue("@Gender", dog.Gender);
-                cmd.Parameters.AddWithValue("@EntranceDate", dog.EntranceDate);
-                cmd.Parameters.AddWithValue("@IsAdoptable", dog.IsAdoptable);
-                cmd.Parameters.AddWithValue("@Size", dog.Size);
-                cmd.Parameters.AddWithValue("@Adopted", dog.Adopted);
-                cmd.Parameters.AddWithValue("@IsReturned", dog.IsReturned);
-                cmd.Parameters.AddWithValue("@CellId", dog.CellId);
-                cmd.Parameters.AddWithValue("@shelter", shelterNum);
+            cmd.Parameters.AddWithValue("@ChipNumber", dog.ChipNumber);
+            cmd.Parameters.AddWithValue("@NumberId", dog.NumberId);
+            cmd.Parameters.AddWithValue("@Name", dog.Name);
+            cmd.Parameters.AddWithValue("@DateOfBirth", dog.DateOfBirth);
+            cmd.Parameters.AddWithValue("@Gender", dog.Gender);
+            cmd.Parameters.AddWithValue("@EntranceDate", dog.EntranceDate);
+            cmd.Parameters.AddWithValue("@IsAdoptable", dog.IsAdoptable);
+            cmd.Parameters.AddWithValue("@Size", dog.Size);
+            cmd.Parameters.AddWithValue("@Adopted", dog.Adopted);
+            cmd.Parameters.AddWithValue("@IsReturned", dog.IsReturned);
+            cmd.Parameters.AddWithValue("@CellId", dog.CellId);
+            cmd.Parameters.AddWithValue("@shelter", shelterNum);
 
 
             return cmd;
@@ -264,6 +264,7 @@ namespace hameluna_server.DAL
                     };
                     d.Breed = GetDogBreed(d.NumberId);
                     d.Color = GetDogColor(d.NumberId);
+                    d.Attributes = GetDogCharecteristics(d.NumberId);
                 }
                 return d;
             }
@@ -331,6 +332,7 @@ namespace hameluna_server.DAL
             }
             catch (Exception ex)
             {
+                Console.WriteLine("errroorr");
                 // write to log
                 throw (ex);
             }
@@ -343,7 +345,7 @@ namespace hameluna_server.DAL
         }
 
         //create command for dog breed
-        private SqlCommand BreedDogSPCmd(String spName, SqlConnection con, int dogId, string dogBreed, string action)
+        private SqlCommand BreedDogSPCmd(String spName, SqlConnection con, int dogId, List<string> dogBreed, string action)
         {
 
             SqlCommand cmd = new SqlCommand(); // create the command object
@@ -358,8 +360,10 @@ namespace hameluna_server.DAL
 
             cmd.Parameters.AddWithValue("@StatementType", action);
 
+            DataTable table = ConvertToTable(dogBreed);
+
             cmd.Parameters.AddWithValue("@DogId", dogId);
-            cmd.Parameters.AddWithValue("@Breed", dogBreed);
+            cmd.Parameters.AddWithValue("@Breed", table);
 
             return cmd;
         }
@@ -383,11 +387,11 @@ namespace hameluna_server.DAL
 
             try
             {
-                for (int i = 0; i < dog.Breed.Count; i++)
-                {
-                    cmd = BreedDogSPCmd(spDogBreedIUD, con, dog.NumberId, dog.Breed[i], "Insert"); // create the command
-                    int numEffected = cmd.ExecuteNonQuery();
-                }
+                //for (int i = 0; i < dog.Breed.Count; i++)
+                //{
+                cmd = BreedDogSPCmd(spDogBreedIUD, con, dog.NumberId, dog.Breed, "Insert"); // create the command
+                int numEffected = cmd.ExecuteNonQuery();
+                //}
             }
             catch (Exception ex)
             {
@@ -418,7 +422,7 @@ namespace hameluna_server.DAL
                 throw (ex);
             }
 
-            cmd = BreedDogSPCmd(spDogBreedIUD, con, dogId, "", "Select"); // create the command
+            cmd = BreedDogSPCmd(spDogBreedIUD, con, dogId, new(), "Select"); // create the command
 
             try
             {
@@ -428,7 +432,7 @@ namespace hameluna_server.DAL
 
                 while (dataReader.Read())
                 {
-                         breed.Add(dataReader["Breed"].ToString());
+                    breed.Add(dataReader["Breed"].ToString());
                 }
                 return breed;
 
@@ -445,7 +449,7 @@ namespace hameluna_server.DAL
             }
         }
 
-        private SqlCommand ColorDogSPCmd(String spName, SqlConnection con, int dogId, string dogColor, string action)
+        private SqlCommand ColorDogSPCmd(String spName, SqlConnection con, int dogId, List<string> dogColor, string action)
         {
 
             SqlCommand cmd = new SqlCommand(); // create the command object
@@ -460,8 +464,10 @@ namespace hameluna_server.DAL
 
             cmd.Parameters.AddWithValue("@StatementType", action);
 
+            DataTable table = ConvertToTable(dogColor);
+
             cmd.Parameters.AddWithValue("@DogId", dogId);
-            cmd.Parameters.AddWithValue("@Color", dogColor);
+            cmd.Parameters.AddWithValue("@Color", table);
 
             return cmd;
         }
@@ -485,11 +491,9 @@ namespace hameluna_server.DAL
 
             try
             {
-                for (int i = 0; i < dog.Color.Count; i++)
-                {
-                    cmd = ColorDogSPCmd(spDogColorIUD, con, dog.NumberId, dog.Color[i], "Insert"); // create the command
-                    int numEffected = cmd.ExecuteNonQuery();
-                }
+
+                cmd = ColorDogSPCmd(spDogColorIUD, con, dog.NumberId, dog.Color, "Insert"); // create the command
+                int numEffected = cmd.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
@@ -520,7 +524,7 @@ namespace hameluna_server.DAL
                 throw (ex);
             }
 
-            cmd = ColorDogSPCmd(spDogColorIUD, con, dogId, "", "Select"); // create the command
+            cmd = ColorDogSPCmd(spDogColorIUD, con, dogId, new(), "Select"); // create the command
 
             try
             {
@@ -547,7 +551,7 @@ namespace hameluna_server.DAL
             }
         }
 
-        private SqlCommand CharecteristicsDogSPCmd(String spName, SqlConnection con, int dogId, string dogAttribute, string action)
+        private SqlCommand CharecteristicsDogSPCmd(String spName, SqlConnection con, int dogId, List<string> dogAttribute, string action)
         {
 
             SqlCommand cmd = new SqlCommand(); // create the command object
@@ -562,8 +566,10 @@ namespace hameluna_server.DAL
 
             cmd.Parameters.AddWithValue("@StatementType", action);
 
+            DataTable table = ConvertToTable(dogAttribute);
+
             cmd.Parameters.AddWithValue("@DogId", dogId);
-            cmd.Parameters.AddWithValue("@attribute", dogAttribute);
+            cmd.Parameters.AddWithValue("@attribute", table);
 
             return cmd;
         }
@@ -587,11 +593,9 @@ namespace hameluna_server.DAL
 
             try
             {
-                for (int i = 0; i < dog.Attributes.Count; i++)
-                {
-                    cmd = CharecteristicsDogSPCmd("CharecteristicsOfDogTableIUD", con, dog.NumberId, dog.Attributes[i], "Insert"); // create the command
-                    int numEffected = cmd.ExecuteNonQuery();
-                }
+
+                cmd = CharecteristicsDogSPCmd("CharecteristicsOfDogTableIUD", con, dog.NumberId, dog.Attributes, "Insert"); // create the command
+                int numEffected = cmd.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
@@ -622,7 +626,7 @@ namespace hameluna_server.DAL
                 throw (ex);
             }
 
-            cmd = CharecteristicsDogSPCmd("CharecteristicsOfDogTableIUD", con, dogId, "", "Select"); // create the command
+            cmd = CharecteristicsDogSPCmd("CharecteristicsOfDogTableIUD", con, dogId, new(), "Select"); // create the command
 
             try
             {
@@ -633,12 +637,14 @@ namespace hameluna_server.DAL
                 while (dataReader.Read())
                 {
                     character.Add(dataReader["attribute"].ToString());
+                    Console.WriteLine(character[character.Count-1]);
                 }
                 return character;
 
             }
             catch (Exception ex)
             {
+                Console.WriteLine("error in attributes");
                 // write to log
                 throw (ex);
             }
@@ -647,6 +653,18 @@ namespace hameluna_server.DAL
             {
                 con?.Close();
             }
+        }
+
+        DataTable ConvertToTable(List<string> list)
+        {
+            DataTable table = new();
+            DataColumn dc = new("item", typeof(string));
+            table.Columns.Add(dc);
+            foreach (string item in list)
+            {
+                table.Rows.Add(item);
+            }
+            return table;
         }
     }
 }

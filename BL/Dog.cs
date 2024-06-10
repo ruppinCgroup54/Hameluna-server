@@ -93,6 +93,9 @@ namespace hameluna_server.BL
         public int Update()
         {
             DogDBService db = new();
+            db.InsertBreedOfDog(this);
+            db.InsertColorOfDog(this);
+            db.InsertCharecterOfDog(this);
 
             return db.UpdateDog(this);
 

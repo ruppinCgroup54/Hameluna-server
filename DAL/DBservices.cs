@@ -632,5 +632,24 @@ public class DBservices
 
     }
 
+    public static void WriteToErrorLog(Exception temp)
+    {
+        using (StreamWriter writer = new StreamWriter("LogErrors.txt", append: true)) // append: true to append to the file
+        {
+            do
+            {
+                writer.WriteLine(temp.Message);
+                temp = temp.InnerException;
+            } while (temp != null);
+        }
+    }
+    public static void WriteToErrorLog(string temp)
+    {
+        using (StreamWriter writer = new StreamWriter("LogErrors.txt", append: true)) // append: true to append to the file
+        {
+                writer.WriteLine(temp);
+        }
+    }
+
 }
 

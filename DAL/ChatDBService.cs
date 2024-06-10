@@ -61,15 +61,7 @@ namespace hameluna_server.DAL
             }
             catch (Exception ex)
             {
-                Exception temp = ex;
-                using (StreamWriter writer = new StreamWriter("LogErrors.txt", append: true)) // append: true to append to the file
-                {
-                    do
-                    {
-                        writer.WriteLine( temp.Message);
-                        temp = temp.InnerException;
-                    } while (temp != null);
-                }
+                DBservices.WriteToErrorLog(ex);
                 throw ex;
             }
 
@@ -128,6 +120,7 @@ namespace hameluna_server.DAL
             }
             catch (Exception ex)
             {
+                DBservices.WriteToErrorLog(ex);
 
                 throw (ex);
             }
