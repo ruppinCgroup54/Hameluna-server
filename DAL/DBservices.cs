@@ -391,7 +391,7 @@ public class DBservices
             throw (ex);
         }
 
-        cmd = FilesSPCmd("DogsFiles", con, "GetImages", "",id);          // create the command
+        cmd = FilesSPCmd("DogsFiles", con, "GetImages", "", id);          // create the command
 
         try
         {
@@ -468,17 +468,17 @@ public class DBservices
 
         long size = image.Length;
 
-            if (image.Length > 0)
-            {
+        if (image.Length > 0)
+        {
             string fileName = DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_" + image.FileName;
-                var imagePath = Path.Combine(shelterDir, fileName);
+            var imagePath = Path.Combine(shelterDir, fileName);
 
-                using (var stream = System.IO.File.Create(imagePath))
-                {
-                    await image.CopyToAsync(stream);
-                }
-                imageLink = $"Images/{shelterId}/{fileName}";
+            using (var stream = System.IO.File.Create(imagePath))
+            {
+                await image.CopyToAsync(stream);
             }
+            imageLink = $"Images/{shelterId}/{fileName}";
+        }
 
         return imageLink;
     }
@@ -514,7 +514,7 @@ public class DBservices
         return imageLink;
     }
 
-    public async Task<string> InsertShelterImage( IFormFile image)
+    public async Task<string> InsertShelterImage(IFormFile image)
     {
         string imageLink = "";
 
@@ -568,6 +568,30 @@ public class DBservices
 
         return cmd;
     }
+    public SqlCommand FilesArraySPCmd(String spName, SqlConnection con, string action, List<string> urls, int dogId)
+    {
+
+        SqlCommand cmd = new SqlCommand(); // create the command object
+
+        cmd.Connection = con;              // assign the connection to the command object
+
+        cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+
+        cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+        cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+        cmd.Parameters.AddWithValue("@StatementType", action);
+
+        if (urls != null)
+        {
+            cmd.Parameters.AddWithValue("@Url", urls);
+            cmd.Parameters.AddWithValue("@ListUrl", ConvertToTable(urls));
+            cmd.Parameters.AddWithValue("@DogId", dogId);
+        }
+
+        return cmd;
+    }
 
     public int InsertProfile(string url, int dogId)
     {
@@ -595,6 +619,38 @@ public class DBservices
         catch (Exception ex)
         {
 
+            throw new Exception("profile image is fail to uploaded.");
+        }
+
+
+    }
+
+    public int InsertImagesToData(string url, int dogId)
+    {
+
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect(conString); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        //insert new address
+        cmd = FilesSPCmd("DogsFiles", con, "InsertImages", url, dogId);
+
+        try
+        {
+            return cmd.ExecuteNonQuery();
+        }
+        catch (Exception ex)
+        {
+            DBservices.WriteToErrorLog(ex);
             throw new Exception("profile image is fail to uploaded.");
         }
 
@@ -647,9 +703,20 @@ public class DBservices
     {
         using (StreamWriter writer = new StreamWriter("LogErrors.txt", append: true)) // append: true to append to the file
         {
-                writer.WriteLine(temp);
+            writer.WriteLine(temp);
         }
     }
 
+    public DataTable ConvertToTable(List<string> list)
+    {
+        DataTable table = new();
+        DataColumn dc = new("item", typeof(string));
+        table.Columns.Add(dc);
+        foreach (string item in list)
+        {
+            table.Rows.Add(item);
+        }
+        return table;
+    }
 }
 

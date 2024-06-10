@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using hameluna_server.DAL;
+using MongoDB.Bson;
 
 namespace hameluna_server.BL
 {
@@ -22,7 +23,7 @@ namespace hameluna_server.BL
             Breed = new();
             Attributes = new();
         }
-        public Dog(string chipNumber, int numberId, string name, DateTime dateOfBirth, string gender, DateTime entranceDate, string size, int cellId, List<string> color, List<string> breed, List<string> attributes, bool isAdoptable=false, bool isReturned=false, bool adopted=false)
+        public Dog(string chipNumber, int numberId, string name, DateTime dateOfBirth, string gender, DateTime entranceDate, string size, int cellId, List<string> color, List<string> breed, List<string> attributes, bool isAdoptable = false, bool isReturned = false, bool adopted = false)
         {
             ChipNumber = chipNumber;
             NumberId = numberId;
@@ -75,7 +76,7 @@ namespace hameluna_server.BL
             }
 
             int years = dt.Year - dob.Year;
-            return years+months/12;
+            return years + months / 12;
         }
 
         public int Insert()
@@ -101,16 +102,32 @@ namespace hameluna_server.BL
 
         }
 
-        public  List<string> GetAllImages()
+        public List<string> GetAllImages()
         {
             DBservices db = new();
-            
+
             return db.GetDogImages(this.NumberId);
+        }
+
+        public async Task<List<string>> AddImages(string shelterId, List<IFormFile> images)
+        {
+            DBservices db = new();
+            List<string> paths = new();
+            foreach (var img in images)
+            {
+                string path = await db.InsertProfileImage(shelterId, this.NumberId, img);
+                await Console.Out.WriteLineAsync(path);
+                db.InsertImagesToData(path, this.NumberId);
+                paths.Add(path);
+            }
+            Console.WriteLine(paths.ToJson());
+            return paths;
+
         }
 
         public static List<Dog> ReadAll()
         {
-            DogDBService db = new(); 
+            DogDBService db = new();
             return db.ReadAll();
         }
 
@@ -126,7 +143,7 @@ namespace hameluna_server.BL
             DogDBService dogDB = new();
             List<Dog> dogs = dogDB.ReadAll();
 
-            List<Dog> filteredDogs = new();  
+            List<Dog> filteredDogs = new();
 
             foreach (JsonRank dr in dogsRank)
             {
@@ -147,23 +164,23 @@ namespace hameluna_server.BL
             DogDBService dogDB = new();
             List<Dog> dogs = dogDB.ReadAll();
 
-            List<Dog> filteredDogs = new();  
+            List<Dog> filteredDogs = new();
 
             foreach (int fav in favorites)
             {
 
-                filteredDogs.Add(dogs.FirstOrDefault(d => d.NumberId ==fav));
+                filteredDogs.Add(dogs.FirstOrDefault(d => d.NumberId == fav));
 
             }
             return filteredDogs;
 
         }
 
-        public static int UpdateFavorites(int[] newFav,string userId)
+        public static int UpdateFavorites(int[] newFav, string userId)
         {
             ChatDBService chatDB = new();
             //get all the dog sorted from the best match down
-            return chatDB.UpdateFavoritesDogs(newFav,userId);
+            return chatDB.UpdateFavoritesDogs(newFav, userId);
         }
 
         public static Dog ReadOne(int id)

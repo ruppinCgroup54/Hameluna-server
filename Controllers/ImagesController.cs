@@ -18,11 +18,30 @@ namespace hameluna_server.Controllers
 
         public async Task<IActionResult> Post(string shelterId, int dogId, [FromForm] List<IFormFile> images)
         {
-            DBservices db = new();
+            DBservices db = new();      
             try
             {
                 string path = await db.InsertProfileImage(shelterId, dogId, images[0]);
                 return Ok(db.InsertProfile(path, dogId));
+            }
+            catch (Exception)
+            {
+                return BadRequest("image is failed to insert");
+            }
+        }  
+        // POST api/<CellController>
+        [HttpPost("addImages/shelterId/{shelterId}/dogId/{dogId}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
+        public async Task<IActionResult> AddImages(string shelterId, int dogId, [FromForm] List<IFormFile> images)
+        {
+            try
+            {
+                Dog dog = new(){ NumberId = dogId };
+                List<string> paths = await dog.AddImages(shelterId, images);
+                return Ok(paths);
             }
             catch (Exception)
             {

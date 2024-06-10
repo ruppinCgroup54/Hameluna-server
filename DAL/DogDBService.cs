@@ -73,6 +73,7 @@ namespace hameluna_server.DAL
             catch (Exception ex)
             {
                 // write to log
+                DBservices.WriteToErrorLog(ex);
                 throw (ex);
             }
 
@@ -655,16 +656,5 @@ namespace hameluna_server.DAL
             }
         }
 
-        DataTable ConvertToTable(List<string> list)
-        {
-            DataTable table = new();
-            DataColumn dc = new("item", typeof(string));
-            table.Columns.Add(dc);
-            foreach (string item in list)
-            {
-                table.Rows.Add(item);
-            }
-            return table;
-        }
     }
 }

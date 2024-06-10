@@ -1,3 +1,6 @@
 success yota, lech lishonsuccess yota, lech lishon
 success yota, lech lishon
 ./LogErrors.txt
+The INSERT statement conflicted with the CHECK constraint "CK__Dog__Size__795DFB40". The conflict occurred in database "igroup154_test1", table "dbo.Dog", column 'Size'.
+The statement has been terminated.
+No mapping exists from object type System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]] to a known managed provider native type.
