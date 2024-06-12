@@ -22,9 +22,11 @@ namespace hameluna_server.BL
             Color = new();
             Breed = new();
             Attributes = new();
+            ShelterNumber = -1;
         }
-        public Dog(string chipNumber, int numberId, string name, DateTime dateOfBirth, string gender, DateTime entranceDate, string size, int cellId, List<string> color, List<string> breed, List<string> attributes, bool isAdoptable = false, bool isReturned = false, bool adopted = false)
+        public Dog(int shelterNumber, string chipNumber, int numberId, string name, DateTime dateOfBirth, string gender, DateTime entranceDate, string size, int cellId, List<string> color, List<string> breed, List<string> attributes, bool isAdoptable = false, bool isReturned = false, bool adopted = false)
         {
+            ShelterNumber = shelterNumber;
             ChipNumber = chipNumber;
             NumberId = numberId;
             Name = name;
@@ -53,6 +55,7 @@ namespace hameluna_server.BL
         public bool Adopted { get; set; }
         public bool IsReturned { get; set; }
         public int CellId { get; set; }
+        public int ShelterNumber { get; set; }
         public List<string> Color { get; set; }
         public List<string> Breed { get; set; }
         public List<string> Attributes { get; set; }

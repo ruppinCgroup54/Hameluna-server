@@ -92,5 +92,32 @@ namespace hameluna_server.Controllers
 
         }
 
+        // DELETE api/<DogController>/5
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult DeleteDogImage(int id)
+        {
+            try
+            {
+
+                int numEffected = Dog.Delete(id);
+                if (numEffected == 0)
+                {
+                    return NotFound($"There is no dog with id number {id}");
+                }
+
+                return NoContent();
+
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+
+            }
+        }
+
     }
 }

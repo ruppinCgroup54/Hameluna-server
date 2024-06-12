@@ -1,6 +1,7 @@
 ﻿using hameluna_server.BL;
 using System.Data.SqlClient;
 using System.Data;
+using System.Data.Common;
 
 namespace hameluna_server.DAL
 {
@@ -41,7 +42,7 @@ namespace hameluna_server.DAL
             cmd.Parameters.AddWithValue("@Adopted", dog.Adopted);
             cmd.Parameters.AddWithValue("@IsReturned", dog.IsReturned);
             cmd.Parameters.AddWithValue("@CellId", dog.CellId);
-            cmd.Parameters.AddWithValue("@shelter", shelterNum);
+            cmd.Parameters.AddWithValue("@shelter", dog.ShelterNumber);
 
 
             return cmd;
@@ -182,31 +183,7 @@ namespace hameluna_server.DAL
             {
                 SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
 
-                while (dataReader.Read())
-                {
-                    Dog a = new()
-                    {
-                        ChipNumber = dataReader["ChipNumber"].ToString(),
-                        NumberId = Convert.ToInt32(dataReader["NumberId"]),
-                        Name = dataReader["Name"].ToString(),
-                        DateOfBirth = Convert.ToDateTime(dataReader["DateOfBirth"]),
-                        Gender = dataReader["Gender"].ToString(),
-                        EntranceDate = Convert.ToDateTime(dataReader["EntranceDate"]),
-                        IsAdoptable = Convert.ToBoolean(dataReader["IsAdoptable"]),
-                        Size = dataReader["Size"].ToString(),
-                        Adopted = Convert.ToBoolean(dataReader["Adopted"]),
-                        IsReturned = Convert.ToBoolean(dataReader["IsReturned"]),
-                        CellId = Convert.ToInt32(dataReader["CellId"]),
-                        ProfileImage = dataReader["profileImg"].ToString()
-
-                    };
-
-                    a.Breed = GetDogBreed(a.NumberId);
-                    a.Color = GetDogColor(a.NumberId);
-
-                    dogsList.Add(a);
-                }
-                return dogsList;
+                return ReadDogsFromReader(dataReader);
             }
             catch (Exception ex)
             {
@@ -244,29 +221,8 @@ namespace hameluna_server.DAL
             {
                 SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
 
-                while (dataReader.Read())
-                {
-                    d = new()
-                    {
-                        ChipNumber = dataReader["ChipNumber"].ToString(),
-                        NumberId = Convert.ToInt32(dataReader["NumberId"]),
-                        Name = dataReader["Name"].ToString(),
-                        DateOfBirth = Convert.ToDateTime(dataReader["DateOfBirth"]),
-                        Gender = dataReader["Gender"].ToString(),
-                        EntranceDate = Convert.ToDateTime(dataReader["EntranceDate"]),
-                        IsAdoptable = Convert.ToBoolean(dataReader["IsAdoptable"]),
-                        Size = dataReader["Size"].ToString(),
-                        Adopted = Convert.ToBoolean(dataReader["Adopted"]),
-                        IsReturned = Convert.ToBoolean(dataReader["IsReturned"]),
-                        CellId = Convert.ToInt32(dataReader["CellId"]),
-                        ProfileImage = dataReader["profileImg"].ToString()
+                d = ReadDogsFromReader(dataReader).First();
 
-
-                    };
-                    d.Breed = GetDogBreed(d.NumberId);
-                    d.Color = GetDogColor(d.NumberId);
-                    d.Attributes = GetDogCharecteristics(d.NumberId);
-                }
                 return d;
             }
             catch (Exception ex)
@@ -286,7 +242,7 @@ namespace hameluna_server.DAL
 
             SqlConnection con;
             SqlCommand cmd;
-            Dog d = new();
+            Dog d = new() { ShelterNumber = id };
 
             try
             {
@@ -298,37 +254,14 @@ namespace hameluna_server.DAL
                 throw (ex);
             }
 
-            cmd = DogSPCmd(spIUD, con, d, "SelectByShelter", id);             // create the command
+            cmd = DogSPCmd(spIUD, con, d, "SelectByShelter");             // create the command
 
             try
             {
                 SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
 
-                List<Dog> dogsList = new();
-
-                while (dataReader.Read())
-                {
-                    d = new()
-                    {
-                        ChipNumber = dataReader["ChipNumber"].ToString(),
-                        NumberId = Convert.ToInt32(dataReader["NumberId"]),
-                        Name = dataReader["Name"].ToString(),
-                        DateOfBirth = Convert.ToDateTime(dataReader["DateOfBirth"]),
-                        Gender = dataReader["Gender"].ToString(),
-                        EntranceDate = Convert.ToDateTime(dataReader["EntranceDate"]),
-                        IsAdoptable = Convert.ToBoolean(dataReader["IsAdoptable"]),
-                        Size = dataReader["Size"].ToString(),
-                        Adopted = Convert.ToBoolean(dataReader["Adopted"]),
-                        IsReturned = Convert.ToBoolean(dataReader["IsReturned"]),
-                        CellId = Convert.ToInt32(dataReader["CellId"]),
-                        ProfileImage = dataReader["profileImg"].ToString()
-
-                    };
-                    d.Breed = GetDogBreed(d.NumberId);
-                    d.Color = GetDogColor(d.NumberId);
-                    d.Attributes = GetDogCharecteristics(d.NumberId);
-                    dogsList.Add(d);
-                }
+                List<Dog> dogsList = ReadDogsFromReader(dataReader);
+                
                 return dogsList;
             }
             catch (Exception ex)
@@ -654,6 +587,40 @@ namespace hameluna_server.DAL
             {
                 con?.Close();
             }
+        }
+
+        public List<Dog> ReadDogsFromReader(SqlDataReader dataReader)   
+        {
+            Dog d;
+            List<Dog> dogsList = new();
+
+            while (dataReader.Read())
+            {
+                d = new()
+                {
+                    ChipNumber = dataReader["ChipNumber"].ToString(),
+                    NumberId = Convert.ToInt32(dataReader["NumberId"]),
+                    Name = dataReader["Name"].ToString(),
+                    DateOfBirth = Convert.ToDateTime(dataReader["DateOfBirth"]),
+                    Gender = dataReader["Gender"].ToString(),
+                    EntranceDate = Convert.ToDateTime(dataReader["EntranceDate"]),
+                    IsAdoptable = Convert.ToBoolean(dataReader["IsAdoptable"]),
+                    Size = dataReader["Size"].ToString(),
+                    Adopted = Convert.ToBoolean(dataReader["Adopted"]),
+                    IsReturned = Convert.ToBoolean(dataReader["IsReturned"]),
+                    CellId = Convert.ToInt32(dataReader["CellId"]),
+                    ShelterNumber = Convert.ToInt32(dataReader["ShelterNumber"]),
+                    ProfileImage = dataReader["profileImg"].ToString(),
+
+                };
+                d.Breed = GetDogBreed(d.NumberId);
+                d.Color = GetDogColor(d.NumberId);
+                d.Attributes = GetDogCharecteristics(d.NumberId);
+                dogsList.Add(d);
+            }
+
+            return dogsList;
+
         }
 
     }
