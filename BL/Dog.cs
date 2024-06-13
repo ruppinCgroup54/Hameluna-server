@@ -110,6 +110,12 @@ namespace hameluna_server.BL
             DBservices db = new();
 
             return db.GetDogImages(this.NumberId);
+        }        
+        public List<string> GetAllFiles()
+        {
+            DBservices db = new();
+
+            return db.GetDogFiles(this.NumberId);
         }
 
         public async Task<List<string>> AddImages(string shelterId, List<IFormFile> images)
@@ -126,6 +132,17 @@ namespace hameluna_server.BL
             Console.WriteLine(paths.ToJson());
             return paths;
 
+        }
+
+        public static int DeleteImage(string url)
+        {
+            DBservices db = new();
+            return db.DeleteFile(url, false);
+        }  
+        public static int DeleteFile(string url)
+        {
+            DBservices db = new();
+            return db.DeleteFile(url, true);
         }
 
         public static List<Dog> ReadAll()

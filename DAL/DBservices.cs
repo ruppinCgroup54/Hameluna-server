@@ -417,6 +417,48 @@ public class DBservices
             // close the db connection
             con?.Close();
         }
+    } 
+    public List<string> GetDogFiles(int id)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect(conString); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cmd = FilesSPCmd("DogsFiles", con, "GetFiles", "", id);          // create the command
+
+        try
+        {
+            SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+            List<string> files = new();
+
+            while (dataReader.Read())
+            {
+                string c = dataReader["Url"].ToString();
+                files.Add(c);
+            }
+            return files;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            // close the db connection
+            con?.Close();
+        }
     }
 
     public async Task<List<string>> InsertDogImages(string shelterId, List<IFormFile> images)
@@ -543,6 +585,59 @@ public class DBservices
         }
 
         return imageLink;
+    }
+
+    public int DeleteFile( string Url, bool isFile)
+    {
+        string imageLink = "";
+        string selectAction, selectedProc;
+
+
+        string path = Directory.GetCurrentDirectory();
+
+        if (isFile)
+        {
+            path += Url.Replace("Files", "/uploadedFiles");
+            selectAction = "DeleteFile";
+
+        }
+        else
+        {
+            path += Url.Replace("Images", "/uploadedImages");
+            selectAction = "DeleteImage";
+
+        }
+
+
+        File.Delete(path);
+
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect(conString); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+
+        //insert new address
+        cmd = FilesSPCmd("DogsFiles", con, selectAction, Url, -1);
+
+        try
+        {
+            return cmd.ExecuteNonQuery();
+        }
+        catch (Exception ex)
+        {
+
+            throw new Exception("profile image is fail to uploaded.");
+        }
+
     }
 
     public SqlCommand FilesSPCmd(String spName, SqlConnection con, string action, string url, int dogId)
@@ -687,6 +782,8 @@ public class DBservices
         }
 
     }
+
+    //------------------------------------------------------ HELPERS -----------------------------------------------------------
 
     public static void WriteToErrorLog(Exception temp)
     {

@@ -1,4 +1,5 @@
-﻿using hameluna_server.BL;
+﻿using System.Text.Json;
+using hameluna_server.BL;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +23,8 @@ namespace hameluna_server.Controllers
             try
             {
                 string path = await db.InsertProfileImage(shelterId, dogId, images[0]);
-                return Ok(db.InsertProfile(path, dogId));
+                db.InsertProfile(path, dogId);
+                return Ok(path);
             }
             catch (Exception)
             {
@@ -93,19 +95,21 @@ namespace hameluna_server.Controllers
         }
 
         // DELETE api/<DogController>/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{dogId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteDogImage(int id)
+        public IActionResult DeleteDogImage(string dogId, [FromBody] JsonElement obj)
         {
+            string url = obj.GetProperty("url").ToString();
+
             try
             {
 
-                int numEffected = Dog.Delete(id);
+                int numEffected = Dog.DeleteImage(url);
                 if (numEffected == 0)
                 {
-                    return NotFound($"There is no dog with id number {id}");
+                    return NotFound($"There is no dog image with url: {url}");
                 }
 
                 return NoContent();
