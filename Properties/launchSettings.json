@@ -11,16 +11,6 @@
       "applicationUrl": "https://localhost:7280;http://localhost:5014",
       "nativeDebugging": true,
       "sqlDebugging": true
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "sqlDebugging": true,
-      "nativeDebugging": true
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json",

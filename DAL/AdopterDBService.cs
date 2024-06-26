@@ -67,6 +67,7 @@ namespace hameluna_server.DAL
 
             try
             {
+ 
                 int insertedAddress = Convert.ToInt32(addressCmd.ExecuteScalar());
                 adopter.Address.Id = insertedAddress;
             }

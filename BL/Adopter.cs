@@ -62,7 +62,7 @@ namespace hameluna_server.BL
         public static List<Adopter> ReadAll()
         {
             AdopterDBService db = new();
-            return db.ReadAdopters();
+                return db.ReadAdopters();
         }
 
         public static Adopter ReadOne(string id)
