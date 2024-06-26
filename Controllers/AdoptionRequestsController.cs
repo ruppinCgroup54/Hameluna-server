@@ -105,7 +105,7 @@ namespace hameluna_server.Controllers
                 int numEffected = AdoptionRequest.Delete(id);
                 if (numEffected == 0)
                 {
-                    return NotFound($"There is no shelter with id {id}");
+                    return NotFound($"There is no request with id {id}");
                 }
 
                 return NoContent();

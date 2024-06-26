@@ -4,11 +4,11 @@ using System.Data;
 
 namespace hameluna_server.DAL
 {
-    public class AdopterDBService:DBservices
+    public class AdopterDBService : DBservices
     {
-        public AdopterDBService():base()
+        public AdopterDBService() : base()
         {
-             spIUD = "AdoptersTableIUD";
+            spIUD = "AdoptersTableIUD";
         }
 
         //create command for general SP CRUD
@@ -63,18 +63,18 @@ namespace hameluna_server.DAL
             }
 
             //insert new address
-             addressCmd = AddressSPCmd("UserAddressTableIUD", con, adopter.Address, "Insert");
+            addressCmd = AddressSPCmd("UserAddressTableIUD", con, adopter.Address, "Insert");
 
             try
             {
- 
+
                 int insertedAddress = Convert.ToInt32(addressCmd.ExecuteScalar());
                 adopter.Address.Id = insertedAddress;
             }
             catch (Exception ex)
             {
 
-                //throw new InvalidExpressionException("Invalide Address");
+                adopter.Address= new();
             }
 
             cmd = AdopterSPCmd(spIUD, con, adopter, "Insert");             // create the command
@@ -102,7 +102,7 @@ namespace hameluna_server.DAL
         {
 
             SqlConnection con;
-            SqlCommand cmd,addressCmd;
+            SqlCommand cmd, addressCmd;
 
             try
             {
@@ -119,7 +119,7 @@ namespace hameluna_server.DAL
 
             try
             {
-                 addressCmd.ExecuteNonQuery();
+                addressCmd.ExecuteNonQuery();
 
             }
             catch (Exception ex)
@@ -230,7 +230,7 @@ namespace hameluna_server.DAL
                             StreetName = dataReader["StreetName"].ToString(),
                             Region = dataReader["Region"].ToString()
                         }
-                     
+
 
                     };
                     AdList.Add(a);

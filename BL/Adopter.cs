@@ -37,7 +37,7 @@ namespace hameluna_server.BL
         public string AdditionalPets { get; set; }
         public string Experience { get; set; }
         public string Note { get; set; }
-        public Address Address { get; set; }
+        public Address? Address { get; set; }
         public float Age { get => (DateOnly.FromDateTime(DateTime.Now).Year - DateOfBirth.Year); }
 
 

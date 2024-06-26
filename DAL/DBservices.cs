@@ -132,6 +132,24 @@ public class DBservices
 
     }
 
+    //-------------------------------------------------------- GET  LISTS ---------------------------------------------------------------
+
+    public SqlCommand GetListSPCmd(String spName, SqlConnection con)
+    {
+
+        SqlCommand cmd = new SqlCommand(); // create the command object
+
+        cmd.Connection = con;              // assign the connection to the command object
+
+        cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+
+        cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+        cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+        return cmd;
+    }
+
     public SqlCommand CitiesSPCmd(String spName, SqlConnection con)
     {
 
@@ -164,7 +182,7 @@ public class DBservices
             throw (ex);
         }
 
-        cmd = CitiesSPCmd("CityTableIUD", con);             // create the command
+        cmd = GetListSPCmd("CityTableIUD", con);             // create the command
 
         try
         {
@@ -192,28 +210,6 @@ public class DBservices
         }
     }
 
-
-    public SqlCommand BreedsSPCmd(String spName, SqlConnection con, string action)
-    {
-
-        SqlCommand cmd = new SqlCommand(); // create the command object
-
-        cmd.Connection = con;              // assign the connection to the command object
-
-        cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
-
-        cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
-
-        cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
-
-        cmd.Parameters.AddWithValue("@StatementType", action);
-
-        cmd.Parameters.AddWithValue("@Breed", "");
-
-
-        return cmd;
-    }
-
     public List<string> GetAllBreeds()
     {
         SqlConnection con;
@@ -229,7 +225,7 @@ public class DBservices
             throw (ex);
         }
 
-        cmd = BreedsSPCmd("BreedTableIUD", con, "Select");             // create the command
+        cmd = GetListSPCmd("BreedTableIUD", con);             // create the command
 
         try
         {
@@ -257,23 +253,6 @@ public class DBservices
         }
     }
 
-    public SqlCommand ColorSPCmd(String spName, SqlConnection con)
-    {
-
-        SqlCommand cmd = new SqlCommand(); // create the command object
-
-        cmd.Connection = con;              // assign the connection to the command object
-
-        cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
-
-        cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
-
-        cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
-
-
-        return cmd;
-    }
-
     public List<string> GetAllColors()
     {
         SqlConnection con;
@@ -289,7 +268,7 @@ public class DBservices
             throw (ex);
         }
 
-        cmd = ColorSPCmd("ColorTableIUD", con);             // create the command
+        cmd = GetListSPCmd("ColorTableIUD", con);             // create the command
 
         try
         {
@@ -317,22 +296,6 @@ public class DBservices
         }
     }
 
-    public SqlCommand CharacteristicsSPCmd(String spName, SqlConnection con)
-    {
-
-        SqlCommand cmd = new SqlCommand(); // create the command object
-
-        cmd.Connection = con;              // assign the connection to the command object
-
-        cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
-
-        cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
-
-        cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
-
-        return cmd;
-    }
-
     public List<string> GetAllCharacteristics()
     {
         SqlConnection con;
@@ -348,7 +311,7 @@ public class DBservices
             throw (ex);
         }
 
-        cmd = CharacteristicsSPCmd("CharacteristicsTableIUD", con);             // create the command
+        cmd = GetListSPCmd("CharacteristicsTableIUD", con);             // create the command
 
         try
         {
@@ -375,6 +338,10 @@ public class DBservices
             con?.Close();
         }
     }
+
+
+    //------------------------------------------------------ Files & Images ----------------------------------------------------------------
+
 
     public List<string> GetDogImages(int id)
     {
