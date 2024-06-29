@@ -17,57 +17,48 @@ namespace hameluna_server.Controllers
         public IEnumerable<string> GetBreeds()
         {
             DBservices db = new();
-            List<string> breeds= db.GetAllBreeds();
+            List<string> breeds = db.GetAllBreeds();
             return breeds;
-        }    
-        
+        }
+
         [HttpGet("Colors")]
         public IEnumerable<string> GetColors()
         {
             DBservices db = new();
-            List<string> colors= db.GetAllColors();
+            List<string> colors = db.GetAllColors();
             return colors;
-        } 
-        
+        }
+
         [HttpGet("Cities")]
         public IEnumerable<string> GetCities()
         {
-            
+
             return Address.GetCities();
         }
-        
-        [HttpGet("Characteristics")]
 
+        [HttpGet("Characteristics")]
         public IEnumerable<string> GetCharacteristics()
         {
             DBservices db = new();
             List<string> characteristics = db.GetAllCharacteristics();
             return characteristics;
         }
-        
-        //// GET api/<DataController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
 
-        //// POST api/<DataController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
+        [HttpGet("DailyRoutines")]
+        public ActionResult<List<string>> GetDailyRoutines()
+        {
+            DBservices db = new();
+            try
+            {
+                List<string> dailyRoutines = db.GetAllCharacteristics();
+                return Ok(dailyRoutines);
+            }
+            catch(Exception e)
+            {
+                return BadRequest( e.Message );
+            }
+        }
 
-        //// PUT api/<DataController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
 
-        //// DELETE api/<DataController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }

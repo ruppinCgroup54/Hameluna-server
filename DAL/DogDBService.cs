@@ -237,6 +237,7 @@ namespace hameluna_server.DAL
             }
 
         }
+
         public List<Dog> ReadDogByShelter(int id)
         {
 
