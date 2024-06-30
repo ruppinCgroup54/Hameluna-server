@@ -74,7 +74,7 @@ namespace hameluna_server.DAL
             catch (Exception ex)
             {
 
-                adopter.Address= new();
+                adopter.Address = new();
             }
 
             cmd = AdopterSPCmd(spIUD, con, adopter, "Insert");             // create the command
@@ -114,19 +114,13 @@ namespace hameluna_server.DAL
                 throw (ex);
             }
 
-            //insert new address
-            addressCmd = AddressSPCmd("UserAddressTableIUD", con, adopter.Address, "Update");
+            DBservices db = new();
 
-            try
+            if (adopter.Address.Id!=0)
             {
-                addressCmd.ExecuteNonQuery();
-
+                db.UpdateAddress(adopter.Address);
             }
-            catch (Exception ex)
-            {
-
-                throw new InvalidExpressionException("Invalide Address");
-            }
+            
             cmd = AdopterSPCmd(spIUD, con, adopter, "Update");             // create the command
 
             try
