@@ -190,6 +190,7 @@ namespace hameluna_server.DAL
             }
 
         }     
+
         public ToDoItem ReadToDo(int todoId)
         {
 
@@ -228,7 +229,7 @@ namespace hameluna_server.DAL
 
         }
 
-        public List<JsonObject> GetCountItemByDays(DateTime d)
+        public List<JsonObject> GetCountItemByDays(int shelter ,DateTime d)
         {
             SqlConnection con;
             SqlCommand cmd;
@@ -243,7 +244,7 @@ namespace hameluna_server.DAL
                 throw (ex);
             }
 
-            cmd = ToDoItemSPCmd(spIUD, con, new() { DoDate = d }, "SelectByDate");             // create the command
+            cmd = ToDoItemSPCmd(spIUD, con, new() { DoDate = d,ShelterNumber=shelter }, "CountByDaysForMonth");             // create the command
 
             try
             {
@@ -255,7 +256,7 @@ namespace hameluna_server.DAL
                 {
                     JsonObject c = new()
                     {
-                        new("dayInMonth", Convert.ToInt32( dataReader["day"])),
+                        new("dayInMonth", Convert.ToDateTime( dataReader["day"])),
                         new("countItems", Convert.ToInt32( dataReader["numOfItems"]))
                     };
 

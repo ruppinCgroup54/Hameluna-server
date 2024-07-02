@@ -1,4 +1,5 @@
-﻿using hameluna_server.BL;
+﻿using System.Text.Json.Nodes;
+using hameluna_server.BL;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -50,7 +51,28 @@ namespace hameluna_server.Controllers
             }
         }
 
+        // GET api/<VolunteerController>/5
+        [HttpGet("counts/shelter/{shelterNumber}/date/{date}")]
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult GetDaysCount(int shelterNumber, DateTime date)
+        {
+            try
+            {
+                List<JsonObject> tdList = ToDoItem.CountItemPerDay(shelterNumber, date);
+                if (tdList.Count == 0)
+                {
+                    return NotFound($"אין משימות בתאריך " + date.ToShortDateString());
+                }
+                return Ok(tdList);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
+        }
 
         // POST api/<VolunteerController>
         [HttpPost]

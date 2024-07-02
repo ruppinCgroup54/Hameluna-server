@@ -1,4 +1,5 @@
-﻿using hameluna_server.DAL;
+﻿using System.Text.Json.Nodes;
+using hameluna_server.DAL;
 
 namespace hameluna_server.BL
 {
@@ -50,6 +51,11 @@ namespace hameluna_server.BL
         {
             ToDoDBService db = new();
             return db.ReadToDoItemByDate(shelterNum,date);
+        }
+        public static List<JsonObject> CountItemPerDay(int shelterNum, DateTime date)
+        {
+            ToDoDBService db = new();
+            return db.GetCountItemByDays(shelterNum,date);
         }
         public static ToDoItem ReadOne(int todoId)
         {
