@@ -116,42 +116,42 @@ namespace hameluna_server.DAL
 
         }
 
-        //public int DeleteToDoItem(string id)
-        //{
+        public int DeleteToDoItem(int id)
+        {
 
-        //    SqlConnection con;
-        //    SqlCommand cmd;
+            SqlConnection con;
+            SqlCommand cmd;
 
-        //    try
-        //    {
-        //        con = connect(conString); // create the connection
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // write to log
-        //        throw (ex);
-        //    }
+            try
+            {
+                con = connect(conString); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
 
-        //    cmd = ToDoItemSPCmd(spIUD, con, new() { PhoneNumber = id }, "delete");             // create the command
+            cmd = ToDoItemSPCmd(spIUD, con, new() { ToDoId = id }, "Delete");             // create the command
 
-        //    try
-        //    {
-        //        int numEffected = cmd.ExecuteNonQuery(); // execute the command
-        //        return numEffected;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // write to log
-        //        throw (ex);
-        //    }
+            try
+            {
+                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                return numEffected;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
 
-        //    finally
-        //    {
-        //        // close the db connection
-        //        con?.Close();
-        //    }
+            finally
+            {
+                // close the db connection
+                con?.Close();
+            }
 
-        //}
+        }
 
         public List<ToDoItem> ReadToDoItemByDate(int shelterNum, DateTime d)
         {

@@ -126,35 +126,35 @@ namespace hameluna_server.Controllers
             }
         }
 
-        //// DELETE api/<VolunteerController>/5
-        //[HttpDelete("{id}")]
-        //[ProducesResponseType(StatusCodes.Status204NoContent)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //public IActionResult Delete(string id)
-        //{
-        //    try
-        //    {
-        //        if (id == "")
-        //        {
-        //            return BadRequest();
-        //        }
-        //        int numEffected = ToDoItem.Delete(id);
-        //        if (numEffected == 0)
-        //        {
-        //            return NotFound($"There is no admin with phone number {id}");
-        //        }
+        // DELETE api/<VolunteerController>/5
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                if (id ==0)
+                {
+                    return BadRequest();
+                }
+                int numEffected = ToDoItem.Delete(id);
+                if (numEffected == 0)
+                {
+                    return NotFound($"there is no such item {id}");
+                }
 
-        //        return NoContent();
+                return NoContent();
 
-        //    }
-        //    catch (Exception e)
-        //    {
+            }
+            catch (Exception e)
+            {
 
-        //        return BadRequest(e.Message);
+                return BadRequest(e.Message);
 
-        //    }
-        //}
+            }
+        }
 
     }
 }

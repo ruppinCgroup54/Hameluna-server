@@ -63,5 +63,10 @@ namespace hameluna_server.BL
             return db.ReadToDo(todoId);
         }
 
+        public static int Delete(int id)
+        {
+            ToDoDBService db = new();
+            return db.DeleteToDoItem(id);
+        }
     }
 }
