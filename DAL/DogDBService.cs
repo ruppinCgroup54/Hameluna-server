@@ -43,7 +43,7 @@ namespace hameluna_server.DAL
             cmd.Parameters.AddWithValue("@IsReturned", dog.IsReturned);
             cmd.Parameters.AddWithValue("@CellId", dog.CellId);
             cmd.Parameters.AddWithValue("@shelter", dog.ShelterNumber);
-            cmd.Parameters.AddWithValue("@Note2", dog.ShelterNumber);
+            cmd.Parameters.AddWithValue("@Note", dog.ShelterNumber);
 
 
 
