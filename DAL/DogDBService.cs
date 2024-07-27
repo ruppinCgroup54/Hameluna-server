@@ -43,6 +43,8 @@ namespace hameluna_server.DAL
             cmd.Parameters.AddWithValue("@IsReturned", dog.IsReturned);
             cmd.Parameters.AddWithValue("@CellId", dog.CellId);
             cmd.Parameters.AddWithValue("@shelter", dog.ShelterNumber);
+            cmd.Parameters.AddWithValue("@Note2", dog.ShelterNumber);
+
 
 
             return cmd;
@@ -612,6 +614,7 @@ namespace hameluna_server.DAL
                     CellId = Convert.ToInt32(dataReader["CellId"]),
                     ShelterNumber = Convert.ToInt32(dataReader["ShelterNumber"]),
                     ProfileImage = dataReader["profileImg"].ToString(),
+                    Note= dataReader["Note"].ToString(),
 
                 };
                 d.Breed = GetDogBreed(d.NumberId);

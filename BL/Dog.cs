@@ -61,6 +61,7 @@ namespace hameluna_server.BL
         public List<string> Attributes { get; set; }
         public string ProfileImage { get; set; }
         public float Age { get => GetAge(DateOfBirth); }
+        public string Note { get; set; }
 
 
         public static float GetAge(DateTime dob)
