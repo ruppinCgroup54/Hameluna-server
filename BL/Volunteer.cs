@@ -4,7 +4,24 @@ namespace hameluna_server.BL
 {
     public class Volunteer : Persone
     {
-        
+
+        public Volunteer(string phoneNumber, string firstName, string lastName, string email, string password,string shelterId)
+            : base(phoneNumber, firstName, lastName, email)
+        {
+            
+            Password = password;
+            ShelterId = shelterId;
+        }
+        public Volunteer() : base()
+        {
+            Password = "";
+            ShelterId = "";
+
+        }
+
+        public string Password { get; set; }
+        public string ShelterId { get; set; }
+
         public string Insert()
         {
             VolunteerDBService db = new();

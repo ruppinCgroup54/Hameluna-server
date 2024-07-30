@@ -34,6 +34,11 @@ namespace hameluna_server.DAL
                 cmd.Parameters.AddWithValue("@Email", volunteer.Email);
                 cmd.Parameters.AddWithValue("@FirstName", volunteer.FirstName);
                 cmd.Parameters.AddWithValue("@LastName", volunteer.LastName);
+                cmd.Parameters.AddWithValue("@Password", volunteer.Password);
+                cmd.Parameters.AddWithValue("@ShelterId", volunteer.ShelterId);
+
+
+
             }
 
 
@@ -181,7 +186,10 @@ namespace hameluna_server.DAL
                         Email = dataReader["Email"].ToString(),
                         PhoneNumber = dataReader["PhoneNumber"].ToString(),
                         FirstName = dataReader["FirstName"].ToString(),
-                        LastName = dataReader["LastName"].ToString()
+                        LastName = dataReader["LastName"].ToString(),
+                        Password=  dataReader["Password"].ToString(),
+                        ShelterId = dataReader["ShelterId"].ToString()
+
                     };
                     VolList.Add(v);
                 }
@@ -230,7 +238,9 @@ namespace hameluna_server.DAL
                         Email = dataReader["Email"].ToString(),
                         PhoneNumber = dataReader["PhoneNumber"].ToString(),
                         FirstName = dataReader["FirstName"].ToString(),
-                        LastName = dataReader["LastName"].ToString()
+                        LastName = dataReader["LastName"].ToString(),
+                        Password = dataReader["Password"].ToString()
+
                     };
                 }
                 return Vol;
