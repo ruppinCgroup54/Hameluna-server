@@ -385,6 +385,7 @@ public class DBservices
             con?.Close();
         }
     } 
+
     public List<string> GetDogFiles(int id)
     {
         SqlConnection con;
@@ -427,6 +428,50 @@ public class DBservices
             con?.Close();
         }
     }
+
+    public List<string> GetSheltersImages()
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect(conString); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cmd = FilesSPCmd("DogsFiles", con, "GetShelters", "", -1);          // create the command
+
+        try
+        {
+            SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+            List<string> images = new();
+
+            while (dataReader.Read())
+            {
+                string c = dataReader["PhotoUrl"].ToString();
+                images.Add(c);
+            }
+            return images;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            // close the db connection
+            con?.Close();
+        }
+    }
+
 
     public async Task<List<string>> InsertDogImages(string shelterId, List<IFormFile> images)
     {

@@ -18,7 +18,7 @@ namespace hameluna_server.BL
             Name = "";
             PhotoUrl = "";
             Address = new();
-      
+
         }
 
         public int ShelterId { get; set; }
@@ -26,7 +26,7 @@ namespace hameluna_server.BL
         public string FacebookUserName { get; set; }
         public string FacebookPassword { get; set; }
         public string InstagramUserName { get; set; }
-        public string InstagramPassword{ get; set; }
+        public string InstagramPassword { get; set; }
         public DateTime TimeToReport { get; set; }
         public string Name { get; set; }
         public string PhotoUrl { get; set; }
@@ -55,7 +55,7 @@ namespace hameluna_server.BL
         {
             ShelterDBService db = new();
 
-            this.ShelterId= db.InsertShelter(this);
+            this.ShelterId = db.InsertShelter(this);
 
             foreach (Cell cell in Cells)
             {
@@ -82,6 +82,13 @@ namespace hameluna_server.BL
         {
             ShelterDBService db = new();
             return db.ReadShelter(id);
+        }
+
+        public static List<string> GetShelterIImages()
+        {
+            DBservices db = new();
+
+            return db.GetSheltersImages();
         }
 
         public static int Delete(int id)

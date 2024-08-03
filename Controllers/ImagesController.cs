@@ -9,6 +9,24 @@ namespace hameluna_server.Controllers
     [ApiController]
     public class ImagesController : ControllerBase
     {
+        [HttpGet("shelters")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<string[]> GetShelters()
+        {
+            try
+            {
+
+
+                return Ok(Shelter.GetShelterIImages());
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
+
+        }
 
 
         // POST api/<CellController>
