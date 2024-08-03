@@ -338,7 +338,68 @@ public class DBservices
             con?.Close();
         }
     }
+    private SqlCommand DailySPCmd(String spName, SqlConnection con, string action, string item = "")
+    {
 
+        SqlCommand cmd = new SqlCommand(); // create the command object
+
+        cmd.Connection = con;              // assign the connection to the command object
+
+        cmd.CommandText = spName;      // can be Select, Insert, Update, Delete 
+
+        cmd.CommandTimeout = 10;           // Time to wait for the execution' The default is 30 seconds
+
+        cmd.CommandType = System.Data.CommandType.StoredProcedure; // the type of the command, can also be text
+
+        cmd.Parameters.AddWithValue("@StatementType", action);
+
+        cmd.Parameters.AddWithValue("@Item", item);
+
+        return cmd;
+    }
+
+    public List<string> GetAllDailyRoutins()
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect(conString); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        cmd = DailySPCmd("DailyItemIUD", con, "Select");             // create the command
+
+        try
+        {
+            SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+            List<string> dailyRoutins = new();
+
+            while (dataReader.Read())
+            {
+                string c = dataReader["Item"].ToString();
+                dailyRoutins.Add(c);
+            }
+            return dailyRoutins;
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            // close the db connection
+            con?.Close();
+        }
+    }
 
     //------------------------------------------------------ Files & Images ----------------------------------------------------------------
 

@@ -50,7 +50,7 @@ namespace hameluna_server.Controllers
             DBservices db = new();
             try
             {
-                List<string> dailyRoutines = db.GetAllCharacteristics();
+                List<string> dailyRoutines = db.GetAllDailyRoutins();
                 return Ok(dailyRoutines);
             }
             catch(Exception e)
