@@ -65,7 +65,7 @@ namespace hameluna_server.BL
             DBservices db2 = new();
             foreach (string d in DailyRoutine)
             {
-                db2.insertDailyToShelter(this.ShelterId, d);
+                db2.InsertDailyToShelter(this.ShelterId, d);
             }
         }
 

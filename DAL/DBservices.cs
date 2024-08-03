@@ -458,7 +458,7 @@ public class DBservices
         }
     }
 
-    public List<string> GetDailyFromShelter(int shelter, string item)
+    public List<string> GetDailyFromShelter(int shelter)
     {
         SqlConnection con;
         SqlCommand cmd;

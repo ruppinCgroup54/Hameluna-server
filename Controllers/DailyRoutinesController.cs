@@ -45,6 +45,24 @@ namespace hameluna_server.Controllers
             }
 
         }
+        
+        [HttpGet("shelter/{shelterNumber}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<FullRoutineException[]> GetItemsRoutin(int shelterNumber)
+        {
+            try
+            {
+                DBservices db = new();
+                List<string> items = db.GetDailyFromShelter(shelterNumber);
+                return Ok(items);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
+
+        }
 
 
         // POST api/<DailyRoutinesController>
