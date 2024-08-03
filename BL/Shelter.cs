@@ -62,6 +62,11 @@ namespace hameluna_server.BL
                 cell.ShelterNumber = this.ShelterId;
                 cell.Insert();
             }
+            DBservices db2 = new();
+            foreach (string d in DailyRoutine)
+            {
+                db2.insertDailyToShelter(this.ShelterId, d);
+            }
         }
 
         public int Update()
