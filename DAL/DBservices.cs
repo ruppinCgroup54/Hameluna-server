@@ -225,7 +225,7 @@ public class DBservices
             throw (ex);
         }
 
-        cmd = GetListSPCmd("BreedTableIUD", con);             // create the command
+        cmd = GetListSPCmd("BreedTableIUD_", con);             // create the command
 
         try
         {
