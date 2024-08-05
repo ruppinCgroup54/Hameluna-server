@@ -87,6 +87,44 @@ namespace hameluna_server.DAL
             }
 
         }
+        
+        public string GetStatus(Dog dog)
+        {
+
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect(conString); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            cmd = DogSPCmd(spIUD, con, dog, "GetStatus");             // create the command
+
+            try
+            {
+                string dogStat = cmd.ExecuteScalar().ToString(); // execute the command
+                return dogStat;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                DBservices.WriteToErrorLog(ex);
+                throw (ex);
+            }
+
+            finally
+            {
+                // close the db connection
+                con?.Close();
+            }
+
+        }
 
         public int UpdateDog(Dog dog)
         {

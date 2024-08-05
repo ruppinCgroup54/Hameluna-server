@@ -105,13 +105,20 @@ namespace hameluna_server.BL
             return db.UpdateDog(this);
 
         }
+        public string GetStatus()
+        {
+            DogDBService db = new();
+            return db.GetStatus(this);
+
+        }
 
         public List<string> GetAllImages()
         {
             DBservices db = new();
 
             return db.GetDogImages(this.NumberId);
-        }        
+        }
+
         public List<string> GetAllFiles()
         {
             DBservices db = new();
@@ -139,7 +146,7 @@ namespace hameluna_server.BL
         {
             DBservices db = new();
             return db.DeleteFile(url, false);
-        }  
+        }
 
         public static int DeleteFile(string url)
         {
