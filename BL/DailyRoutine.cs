@@ -2,6 +2,17 @@
 
 namespace hameluna_server.BL
 {
+    public class RoutinItem
+    {
+        public RoutinItem(int itemID, string item)
+        {
+            ItemID = itemID;
+            Item = item;
+        }
+
+        public int ItemID { get; set; }
+        public string Item { get; set; }
+    }
     public class DailyRoutine
     {
         public DailyRoutine(int routineId, DateTime fillDate, string note, int dogNumberId, string volunteerPhoneNumber, int shelterNumber, List<RoutineException> dogExceptions)

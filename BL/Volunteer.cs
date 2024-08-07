@@ -5,7 +5,7 @@ namespace hameluna_server.BL
     public class Volunteer : Persone
     {
 
-        public Volunteer(string phoneNumber, string firstName, string lastName, string email, string password,string shelterId)
+        public Volunteer(string phoneNumber, string firstName, string lastName, string email, string password,int shelterId)
             : base(phoneNumber, firstName, lastName, email)
         {
             
@@ -15,12 +15,12 @@ namespace hameluna_server.BL
         public Volunteer() : base()
         {
             Password = "";
-            ShelterId = "";
+            ShelterId = -1;
 
         }
 
         public string Password { get; set; }
-        public string ShelterId { get; set; }
+        public int ShelterId { get; set; }
 
         public string Insert()
         {

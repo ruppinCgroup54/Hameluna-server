@@ -49,12 +49,13 @@ namespace hameluna_server.Controllers
         [HttpGet("shelter/{shelterNumber}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<FullRoutineException[]> GetItemsRoutin(int shelterNumber)
+        public ActionResult<List<RoutinItem>> GetItemsRoutin(int shelterNumber)
         {
             try
             {
                 DBservices db = new();
-                List<string> items = db.GetDailyFromShelter(shelterNumber);
+                List<RoutinItem> items = db.GetDailyFromShelter(shelterNumber);
+
                 return Ok(items);
             }
             catch (Exception e)

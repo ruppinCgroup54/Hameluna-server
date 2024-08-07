@@ -458,7 +458,7 @@ public class DBservices
         }
     }
 
-    public List<string> GetDailyFromShelter(int shelter)
+    public List<RoutinItem> GetDailyFromShelter(int shelter)
     {
         SqlConnection con;
         SqlCommand cmd;
@@ -479,12 +479,13 @@ public class DBservices
         {
             SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
 
-            List<string> items = new();
-
+            List<RoutinItem> items = new();
             while (dataReader.Read())
             {
                 string a = dataReader["Item"].ToString();
-                items.Add(a);
+                int b = Convert.ToInt32(dataReader["ItemID"]);
+
+                items.Add(new(b,a));
             }
             return items;
         }
