@@ -108,6 +108,35 @@ namespace hameluna_server.Controllers
 
         }
 
+
+        [HttpPost("DailyRoutines/{shelterNumber}")]
+        public IActionResult SetDailyRoutine(int shelterNumber, [FromBody] FullRoutineException dr)
+        {
+            FireBaseDBService db = new();
+            try
+            {
+                int dailyRoutines = db.SetExceptions(shelterNumber,dr);
+                return Ok(dailyRoutines);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpGet("DailyRoutines/{shelterNumber}")]
+        public ActionResult<Dictionary<string, FullRoutineException>> SetDailyRoutine(int shelterNumber)
+        {
+            FireBaseDBService db = new();
+            try
+            {
+                Dictionary<string, FullRoutineException> dailyRoutines = db.ShelterExeptions(shelterNumber);
+                return Ok(dailyRoutines);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 
 
