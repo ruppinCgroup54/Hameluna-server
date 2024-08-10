@@ -64,8 +64,14 @@ namespace hameluna_server.BL
         public string ProfileImage { get; set; }
         public float Age { get => GetAge(DateOfBirth); }
         public string Note { get; set; }
+        public bool PassDailyRoutin { get => GetDailyStatus(NumberId) ; }
 
-
+        public static bool GetDailyStatus(int id)
+        {
+            DailyRoutineDBService db = new();
+            int num = db.GetPassDailyStatus(id);
+            return (num == 0 ? false : true);
+        }
         public static float GetAge(DateTime dob)
         {
             DateTime dt = DateTime.Now;
