@@ -47,7 +47,15 @@ namespace hameluna_server.BL
 
             RoutineId= db.InsertDailyRoutine(this);
 
-            return db.ReadExceptionsByRoutine(this);
+            List<FullRoutineException> excList = db.ReadExceptionsByRoutine(this);
+
+            FireBaseDBService fireDb = new();
+
+            foreach (FullRoutineException item in excList)
+            {
+                fireDb.SetExceptions(ShelterNumber, item);
+            }
+            return excList;
 
 
         }
