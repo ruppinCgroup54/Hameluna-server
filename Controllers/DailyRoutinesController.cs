@@ -91,12 +91,12 @@ namespace hameluna_server.Controllers
 
 
         // PUT api/<AdoptionRequestController>/5
-        [HttpPut("routineId/{routine}/itemId/{item}/")]
+        [HttpPut("shelter/{shelterNumber}/routineId/{routine}/itemId/{item}/")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-        public IActionResult Put(int item ,int routine, [FromBody] RoutineException re)
+        public IActionResult Put(int shelterNumber, int item ,int routine, [FromBody] RoutineException re)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace hameluna_server.Controllers
                 {
                     return BadRequest();
                 }
-                int numEffected = re.Update();
+                int numEffected = re.Update(shelterNumber);
                 if (numEffected == 0)
                 {
                     return NotFound($"לא קיימת חריגה");

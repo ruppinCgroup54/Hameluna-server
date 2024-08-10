@@ -24,11 +24,18 @@ namespace hameluna_server.BL
 
 
 
-        public int Update()
+        public int Update(int shelter)
         {
             DailyRoutineDBService db = new();
 
-            return db.UpdateRoutineException(this);
+            int ans =  db.UpdateRoutineException(this);
+
+            if (ans > 0 )
+            {
+                FireBaseDBService fireDb = new();
+                fireDb.UpdateExceptions(shelter, this);
+            }
+            return ans;
 
         }
 

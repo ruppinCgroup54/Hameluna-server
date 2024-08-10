@@ -57,12 +57,12 @@ namespace hameluna_server.DAL
         }
 
         //Update Exception
-        public int UpdateExceptions(int shelterNumber, FullRoutineException dr)
+        public int UpdateExceptions(int shelterNumber, RoutineException dr)
         {
             try
             {
 
-                var SetData = conn.client.Update(@$"exceptions/{shelterNumber}/{dr.Id}", dr);
+                var SetData = conn.client.Update(@$"exceptions/{shelterNumber}/{((FullRoutineException)dr).Id}", dr);
 
                 return 1;
             }
