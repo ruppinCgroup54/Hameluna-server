@@ -62,7 +62,7 @@ namespace hameluna_server.DAL
             try
             {
 
-                var SetData = conn.client.Update(@$"exceptions/{shelterNumber}/{((FullRoutineException)dr).Id}", dr);
+                var SetData = conn.client.Update(@$"exceptions/{shelterNumber}/{dr.Id}", dr);
 
                 return 1;
             }
@@ -74,7 +74,7 @@ namespace hameluna_server.DAL
         }
 
         //Delete Exception
-        public void DeleteExceptions(int shelterNumber, FullRoutineException dr)
+        public void DeleteExceptions(int shelterNumber, RoutineException dr)
         {
             try
             {

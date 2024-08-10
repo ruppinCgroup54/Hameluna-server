@@ -21,6 +21,8 @@ namespace hameluna_server.BL
         public int ItemId { get; set; }
         public bool IsOk { get; set; }
         public bool IsHandled { get; set; }
+        public string Id { get => RoutineId + "_" + ItemId; }
+
 
 
 
@@ -33,7 +35,7 @@ namespace hameluna_server.BL
             if (ans > 0 )
             {
                 FireBaseDBService fireDb = new();
-                fireDb.UpdateExceptions(shelter, this);
+                fireDb.DeleteExceptions(shelter, this);
             }
             return ans;
 
@@ -89,7 +91,6 @@ namespace hameluna_server.BL
         public string VolunteerName { get; set; }
         public int DogId { get; set; }
         public string DogName { get; set; }
-        public string Id { get => RoutineId + "_" + ItemId;  }
 
         public static List<FullRoutineException> ReadByDog(int dogId)
         {
