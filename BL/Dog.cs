@@ -1,6 +1,8 @@
 ﻿using System.Text.Json.Nodes;
 using hameluna_server.DAL;
 using MongoDB.Bson;
+using OpenAI_API.Chat;
+using OpenAI_API;
 
 namespace hameluna_server.BL
 {
@@ -105,6 +107,7 @@ namespace hameluna_server.BL
             return db.UpdateDog(this);
 
         }
+
         public string GetStatus()
         {
             DogDBService db = new();
@@ -222,6 +225,52 @@ namespace hameluna_server.BL
         {
             DogDBService db = new();
             return db.DeleteDog(id);
+        }
+
+        public string CreatePublishNote()
+        {
+            //get the api key
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json").Build();
+            string apiKey = configuration.GetSection("OpenAISetting").GetValue("ApiKey", "string");
+
+            // create a connection to ChatGPT
+            var OpenAi = new OpenAIAPI(apiKey);
+
+
+            string outputResuolt = "";
+
+            List<ChatMessage> chatMessages = new() {
+            new() {
+            Role= ChatMessageRole.System,
+            TextContent = "You are a contect creator for dog shelter and your job is to write a paragraph about a dog from a JSON that you will recive, the paragraph should have a happy vibe. the paragraph have to be in hebrew. add some emojy's for more pretty writing. ignore the files : dateOfBirth, note, isAdoptable, shelterNumber, cellId, profileImage\r\n\r\n"
+            },
+            new() {
+            Role= ChatMessageRole.User,
+            TextContent = this.ToJson()
+            }
+            };
+
+           
+            // create chat request - open a chart with Gpt
+            ChatRequest chatRequest = new()
+            {
+                Messages = chatMessages,
+                Model = OpenAI_API.Models.Model.GPT4_Turbo,
+                Temperature = 1,
+                MaxTokens = 1000
+            };
+
+
+            var chats = OpenAi.Chat.CreateChatCompletionAsync(chatRequest);
+
+            //get the ChatGpt response
+            foreach (var chat in chats.Result.Choices)
+            {
+                outputResuolt += chat.Message.TextContent;
+
+            }
+            return outputResuolt;
         }
     }
 }

@@ -42,7 +42,7 @@ namespace hameluna_server.Controllers
             {
                 string path = await db.InsertProfileImage(shelterId, dogId, images[0]);
                 db.InsertProfile(path, dogId);
-                return Ok(path);
+                return Ok(new {url= path });
             }
             catch (Exception)
             {

@@ -112,6 +112,28 @@ namespace hameluna_server.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
         }
+          
+        // GET api/<DogController>/5
+        [HttpPost("DogNote/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult GetStatus(int id, [FromBody] Dog dog)
+        {
+            try
+            {
+                
+                if (dog.NumberId == -1)
+                {
+                    return NotFound($"There is no dog with id number {id}");
+                }
+                return Ok(new{ Note = dog.CreatePublishNote() });
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
+        }
 
         // POST api/<DogController>
         [HttpPost]

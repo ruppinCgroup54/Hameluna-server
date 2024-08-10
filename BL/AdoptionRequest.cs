@@ -38,6 +38,8 @@ namespace hameluna_server.BL
             catch
             {
                 this.Adopter.Update();
+                this.Adopter = Adopter.ReadOne(Adopter.PhoneNumber);
+
                 Console.WriteLine("User exits");
             }
             finally

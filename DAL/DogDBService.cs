@@ -43,7 +43,7 @@ namespace hameluna_server.DAL
             cmd.Parameters.AddWithValue("@IsReturned", dog.IsReturned);
             cmd.Parameters.AddWithValue("@CellId", dog.CellId);
             cmd.Parameters.AddWithValue("@shelter", dog.ShelterNumber);
-            cmd.Parameters.AddWithValue("@Note", dog.ShelterNumber);
+            cmd.Parameters.AddWithValue("@Note", dog.Note);
 
 
 
@@ -108,7 +108,7 @@ namespace hameluna_server.DAL
 
             try
             {
-                string dogStat = cmd.ExecuteScalar().ToString(); // execute the command
+                string dogStat = Convert.ToString( cmd.ExecuteScalar()); // execute the command
                 return dogStat;
             }
             catch (Exception ex)
