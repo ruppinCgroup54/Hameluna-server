@@ -56,7 +56,7 @@ namespace hameluna_server.DAL
 
         }
 
-        //Update datas
+        //Update Exception
         public int UpdateExceptions(int shelterNumber, FullRoutineException dr)
         {
             try
@@ -102,5 +102,69 @@ namespace hameluna_server.DAL
             }
         }
 
+
+
+        //set AdoptionRequest to database
+        public int SetAdoptionRequest(int shelterNumber, AdoptionRequest ad)
+        {
+            try
+            {
+
+                var SetData = conn.client.Set(@$"requests/{shelterNumber}/{ad.RequestId}", ad);
+                return 1;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Failed to Set");
+                return 0;
+            }
+
+        }
+
+        //Update AdoptionRequest
+        public int UpdateAdoptionRequest(int shelterNumber, AdoptionRequest ad)
+        {
+            try
+            {
+
+                var SetData = conn.client.Set(@$"requests/{shelterNumber}/{ad.RequestId}", ad);
+
+
+                return 1;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Could not update AdoptionRequest");
+                return 0;
+            }
+        }
+
+        //Delete AdoptionRequest
+        public void DeleteAdoptionRequest(int shelterNumber, AdoptionRequest ad)
+        {
+            try
+            {
+                var SetData = conn.client.Delete(@$"requests/{shelterNumber}/{ad.RequestId}");
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Could not delete AdoptionRequest");
+            }
+        }
+
+        //List of the AdoptionRequest
+        public Dictionary<string, AdoptionRequest> ShelterAdoptionRequests(int shelterNumber)
+        {
+            try
+            {
+                FirebaseResponse al = conn.client.Get(@$"requests/{shelterNumber}");
+                Dictionary<string, AdoptionRequest> ListData = JsonConvert.DeserializeObject<Dictionary<string, AdoptionRequest>>(al.Body.ToString());
+                return ListData;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }

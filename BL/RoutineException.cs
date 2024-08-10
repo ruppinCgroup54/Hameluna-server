@@ -82,7 +82,7 @@ namespace hameluna_server.BL
         public string VolunteerName { get; set; }
         public int DogId { get; set; }
         public string DogName { get; set; }
-        public string Id { get => RoutineItem+"_"+ItemId;  }
+        public string Id { get => RoutineItem + "_" + ItemId;  }
 
         public static List<FullRoutineException> ReadByDog(int dogId)
         {
