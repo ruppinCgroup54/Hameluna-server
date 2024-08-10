@@ -43,6 +43,8 @@ namespace hameluna_server.BL
             finally
             {
                 this.RequestId = db.InsertAdoptionRequest(this);
+                FireBaseDBService fireDb = new();
+                fireDb.SetAdoptionRequest(Dog.ShelterNumber, this);
 
             }
 
