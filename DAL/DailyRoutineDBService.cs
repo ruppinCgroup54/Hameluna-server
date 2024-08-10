@@ -82,6 +82,44 @@ namespace hameluna_server.DAL
 
         }
 
+        public int GetPassDailyStatus(int dogNumberId)
+        {
+
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect(conString); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+
+            cmd = DailyRoutineSPCmd(spIUD, con, new () {DogNumberId = dogNumberId}, "TodayDogRoutine");             // create the command
+
+            try
+            {
+                int num = Convert.ToInt32(cmd.ExecuteScalar()); // execute the command
+
+                return num;
+
+
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+            finally
+            {
+                // close the db connection
+                con?.Close();
+            }
+
+        }
         public int UpdateRoutineException(RoutineException routineException)
         {
 
