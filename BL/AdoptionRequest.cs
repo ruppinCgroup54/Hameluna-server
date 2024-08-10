@@ -43,8 +43,11 @@ namespace hameluna_server.BL
             finally
             {
                 this.RequestId = db.InsertAdoptionRequest(this);
-                FireBaseDBService fireDb = new();
-                fireDb.SetAdoptionRequest(Dog.ShelterNumber, this);
+                if (this.RequestId>0)
+                {
+                    FireBaseDBService fireDb = new();
+                    fireDb.SetAdoptionRequest(Dog.ShelterNumber, this);
+                }
 
             }
 
@@ -55,7 +58,16 @@ namespace hameluna_server.BL
         {
             AdoptionRequestDBService db = new();
 
-            return db.UpdateAdoptionRequest(this);
+            int ans = db.UpdateAdoptionRequest(this);
+
+            if (ans > 0)
+            {
+                FireBaseDBService fireDb = new();
+
+                fireDb.UpdateAdoptionRequest(Dog.ShelterNumber, this);
+            }
+
+            return ans;
 
         }
 
@@ -66,10 +78,17 @@ namespace hameluna_server.BL
         }
 
 
-        public static int Delete(int id)
+        public int Delete(int id)
         {
             AdoptionRequestDBService db = new();
-            return db.DeleteAdoptionRequest(id);
+            int ans = db.DeleteAdoptionRequest(id);
+
+            if (ans>0)
+            {
+                FireBaseDBService fireDb = new();
+                fireDb.DeleteAdoptionRequest(Dog.ShelterNumber, this);
+            }
+            return ans;
         }
     }
 }

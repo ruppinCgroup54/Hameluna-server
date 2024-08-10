@@ -29,7 +29,7 @@ namespace hameluna_server.BL
         public DailyRoutine()
         {
             FillDate = DateTime.Now;
-            DogExceptions =  new();
+            DogExceptions = new();
         }
 
         public int RoutineId { get; set; }
@@ -45,7 +45,7 @@ namespace hameluna_server.BL
         {
             DailyRoutineDBService db = new();
 
-            RoutineId= db.InsertDailyRoutine(this);
+            RoutineId = db.InsertDailyRoutine(this);
 
             List<FullRoutineException> excList = db.ReadExceptionsByRoutine(this);
 
@@ -53,7 +53,11 @@ namespace hameluna_server.BL
 
             foreach (FullRoutineException item in excList)
             {
-                fireDb.SetExceptions(ShelterNumber, item);
+                if (!item.IsOk)
+                {
+                    fireDb.SetExceptions(ShelterNumber, item);
+
+                }
             }
             return excList;
 

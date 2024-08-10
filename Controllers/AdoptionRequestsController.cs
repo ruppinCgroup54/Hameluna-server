@@ -96,13 +96,14 @@ namespace hameluna_server.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
+            AdoptionRequest ad = new();
             try
             {
                 if (id == -1)
                 {
                     return BadRequest();
                 }
-                int numEffected = AdoptionRequest.Delete(id);
+                int numEffected = ad.Delete(id);
                 if (numEffected == 0)
                 {
                     return NotFound($"There is no request with id {id}");
