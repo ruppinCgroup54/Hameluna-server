@@ -65,7 +65,7 @@ namespace hameluna_server.DAL
             }
             catch (Exception ex)
             {
-               
+
 
                 if (ex.Message.StartsWith("Violation of UNIQUE KEY constraint 'UC_adoption'"))
                 {
@@ -138,7 +138,7 @@ namespace hameluna_server.DAL
                 throw (ex);
             }
 
-            cmd = AdoptionRequestSPCmd(spIUD, con, new(){RequestId=id}, "delete");             // create the command
+            cmd = AdoptionRequestSPCmd(spIUD, con, new() { RequestId = id }, "delete");             // create the command
 
             try
             {
@@ -159,6 +159,54 @@ namespace hameluna_server.DAL
 
         }
 
+        public AdoptionRequest ReadAdoptionRequest(string phoneNumber, int dogId)
+        {
+
+            SqlConnection con;
+            SqlCommand cmd;
+            List<AdoptionRequest> adoptionReqList = new();
+
+            try
+            {
+                con = connect(conString); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            cmd = AdoptionRequestSPCmd(spIUD, con, new() { Adopter = new() { PhoneNumber = phoneNumber }, Dog = new() { NumberId = dogId } }, "SelectByDogAndAdopter");             // create the command
+            AdoptionRequest ar = new();
+
+            try
+            {
+                SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                while (dataReader.Read())
+                {
+
+                    ar.RequestId = Convert.ToInt32(dataReader["RequestID"]);
+                    ar.Status = dataReader["Status"].ToString();
+                    ar.SendDate = DateTime.Parse(dataReader["SentDate"].ToString());
+                    ar.Adopter = Adopter.ReadOne(dataReader["Optional_adopterPhoneNumber"].ToString());
+                    ar.Dog = Dog.ReadOne(Convert.ToInt32(dataReader["DogNumberId"]));
+                    adoptionReqList.Add(ar);
+                }
+                return ar;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            finally
+            {
+                con?.Close();
+            }
+
+        }
         public List<AdoptionRequest> ReadAdoptionRequest()
         {
 
@@ -189,7 +237,7 @@ namespace hameluna_server.DAL
                     {
                         RequestId = Convert.ToInt32(dataReader["RequestID"]),
                         Status = dataReader["Status"].ToString(),
-                        SendDate =DateTime.Parse(dataReader["SentDate"].ToString()),
+                        SendDate = DateTime.Parse(dataReader["SentDate"].ToString()),
 
                     };
                     ar.Adopter = Adopter.ReadOne(dataReader["Optional_adopterPhoneNumber"].ToString());

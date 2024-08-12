@@ -28,6 +28,24 @@ namespace hameluna_server.Controllers
             }
 
         }
+         // GET: api/<AdoptionRequestController>
+        [HttpGet("adopter/{phoneNumber}/dog/{dogId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<AdoptionRequest> GetByadopter(string phoneNumber, int dogId)
+        {
+            try
+            {
+                AdoptionRequest sh = AdoptionRequest.ReadByAdopter( phoneNumber, dogId);
+                return Ok(sh);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
+
+        }
 
 
         // POST api/<AdoptionRequestController>
@@ -90,13 +108,13 @@ namespace hameluna_server.Controllers
         }
 
         // DELETE api/<AdoptionRequestController>/5
-        [HttpDelete("{id}")]
+        [HttpDelete("shelter/{shelterNumber}/dog/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(int shelterNumber, int id)
         {
-            AdoptionRequest ad = new();
+            AdoptionRequest ad = new() { RequestId=id,Dog=new() { ShelterNumber=shelterNumber} };
             try
             {
                 if (id == -1)

@@ -105,12 +105,19 @@ namespace hameluna_server.BL
         {
             ChatDBService chatDb = new();
 
+            DogDBService dogDB = new();
+
+            List<Dog> dogsList = dogDB.ReadAll().FindAll((item) => item.IsAdoptable);
+
             if (res.content.Contains("finish"))
             {
                 ChatMessage messGetDogs = new ChatMessage
                 {
                     Role = ChatMessageRole.System,
-                    TextContent = "send the dogs list"
+                    TextContent = "Here is the updated dogs list: " + dogsList.ToJson()+
+                    "send a new dogs list"
+
+
                 };
 
                 this.ChatMessages.Add(messGetDogs);

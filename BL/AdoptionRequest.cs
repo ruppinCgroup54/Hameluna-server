@@ -66,7 +66,7 @@ namespace hameluna_server.BL
             {
                 FireBaseDBService fireDb = new();
 
-                fireDb.UpdateAdoptionRequest(Dog.ShelterNumber, this);
+                fireDb.DeleteAdoptionRequest(Dog.ShelterNumber, this);
             }
 
             return ans;
@@ -78,13 +78,18 @@ namespace hameluna_server.BL
             AdoptionRequestDBService db = new();
             return db.ReadAdoptionRequest();
         }
+        public static AdoptionRequest ReadByAdopter(string phoneNumber, int dogId)
+        {
+            AdoptionRequestDBService db = new();
+            return db.ReadAdoptionRequest(phoneNumber,dogId);
+        }
 
 
         public int Delete(int id)
         {
             AdoptionRequestDBService db = new();
-            int ans = db.DeleteAdoptionRequest(id);
-
+                int ans = db.DeleteAdoptionRequest(id);
+            this.RequestId = id;
             if (ans>0)
             {
                 FireBaseDBService fireDb = new();
