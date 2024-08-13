@@ -32,11 +32,18 @@ namespace hameluna_server.Controllers
         [HttpGet("adopter/{phoneNumber}/dog/{dogId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
         public ActionResult<AdoptionRequest> GetByadopter(string phoneNumber, int dogId)
         {
             try
             {
                 AdoptionRequest sh = AdoptionRequest.ReadByAdopter( phoneNumber, dogId);
+                if (sh.RequestId == 0 )
+                {
+                    return NotFound("There is no request for this addopter");
+                    
+                }
                 return Ok(sh);
             }
             catch (Exception e)

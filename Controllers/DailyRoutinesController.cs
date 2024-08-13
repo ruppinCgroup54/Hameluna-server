@@ -11,23 +11,25 @@ namespace hameluna_server.Controllers
     public class DailyRoutinesController : ControllerBase
     {
 
-        //[HttpGet]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //public ActionResult<DailyRoutine[]> Get()
-        //{
-        //    try
-        //    {
-        //        List<FullRoutineException> fr = FullRoutineException.ReadByDog(dogId);
-        //        return Ok(fr);
-        //    }
-        //    catch (Exception e)
-        //    {
+        [HttpGet("today/{dogId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-        //        return StatusCode(StatusCodes.Status400BadRequest, e.Message);
-        //    }
+        public ActionResult<DailyRoutine> GetTodayRoutine(int dogId)
+        {
+            try
+            {
+                DailyRoutine dr = DailyRoutine.ReadTodayByDog(dogId);
+                return Ok(dr);
+            }
+            catch (Exception e)
+            {
 
-        //} 
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
+
+        }
         [HttpGet("fullExceptions/{dogId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

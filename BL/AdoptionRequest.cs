@@ -1,4 +1,5 @@
 ﻿using hameluna_server.DAL;
+using Microsoft.AspNetCore.Identity;
 
 namespace hameluna_server.BL
 {
@@ -45,10 +46,18 @@ namespace hameluna_server.BL
             finally
             {
                 this.RequestId = db.InsertAdoptionRequest(this);
-                if (this.RequestId>0)
+                if (this.RequestId > 0)
                 {
-                    FireBaseDBService fireDb = new();
-                    fireDb.SetAdoptionRequest(Dog.ShelterNumber, this);
+                    if (this.Status != "trial period")
+                    {
+
+                        FireBaseDBService fireDb = new();
+
+                        fireDb.SetAdoptionRequest(Dog.ShelterNumber, this);
+                    }
+
+                    InsertToDoOfEndTrail();
+
                 }
 
             }
@@ -62,11 +71,13 @@ namespace hameluna_server.BL
 
             int ans = db.UpdateAdoptionRequest(this);
 
-            if (ans > 0)
+            if (ans > 0 )
             {
                 FireBaseDBService fireDb = new();
 
                 fireDb.DeleteAdoptionRequest(Dog.ShelterNumber, this);
+
+                InsertToDoOfEndTrail();
             }
 
             return ans;
@@ -81,16 +92,27 @@ namespace hameluna_server.BL
         public static AdoptionRequest ReadByAdopter(string phoneNumber, int dogId)
         {
             AdoptionRequestDBService db = new();
-            return db.ReadAdoptionRequest(phoneNumber,dogId);
+            return db.ReadAdoptionRequest(phoneNumber, dogId);
+        }
+
+        public void InsertToDoOfEndTrail()
+        {
+            if (this.Status == "trial period")
+            {
+                ToDoItem toDoItem = new(0, false, DateTime.Now.AddMonths(1), "סוף תקופת הניסיון של הכלב " + this.Dog.Name, 0, this.Dog.ShelterNumber, "");
+
+                toDoItem.Insert();
+
+            }
         }
 
 
         public int Delete(int id)
         {
             AdoptionRequestDBService db = new();
-                int ans = db.DeleteAdoptionRequest(id);
+            int ans = db.DeleteAdoptionRequest(id);
             this.RequestId = id;
-            if (ans>0)
+            if (ans > 0)
             {
                 FireBaseDBService fireDb = new();
                 fireDb.DeleteAdoptionRequest(Dog.ShelterNumber, this);

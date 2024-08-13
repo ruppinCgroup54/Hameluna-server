@@ -1,4 +1,5 @@
-﻿using hameluna_server.DAL;
+﻿using System.Reflection.Metadata;
+using hameluna_server.DAL;
 
 namespace hameluna_server.BL
 {
@@ -89,6 +90,13 @@ namespace hameluna_server.BL
         //    DailyRoutineDBService db = new();
         //    return db.DeleteDailyRoutine(id);
         //}
+        public static DailyRoutine ReadTodayByDog(int dogId)
+        {
+            DailyRoutineDBService db = new();
 
+            return db.ReadRoutineByDog(dogId);
+
+
+        }
     }
 }

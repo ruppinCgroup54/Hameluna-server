@@ -68,7 +68,7 @@ namespace hameluna_server.DAL
 
                 return newRoutine;
 
-           
+
             }
             catch (Exception ex)
             {
@@ -99,7 +99,7 @@ namespace hameluna_server.DAL
             }
 
 
-            cmd = DailyRoutineSPCmd(spIUD, con, new () {DogNumberId = dogNumberId}, "TodayDogRoutine");             // create the command
+            cmd = DailyRoutineSPCmd(spIUD, con, new() { DogNumberId = dogNumberId }, "TodayDogRoutine");             // create the command
 
             try
             {
@@ -120,6 +120,7 @@ namespace hameluna_server.DAL
             }
 
         }
+
         public int UpdateRoutineException(RoutineException routineException)
         {
 
@@ -194,6 +195,73 @@ namespace hameluna_server.DAL
 
         }
 
+        public DailyRoutine ReadRoutineByDog(int dogNumberId)
+        {
+
+            SqlConnection con;
+            SqlCommand cmd;
+
+
+            try
+            {
+                con = connect(conString); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            DailyRoutine dr = new() { DogExceptions = new(), DogNumberId = dogNumberId };
+
+            cmd = DailyRoutineSPCmd(spIUD, con, dr, "SelectTodayRoutine");             // create the command
+
+            try
+            {
+                SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                while (dataReader.Read())
+                {
+                    if (dr.RoutineId == 0)
+                    {
+
+
+                        dr.RoutineId = Convert.ToInt32(dataReader["routineId"]);
+                        dr.DogNumberId = Convert.ToInt32(dataReader["dogNumberId"]);
+                        dr.FillDate = Convert.ToDateTime(dataReader["fillDate"]);
+                        dr.VolunteerPhoneNumber = dataReader["VolunteerPhoneNumber"].ToString();
+                        dr.Note = dataReader["Note"].ToString();
+                    }
+
+
+                    RoutineException re = new()
+                    {
+                        IsHandled = Convert.ToBoolean(dataReader["completed"]),
+                        IsOk = Convert.ToBoolean(dataReader["status"]),
+                        ItemId = Convert.ToInt32(dataReader["itemId"]),
+                        RoutineId = dr.RoutineId
+                    };
+                    dr.DogExceptions.Add(re);
+
+                    
+                }
+
+                return dr;
+;
+
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            finally
+            {
+                con?.Close();
+            }
+
+        }
         public List<FullRoutineException> ReadExceptionsByDog(int dogNumberId)
         {
 

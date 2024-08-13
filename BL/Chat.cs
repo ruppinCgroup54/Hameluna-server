@@ -107,7 +107,7 @@ namespace hameluna_server.BL
 
             DogDBService dogDB = new();
 
-            List<Dog> dogsList = dogDB.ReadAll().FindAll((item) => item.IsAdoptable);
+            List<Dog> dogsList = dogDB.ReadAll().FindAll((item) => item.IsAdoptable && !item.Adopted ) ;
 
             if (res.content.Contains("finish"))
             {
