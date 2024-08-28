@@ -89,7 +89,7 @@ namespace hameluna_server.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-        public IActionResult Put(int id, [FromBody] AdoptionRequest ar)
+        public async Task<IActionResult> Put(int id, [FromBody] AdoptionRequest ar)
         {
             try
             {
@@ -97,7 +97,7 @@ namespace hameluna_server.Controllers
                 {
                     return BadRequest();
                 }
-                int numEffected = ar.Update();
+                int numEffected = await ar.Update();
                 if (numEffected == 0)
                 {
                     return NotFound($"There is no shelter with id {id}");

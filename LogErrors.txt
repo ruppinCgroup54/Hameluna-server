@@ -5,3 +5,4 @@ The INSERT statement conflicted with the CHECK constraint "CK__Dog__Size__795DFB
 The statement has been terminated.
 No mapping exists from object type System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]] to a known managed provider native type.
 Object reference not set to an instance of an object.
+Could not find a part of the path 'C:\Users\bensh\OneDrive\Desktop\College\4th year\פרוייקט גמר\שלב ב'\hameluna-server\uploadedFiles\-1\15_מוקה_אימוץ.pdf'.

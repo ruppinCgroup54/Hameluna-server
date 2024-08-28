@@ -23,9 +23,9 @@ namespace hameluna_server.BL
             CellId = -1;
             Color = new() { "" };
             Breed = new() { "" };
-            Attributes = new() { ""};
+            Attributes = new() { "" };
             ShelterNumber = -1;
-            Note="";
+            Note = "";
         }
         public Dog(int shelterNumber, string chipNumber, int numberId, string name, DateTime dateOfBirth, string gender, DateTime entranceDate, string size, int cellId, List<string> color, List<string> breed, List<string> attributes, bool isAdoptable = false, bool isReturned = false, bool adopted = false, string note = "")
         {
@@ -66,7 +66,7 @@ namespace hameluna_server.BL
         public string ProfileImage { get; set; }
         public float Age { get => GetAge(DateOfBirth); }
         public string Note { get; set; }
-        public bool PassDailyRoutin { get => GetDailyStatus(NumberId) ; }
+        public bool PassDailyRoutin { get => GetDailyStatus(NumberId); }
 
         public static bool GetDailyStatus(int id)
         {
@@ -187,8 +187,13 @@ namespace hameluna_server.BL
 
             foreach (JsonRank dr in dogsRank)
             {
+                Dog d = dogs.FirstOrDefault(d => d.NumberId == dr.id);
 
-                filteredDogs.Add(dogs.FirstOrDefault(d => d.NumberId == dr.id));
+                if (d != null)
+                {
+                    filteredDogs.Add(d);
+
+                }
 
             }
             return filteredDogs;
@@ -209,7 +214,13 @@ namespace hameluna_server.BL
             foreach (int fav in favorites)
             {
 
-                filteredDogs.Add(dogs.FirstOrDefault(d => d.NumberId == fav));
+                Dog d = dogs.FirstOrDefault(d => d.NumberId == fav);
+
+                if (d != null)
+                {
+                    filteredDogs.Add(d);
+
+                }
 
             }
             return filteredDogs;
@@ -238,8 +249,8 @@ namespace hameluna_server.BL
         public string CreatePublishNote()
         {
             //get the api key
-                IConfigurationRoot configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json").Build();
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json").Build();
             string apiKey = configuration.GetSection("OpenAISetting").GetValue("ApiKey", "string");
 
             // create a connection to ChatGPT
@@ -259,7 +270,7 @@ namespace hameluna_server.BL
             }
             };
 
-           
+
             // create chat request - open a chart with Gpt
             ChatRequest chatRequest = new()
             {

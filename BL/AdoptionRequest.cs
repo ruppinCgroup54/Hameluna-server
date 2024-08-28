@@ -6,6 +6,7 @@ namespace hameluna_server.BL
     public class AdoptionRequest
     {
 
+
         public int RequestId { get; set; }
         public Adopter Adopter { get; set; }
         public DateTime SendDate { get; set; }
@@ -65,19 +66,57 @@ namespace hameluna_server.BL
 
         }
 
-        public int Update()
+        public async Task<int> Update()
         {
             AdoptionRequestDBService db = new();
 
             int ans = db.UpdateAdoptionRequest(this);
 
-            if (ans > 0 )
+            if (ans > 0)
             {
                 FireBaseDBService fireDb = new();
 
                 fireDb.DeleteAdoptionRequest(Dog.ShelterNumber, this);
 
                 InsertToDoOfEndTrail();
+
+                string adoptionText = string.Format($@"
+                                    <div style=""font-family: 'Arial', sans-serif;
+                                        background-color: #F5F5F5;
+                                        color: #4B3F35;
+                                        direction: rtl;
+                                        text-align: right;
+                                        margin: 0;
+                                        padding: 0;overflow-y: scroll;"">
+
+                                                <div style=""  width: 700px;
+                                            height: 350px;
+                                            margin: 20px auto;
+                                            padding: 20px;
+                                            background-color: white;
+                                            border: 1px solid #DCDCDC;
+                                            position: relative; text-align: center;
+                                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);"">
+
+                                                    <img style=""position: absolute;height:inherit; width: inherit ; right: 20px;"" src=""https://proj.ruppin.ac.il/cgroup54/test2/tar1/Images/adoptionImage.png"" alt="""">
+
+                                                    <div style="" margin-top: 150px;
+                                                    font-size: 20px; "">
+                                                        <p><strong>שם הכלב:</strong> {Dog.Name}</p>
+                                                        <p><strong>שם המאמץ:</strong> {Adopter.FirstName + " " + Adopter.LastName}</p>
+                                                        <p><strong>תאריך יומולדת:</strong> {Dog.DateOfBirth.ToString("dd'/'MM'/'yyyy")}</p>
+                                                        <p><strong>תאריך אימוצלת:</strong> {DateTime.Now.ToString("dd'/'MM'/'yyyy")}</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+");
+
+                string adoptionFile = await PdfService.GeneratePdfAsync(adoptionText, Dog);
+
+                DogDBService dbd = new();
+                dbd.InsertFileToData(adoptionFile, Dog.NumberId);
+
             }
 
             return ans;
