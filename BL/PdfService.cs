@@ -38,7 +38,7 @@ namespace hameluna_server.BL
                     Height = "450px"
                 });
 
-                return filePath;
+                return $"Files/{dog.ShelterNumber}/{dog.NumberId}_{dog.Name}_אימוץ.pdf";
             }
             catch (Exception e)
             {

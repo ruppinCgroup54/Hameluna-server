@@ -338,6 +338,7 @@ public class DBservices
             con?.Close();
         }
     }
+
     private SqlCommand DailySPCmd(String spName, SqlConnection con, string action, string item = "")
     {
 
@@ -634,7 +635,6 @@ public class DBservices
         }
     }
 
-
     public async Task<List<string>> InsertDogImages(string shelterId, List<IFormFile> images)
     {
         List<string> imageLinks = new();
@@ -837,6 +837,7 @@ public class DBservices
 
         return cmd;
     }
+
     public SqlCommand FilesArraySPCmd(String spName, SqlConnection con, string action, List<string> urls, int dogId)
     {
 
@@ -970,6 +971,7 @@ public class DBservices
             } while (temp != null);
         }
     }
+
     public static void WriteToErrorLog(string temp)
     {
         using (StreamWriter writer = new StreamWriter("LogErrors.txt", append: true)) // append: true to append to the file

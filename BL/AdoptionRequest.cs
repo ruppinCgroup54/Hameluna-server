@@ -78,7 +78,32 @@ namespace hameluna_server.BL
 
                 fireDb.DeleteAdoptionRequest(Dog.ShelterNumber, this);
 
-                InsertToDoOfEndTrail();
+                await InsertToDoOfEndTrail();
+
+            }
+
+            return ans;
+
+        }
+
+        public static List<AdoptionRequest> ReadAll()
+        {
+            AdoptionRequestDBService db = new();
+            return db.ReadAdoptionRequest();
+        }
+        public static AdoptionRequest ReadByAdopter(string phoneNumber, int dogId)
+        {
+            AdoptionRequestDBService db = new();
+            return db.ReadAdoptionRequest(phoneNumber, dogId);
+        }
+
+        public async Task InsertToDoOfEndTrail()
+        {
+            if (this.Status == "trial period")
+            {
+                ToDoItem toDoItem = new(0, false, DateTime.Now.AddMonths(1), "סוף תקופת הניסיון של הכלב " + this.Dog.Name, 0, this.Dog.ShelterNumber, "");
+
+                toDoItem.Insert();
 
                 string adoptionText = string.Format($@"
                                     <div style=""font-family: 'Arial', sans-serif;
@@ -116,31 +141,6 @@ namespace hameluna_server.BL
 
                 DogDBService dbd = new();
                 dbd.InsertFileToData(adoptionFile, Dog.NumberId);
-
-            }
-
-            return ans;
-
-        }
-
-        public static List<AdoptionRequest> ReadAll()
-        {
-            AdoptionRequestDBService db = new();
-            return db.ReadAdoptionRequest();
-        }
-        public static AdoptionRequest ReadByAdopter(string phoneNumber, int dogId)
-        {
-            AdoptionRequestDBService db = new();
-            return db.ReadAdoptionRequest(phoneNumber, dogId);
-        }
-
-        public void InsertToDoOfEndTrail()
-        {
-            if (this.Status == "trial period")
-            {
-                ToDoItem toDoItem = new(0, false, DateTime.Now.AddMonths(1), "סוף תקופת הניסיון של הכלב " + this.Dog.Name, 0, this.Dog.ShelterNumber, "");
-
-                toDoItem.Insert();
 
             }
         }
